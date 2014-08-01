@@ -6,6 +6,8 @@ gem 'rails', '4.1.4'
 gem 'unicorn'
 
 ### Datastore ###
+gem 'mongoid',                       '~> 4.0.0'
+gem 'mongoid-sleeping_king_studios', '~> 0.7', '>= 0.7.9'
 
 ### Assets ###
 gem 'haml-rails',   '~> 0.5.3'
@@ -30,6 +32,9 @@ group :development, :test do
   gem 'rspec-collection_matchers',   '~> 1.0.0'
   gem 'rspec-sleeping_king_studios', '>= 2.0.0.beta.0'
   gem 'spring-commands-rspec',       '~> 1.0.2'
+
+  gem 'factory_girl_rails', '~> 4.4.1'
+  gem 'database_cleaner',   '~> 1.3.0'
 end # group
 
 ### Production ###

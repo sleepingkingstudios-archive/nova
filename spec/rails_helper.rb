@@ -14,4 +14,13 @@ RSpec.configure do |config|
   # Automatically mix in different behaviours to your tests based on their file
   # location.
   config.infer_spec_type_from_file_location!
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.clean
+  end # before suite
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end # after each
 end # configure
