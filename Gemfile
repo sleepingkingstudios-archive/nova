@@ -9,6 +9,9 @@ gem 'unicorn'
 gem 'mongoid',                       '~> 4.0.0'
 gem 'mongoid-sleeping_king_studios', '~> 0.7', '>= 0.7.9'
 
+### Authentication ###
+gem 'devise', '~> 3.2.4'
+
 ### Assets ###
 gem 'haml-rails',   '~> 0.5.3'
 gem 'sass-rails',   '~> 4.0.3'
