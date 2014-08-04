@@ -6,6 +6,6 @@ class User
   devise :database_authenticatable, :registerable, :validatable
 
   ## Devise authentication fields.
-  field :email,                  :type => String, :default => ""
-  field :encrypted_password,     :type => String, :default => ""
+  field :email,                  :type => String, :default => ''
+  field :encrypted_password,     :type => String, :default => ''
 end # model

@@ -3,5 +3,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  root 'scaffold#root'
+  get '*directories', :to => 'directories#show'
+
+  root 'directories#show'
 end # draw
