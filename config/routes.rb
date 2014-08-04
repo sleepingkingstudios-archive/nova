@@ -3,7 +3,8 @@
 Rails.application.routes.draw do
   devise_for :users, :path => 'admin/users',
     :controllers => {
-      :sessions => 'admin/sessions'
+      :registrations => 'admin/registrations',
+      :sessions      => 'admin/sessions'
     },
     :path_names => {
       :sign_in  => 'sign-in',
