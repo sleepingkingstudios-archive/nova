@@ -7,12 +7,16 @@ class DirectoriesController < ApplicationController
       @directories = []
     else
       segments = params.fetch('directories', '').split('/')
+
       @directories = Directory.find_by_ancestry segments
     end # if-else
   end # action show
 
   rescue_from Directory::NotFoundError do |exception|
+    flash.now[:warning] = "Unable to locate directory — #{exception.missing.join('/')} (#{exception.missing.count} total)"
+
     @directories = exception.found
+
     render :show
   end # rescue_from
 end # controller
