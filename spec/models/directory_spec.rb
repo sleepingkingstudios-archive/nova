@@ -42,7 +42,7 @@ RSpec.describe Directory, :type => :model do
       let(:values) { ['this-is-a-slug'] }
 
       it 'raises an error' do
-        expect { described_class.find_by_ancestry values }.to raise_error
+        expect { described_class.find_by_ancestry values }.to raise_error(Directory::NotFoundError)
       end # it
     end # describe
 
@@ -52,7 +52,7 @@ RSpec.describe Directory, :type => :model do
       let(:values) { ancestors.map(&:slug).push('missing-child') }
 
       it 'raises an error' do
-        expect { described_class.find_by_ancestry values }.to raise_error
+        expect { described_class.find_by_ancestry values }.to raise_error(Directory::NotFoundError)
       end # it
     end # describe
 
@@ -64,8 +64,8 @@ RSpec.describe Directory, :type => :model do
         expect { described_class.find_by_ancestry values }.not_to raise_error
       end # it
 
-      it 'returns the directory' do
-        expect(described_class.find_by_ancestry values).to be == directory
+      it 'returns the directories' do
+        expect(described_class.find_by_ancestry values).to be == [directory]
       end # it
     end # describe
 
@@ -73,14 +73,14 @@ RSpec.describe Directory, :type => :model do
       include_context 'with many ancestor directories'
 
       let!(:directory) { FactoryGirl.create :directory, attributes }
-      let(:values)     { ancestors.push(directory).map(&:slug) }
+      let(:values)     { ancestors.dup.push(directory).map(&:slug) }
 
       it 'does not raise an error' do
         expect { described_class.find_by_ancestry values }.not_to raise_error
       end # it
 
-      it 'returns the directory' do
-        expect(described_class.find_by_ancestry values).to be == directory
+      it 'returns the directories' do
+        expect(described_class.find_by_ancestry values).to be == ancestors.dup.push(directory)
       end # it
     end # describe
   end # describe

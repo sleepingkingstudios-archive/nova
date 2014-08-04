@@ -8,35 +8,25 @@ class Directory
   include Mongoid::SleepingKingStudios::HasTree
   include Mongoid::SleepingKingStudios::Sluggable
 
-  class << self
-    def find_by_ancestry ancestors
-      raise ArgumentError.new "ancestors can't be blank" if ancestors.blank?
+  ### Class Methods ###
 
-      leaf = ancestors.pop
-      where(:slug => leaf).each do |directory|
-        return directory if directory.ancestors.map(&:slug) == ancestors
+  class << self
+    def find_by_ancestry segments
+      raise ArgumentError.new "path can't be blank" if segments.blank?
+
+      directories = []
+      segments.each.with_index do |segment, index|
+        directory = where(:parent_id => directories.last.try(:id), :slug => segment).first
+
+        if directory.nil?
+          raise Directory::NotFoundError.new segments, directories, segments[index..-1]
+        else
+          directories << directory
+        end # if-else
       end # each
 
-      raise missing_ancestry_error(leaf, ancestors)
+      return directories
     end # class method find_by_ancestry
-
-    private
-
-    def missing_ancestry_error leaf, ancestors
-      message = <<-MESSAGE
-
-Problem:
-  Document not found for class Directory with slug #{leaf.inspect} and ancestors #{ancestors}.
-Summary:
-  When calling Directory.find_by_ancestry with an array of slugs, the array
-  must match a valid chain of directories terminating at a root directory.
-Resolution:
-  Ensure that the requested directories exist in the database by inspecting
-  Directory.roots to find the root directory in the chain, and then the
-  directory.children relation to find each requested child.
-MESSAGE
-      StandardError.new message.rstrip
-    end # class method missing_ancestry_error
   end # class << self
 
   ### Attributes ###
@@ -50,7 +40,38 @@ MESSAGE
   validates :title, :presence => true
   validates :slug,  :uniqueness => { :scope => :parent_id }
 
+  ### Instance Methods ###
+
   def ancestors
     parent ? parent.ancestors.push(parent) : []
   end # method ancestors
+
+  class NotFoundError < StandardError
+    def initialize search, found, missing
+      @search  = search
+      @found   = found
+      @missing = missing
+
+      super(message)
+    end # constructor
+
+    attr_reader :found, :missing, :search
+
+    def message
+      "Problem:\n"\
+        "  Document(s) not found for class Directory with path "\
+        "#{search.join('/').inspect}.\n"\
+        "Summary:\n"\
+        "  When calling Directory.find_by_ancestry with an array of slugs, "\
+        "the array must match a valid chain of directories terminating at a "\
+        "root directory. The search was for the slug(s): "\
+        "#{search.join(', ')} ... (#{search.count} total) and the "\
+        "following slug(s) were not found: #{missing.join(', ')}.\n"\
+        "Resolution:\n"\
+        "  Ensure that the requested directories exist in the database by "\
+        "inspecting Directory.roots to find the root directory in the "\
+        "chain, and then the directory.children relation to find each "\
+        "requested child."
+    end # method message
+  end # class
 end # class
