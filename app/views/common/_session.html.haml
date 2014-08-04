@@ -1,0 +1,14 @@
+- # app/views/common/_session.html.haml
+
+- if current_user
+  %p
+    You are currently signed in as
+    = succeed('.') do
+      = current_user.email
+    = succeed('.') do
+      = link_to 'Sign Out', destroy_user_session_path, :method => :delete
+- else
+  %p
+    You are not currently signed in.
+    = succeed('.') do
+      = link_to 'Sign In', new_user_session_path
