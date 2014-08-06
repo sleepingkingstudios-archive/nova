@@ -14,4 +14,12 @@ RSpec.describe 'routing for directories', :type => :routing do
       })
     end # it
   end # describe
+
+  describe 'GET /admin/path/to/directory' do
+    let(:path) { 'admin/weapons/bows/arbalest' }
+
+    it 'does not route' do
+      expect(:get => "/#{path}").not_to be_routable
+    end # it
+  end # describe
 end # describe

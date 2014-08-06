@@ -1,4 +1,8 @@
--# app/views/common/_messages.html.haml
+- # app/views/common/_messages.html.haml
+
+- # Alias 'notice' to 'info' and 'alert' to 'warning' to match Bootstrap alert styles.
+- flash.now['info']    ||= flash.now['notice'] if flash.key?('notice')
+- flash.now['warning'] ||= flash.now['alert']  if flash.key?('alert')
 
 - %w(success info warning danger).each do |flash_type|
   - if flash.key?(flash_type)
