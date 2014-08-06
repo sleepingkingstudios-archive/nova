@@ -1,0 +1,17 @@
+- # app/views/admin/registrations/edit.html.haml
+
+%h2 Edit Account
+
+= form_for resource, :as => resource_name, :url => registration_path(resource_name), :builder => BootstrapHorizontalFormBuilder, :html => { :method => :put } do |form|
+  = form.form_group :email do
+    = form.email_field :email, :autofocus => true
+  = form.form_group :password do
+    = form.password_field :password
+    = form.help_block "(leave blank if you don't want to change it)"
+  = form.form_group :password_confirmation, :label => 'Confirm Password' do
+    = form.password_field :password_confirmation
+  = form.form_group :current_password, :label => 'Current Password' do
+    = form.password_field :current_password
+    = form.help_block '(we need your current password to confirm your changes)'
+  = form.form_group do
+    = form.submit 'Update'

@@ -1,5 +1,7 @@
 # app/controllers/admin/registrations_controller.rb
 
+require 'form_builders/bootstrap_horizontal_form_builder'
+
 class Admin::RegistrationsController < Devise::RegistrationsController
   # GET /admin/users/register
   def new
