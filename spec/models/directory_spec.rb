@@ -21,6 +21,14 @@ RSpec.describe Directory, :type => :model do
     let(:attributes) { super().merge :parent => parent }
   end # shared_context
 
+  shared_context 'with many child directories' do
+    let!(:children) do
+      Array.new(3).map do
+        instance.children.build FactoryGirl.attributes_for(:directory)
+      end # map
+    end # let!
+  end # shared_context
+
   ### Class Methods ###
 
   describe '::find_by_ancestry' do
@@ -128,16 +136,40 @@ RSpec.describe Directory, :type => :model do
 
   ### Relations ###
 
-  describe 'parent' do
-    it { expect(instance).to respond_to(:parent).with(0).arguments }
+  describe '#parent' do
+    it { expect(instance).to have_reader(:parent_id).with(nil) }
 
-    it { expect(instance.parent).to be nil }
+    it { expect(instance).to have_reader(:parent).with(nil) }
+
+    context 'with a parent directory' do
+      include_context 'with a parent directory'
+
+      it { expect(instance.parent_id).to be == parent.id }
+    end # context
   end # describe
 
-  describe 'children' do
-    it { expect(instance).to respond_to(:children).with(0).arguments }
+  describe '#children' do
+    it { expect(instance).to have_reader(:children).with([]) }
 
-    it { expect(instance.children).to be == [] }
+    context 'with many child directories' do
+      include_context 'with many child directories'
+
+      it { expect(instance.children).to be == children }
+    end # context
+  end # describe
+
+  describe '#features' do
+    it { expect(instance).to have_reader(:features).with([]) }
+
+    context 'with many child directories' do
+      let!(:features) do
+        Array.new(3).map do
+          instance.features.build FactoryGirl.attributes_for(:feature)
+        end # map
+      end # let!
+
+      it { expect(instance.features).to be == features }
+    end # context
   end # describe
 
   ### Validation ###

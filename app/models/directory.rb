@@ -36,6 +36,9 @@ class Directory
   has_tree
   slugify :title, :lockable => true
 
+  ### Relations ###
+  has_many :features
+
   ### Validations ###
   validates :title, :presence => true
   validates :slug,  :uniqueness => { :scope => :parent_id }
