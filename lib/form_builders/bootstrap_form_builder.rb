@@ -8,7 +8,7 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
     super object_name, object, template, options
   end # constructor
 
-  delegate :content_tag, :to => :@template
+  delegate :content_tag, :tag, :to => :@template
 
   def email_field method, options = {}
     options[:class] = concat_class options.fetch(:class, ''), 'form-control'
@@ -21,7 +21,7 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
 
     if !method.blank? && has_errors?
       status  = object.errors.messages.key?(method) ? 'has-error' : 'has-success'
-      classes = concat_class classes, status
+      classes = concat_class classes, status, 'has-feedback'
     end # if
 
     content_tag 'div', :class => classes do
@@ -30,6 +30,11 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
       end # if
 
       build_input method, &block
+
+      if !method.blank? && has_errors?
+        status = object.errors.messages.fetch(method, nil).blank? ? 'ok' : 'remove'
+        @template.concat tag('span', :class => "glyphicon glyphicon-#{status} form-control-feedback")
+      end # if
     end # content_tag
   end # method form_group
 
