@@ -1,3 +1,4 @@
-# Be sure to restart your server when you modify this file.
+# config/initializers/cookies_serializer.rb
 
-Rails.application.config.action_dispatch.cookies_serializer = :json
+# Disabled because of a regression in Warden serialization.
+# Rails.application.config.action_dispatch.cookies_serializer = :json

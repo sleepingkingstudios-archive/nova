@@ -1,0 +1,16 @@
+- # app/views/admin/sessions/new.html.haml
+
+%h2 Sign In
+
+= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => 'form-horizontal', :role => 'form' }) do |form|
+  .form-group
+    = form.label :email, :class => 'col-sm-2 control-label'
+    .col-sm-10
+      = form.email_field :email, :class => 'form-control', :autofocus => true
+  .form-group
+    = form.label :password, :class => 'col-sm-2 control-label'
+    .col-sm-10
+      = form.password_field :password, :class => 'form-control'
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      = form.submit 'Sign In', :class => 'btn btn-default'
