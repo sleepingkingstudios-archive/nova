@@ -31,7 +31,7 @@ RSpec.describe DirectoriesController, :type => :controller do
       let!(:directories) do
         [].tap do |ary|
           segments.each do |segment|
-            ary << FactoryGirl.create(:directory, :parent => ary[-1], :title => segment.capitalize)
+            ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
           end # each
         end # tap
       end # let!
@@ -54,7 +54,7 @@ RSpec.describe DirectoriesController, :type => :controller do
       let!(:directories) do
         [].tap do |ary|
           segments[0...-1].each do |segment|
-            ary << FactoryGirl.create(:directory, :parent => ary[-1], :title => segment.capitalize)
+            ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
           end # each
         end # tap
       end # let!

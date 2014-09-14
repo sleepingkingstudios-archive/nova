@@ -20,7 +20,7 @@ RSpec.describe Admin::RegistrationsController, :type => :controller do
 
   describe 'POST #create' do
     def perform_action
-      post :create, :user => FactoryGirl.attributes_for(:user)
+      post :create, :user => attributes_for(:user)
     end # method perform_action
 
     it 'responds with 403' do
