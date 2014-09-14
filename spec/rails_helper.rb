@@ -20,6 +20,15 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end # before suite
 
+  config.before(:suite) do
+    begin
+      DatabaseCleaner.start
+      FactoryGirl.lint
+    ensure
+      DatabaseCleaner.clean
+    end # begin-ensure
+  end # before suite
+
   config.after(:each) do
     DatabaseCleaner.clean
   end # after each

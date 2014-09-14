@@ -11,6 +11,29 @@ class Directory
   ### Class Methods ###
 
   class << self
+    def feature name, options = {}
+      model_name  = name.to_s.singularize
+      scope_name  = model_name.pluralize
+      class_name  = options[:class].to_s || model_name.camelize
+      model_class = class_name.constantize
+
+      send :define_method, scope_name do
+        features.where(:_type => class_name)
+      end # define_method
+
+      send :define_method, "build_#{model_name}" do |attrs|
+        model_class.new attrs.merge(:directory_id => self.id)
+      end # define_method
+
+      send :define_method, "create_#{model_name}" do |attrs|
+        model_class.create attrs.merge(:directory_id => self.id)
+      end # define_method
+
+      send :define_method, "create_#{model_name}!" do |attrs|
+        model_class.create! attrs.merge(:directory_id => self.id)
+      end # define_method
+    end # method feature
+
     def find_by_ancestry segments
       raise ArgumentError.new "path can't be blank" if segments.blank?
 
