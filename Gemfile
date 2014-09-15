@@ -12,14 +12,16 @@ gem 'mongoid-sleeping_king_studios', '~> 0.7', '>= 0.7.9'
 ### Authentication ###
 gem 'devise', '~> 3.2.4'
 
-### Assets ###
-gem 'haml-rails',     '~> 0.5.3'
-gem 'sass-rails',     '~> 4.0.3'
-gem 'bootstrap-sass', '~> 3.2.0'
-gem 'coffee-rails',   '~> 4.0.0'
-gem 'jquery-rails',   '~> 3.1.1'
+### JS Runtime ###
+gem 'therubyracer', '~> 0.12.1'
 
-gem 'uglifier',     '>= 1.3.0' # Compressor for JavaScript assets.
+### Assets ###
+gem 'haml-rails',           '~> 0.5.3'
+gem 'less-rails',           '~> 2.5.0'
+gem 'less-rails-bootstrap', '~> 3.2.0'
+gem 'coffee-rails',         '~> 4.0.0'
+gem 'jquery-rails',         '~> 3.1.1'
+gem 'uglifier',             '>= 1.3.0' # Compressor for JavaScript assets.
 
 ### Content ###
 
