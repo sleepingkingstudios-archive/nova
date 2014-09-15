@@ -7,7 +7,7 @@ RSpec.describe Page, :type => :model do
   let(:instance)   { described_class.new attributes }
 
   shared_context 'with generic content', :content => :one do
-    let(:content)    { build :page_content }
+    let(:content)    { build :content }
     let(:attributes) { super().merge :content => content }
   end # shared_context
 

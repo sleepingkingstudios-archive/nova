@@ -12,7 +12,7 @@ class Page < Feature
   slugify :title, :lockable => true
 
   ### Relations ###
-  embeds_one :content, :class_name => "PageContent"
+  embeds_one :content, :as => :container
 
   ### Validations ###
   validates :content, :presence => true
