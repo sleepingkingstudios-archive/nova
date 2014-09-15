@@ -245,6 +245,10 @@ RSpec.describe Directory, :type => :model do
 
     it { expect(instance).to have_property :slug }
 
+    it 'is generated from the title' do
+      expect(instance.slug).to be == instance.title.parameterize
+    end # it
+
     it 'sets #slug_lock to true' do
       expect { instance.slug = value }.to change(instance, :slug_lock).to(true)
     end # it
