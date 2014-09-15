@@ -3,6 +3,8 @@
 require 'mongoid/sleeping_king_studios/has_tree'
 require 'mongoid/sleeping_king_studios/sluggable'
 
+require 'validators/unique_within_siblings_validator'
+
 class Directory
   include Mongoid::Document
   include Mongoid::SleepingKingStudios::HasTree
@@ -64,7 +66,7 @@ class Directory
 
   ### Validations ###
   validates :title, :presence => true
-  validates :slug,  :uniqueness => { :scope => :parent_id }
+  validates :slug,  :unique_within_siblings => true
 
   ### Instance Methods ###
 

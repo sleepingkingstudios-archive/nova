@@ -304,12 +304,34 @@ RSpec.describe Directory, :type => :model do
     end # describe
 
     describe 'slug must be unique within parent_id scope' do
-      before(:each) { create :directory, :slug => instance.slug }
+      context 'with a sibling directory' do
+        before(:each) { create :directory, :slug => instance.slug }
 
-      it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+        it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+      end # context
+
+      context 'with a sibling feature' do
+        before(:each) { create :feature, :slug => instance.slug }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+      end # context
 
       context 'with a parent directory', :parent => :one do
+        before(:each) { create :directory, :slug => instance.slug }
+
         it { expect(instance).not_to have_errors.on(:slug) }
+
+        context 'with a sibling directory' do
+          before(:each) { create :directory, :parent => parent, :slug => instance.slug }
+
+          it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+        end # context
+
+        context 'with a sibling feature' do
+          before(:each) { create :feature, :directory => parent, :slug => instance.slug }
+
+          it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+        end # context
       end # context
     end # describe
   end # describe
