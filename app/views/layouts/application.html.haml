@@ -1,19 +1,34 @@
 - # app/views/layouts/application.html.haml
 
 !!! 5
-%html
+%html(lang="en")
   %head
-    %title Nova
+    %meta(charset="utf-8")
+    %meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
 
-    %meta{ :name => 'viewport', :content => 'width=device-width, initial-scale=1' }
+    = favicon_link_tag 'apple-touch-icon-144x144-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '144x144'
+    = favicon_link_tag 'apple-touch-icon-114x114-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '114x114'
+    = favicon_link_tag 'apple-touch-icon-72x72-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '72x72'
+    = favicon_link_tag 'apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
+    = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
 
-    = stylesheet_link_tag    'application', :media => 'all'
-    = javascript_include_tag 'application'
+    %title= content_for?(:title) ? yield(:title) : "Nova"
 
     = csrf_meta_tags
 
+    = stylesheet_link_tag "application", :media => "all"
+    = yield :stylesheets
+    
+    = javascript_include_tag "application"
+    = yield :javascripts
+
   %body
     .container
+      %h1
+        Nova
+        %small A Rising Star in Rails Content Management
+
       = render 'common/session'
 
       = render 'common/messages'
