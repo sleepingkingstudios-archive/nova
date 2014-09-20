@@ -45,6 +45,23 @@ RSpec.describe Directory, :type => :model do
     end # let!
   end # shared_context
 
+  describe '::RESERVED_ACTIONS' do
+    it { expect(described_class.const_defined? :RESERVED_ACTIONS).to be true }
+
+    it 'is immutable' do
+      expect { described_class::RESERVED_ACTIONS << 'autodefenestrate' }.to raise_error(RuntimeError)
+      expect { described_class::RESERVED_ACTIONS.first.clear }.to raise_error(RuntimeError)
+    end # it
+
+    it 'lists resourceful actions' do
+      expect(described_class::RESERVED_ACTIONS).to contain_exactly *%w(
+        index
+        new
+        edit
+      ) # end array
+    end # it
+  end # describe
+
   ### Class Methods ###
 
   describe '::feature' do
@@ -60,6 +77,14 @@ RSpec.describe Directory, :type => :model do
       let(:scope_name)  { model_name.to_s.pluralize }
 
       before(:each) { Directory.feature model_name, :class => model_class }
+
+      it 'appends the plural name to ::feature_names' do
+        expect(described_class.feature_names).to include scope_name
+      end # it
+
+      it 'appends the plural name to ::reserved_slugs' do
+        expect(described_class.reserved_slugs).to include scope_name
+      end # it
 
       describe "##{model_name.to_s.pluralize}" do
         let(:criteria) { instance.send(scope_name) }
@@ -155,6 +180,21 @@ RSpec.describe Directory, :type => :model do
     end # describe
   end # describe
 
+  describe '::feature_names' do
+    it { expect(described_class).to have_reader(:feature_names) }
+
+    it 'is immutable' do
+      expect { described_class.feature_names << 'autodefenestrate' }.not_to change(described_class, :feature_names)
+    end # it
+
+    it 'contains directory and feature names' do
+      expect(described_class.feature_names).to include *%w(
+        directories
+        features
+      ) # end array
+    end # it
+  end # describe
+
   describe '::find_by_ancestry' do
     it { expect(described_class).to respond_to(:find_by_ancestry).with(1).arguments }
 
@@ -211,6 +251,27 @@ RSpec.describe Directory, :type => :model do
         expect(described_class.find_by_ancestry values).to be == ancestors.dup.push(directory)
       end # it
     end # describe
+  end # describe
+
+  describe '::reserved_slugs' do
+    it { expect(described_class).to have_reader(:reserved_slugs) }
+
+    it { expect(described_class.reserved_slugs).to include 'admin' }
+
+    it 'contains resourceful actions' do
+      expect(described_class.reserved_slugs).to include *%w(
+        index
+        new
+        edit
+      ) # end array
+    end # it
+
+    it 'contains directory and feature names' do
+      expect(described_class.reserved_slugs).to include *%w(
+        directories
+        features
+      ) # end array
+    end # it
   end # describe
 
   describe '::roots' do
@@ -301,6 +362,32 @@ RSpec.describe Directory, :type => :model do
       let(:attributes) { super().merge :slug => nil }
 
       it { expect(instance).to have_errors.on(:slug).with_message("can't be blank") }
+    end # describe
+
+    describe 'slug must not match reserved values' do
+      context 'with "admin"' do
+        let(:attributes) { super().merge :slug => 'admin' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "index"' do
+        let(:attributes) { super().merge :slug => 'index' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "edit"' do
+        let(:attributes) { super().merge :slug => 'edit' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "directories"' do
+        let(:attributes) { super().merge :slug => 'directories' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
     end # describe
 
     describe 'slug must be unique within parent_id scope' do

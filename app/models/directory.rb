@@ -10,6 +10,8 @@ class Directory
   include Mongoid::SleepingKingStudios::HasTree
   include Mongoid::SleepingKingStudios::Sluggable
 
+  RESERVED_ACTIONS = %w(index new edit).map(&:freeze).freeze
+
   ### Class Methods ###
 
   class << self
@@ -18,6 +20,9 @@ class Directory
       scope_name  = model_name.pluralize
       class_name  = options[:class].to_s || model_name.camelize
       model_class = class_name.constantize
+
+      # Append to the feature_names collection.
+      (@feature_names ||= default_feature_names) << scope_name
 
       send :define_method, scope_name do
         features.where(:_type => class_name)
@@ -36,6 +41,10 @@ class Directory
       end # define_method
     end # method feature
 
+    def feature_names
+      (@feature_names ||= default_feature_names).dup
+    end # method feature_names
+
     def find_by_ancestry segments
       raise ArgumentError.new "path can't be blank" if segments.blank?
 
@@ -52,6 +61,16 @@ class Directory
 
       return directories
     end # class method find_by_ancestry
+
+    def reserved_slugs
+      %w(admin).concat(RESERVED_ACTIONS).concat(feature_names.to_a)
+    end # class method reserved_slugs
+
+    private
+
+    def default_feature_names
+      Set.new %w(directories features)
+    end # class method default_feature_names
   end # class << self
 
   ### Attributes ###
@@ -66,7 +85,7 @@ class Directory
 
   ### Validations ###
   validates :title, :presence => true
-  validates :slug,  :unique_within_siblings => true
+  validates :slug,  :exclusion => { :in => reserved_slugs }, :unique_within_siblings => true
 
   ### Instance Methods ###
 

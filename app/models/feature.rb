@@ -8,6 +8,14 @@ class Feature
   include Mongoid::Document
   include Mongoid::SleepingKingStudios::Sluggable
 
+  ### Class Methods ###
+
+  class << self
+    def reserved_slugs
+      Directory.reserved_slugs
+    end # class method reserved_slugs
+  end # class << self
+
   ### Attributes ###
   field :title, :type => String
 
@@ -19,5 +27,5 @@ class Feature
 
   ### Validations ###
   validates :title, :presence => true
-  validates :slug,  :unique_within_siblings => true
+  validates :slug,  :exclusion => { :in => ->(document) { document.class.reserved_slugs } }, :unique_within_siblings => true
 end # model

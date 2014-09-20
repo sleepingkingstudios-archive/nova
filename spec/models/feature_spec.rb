@@ -11,6 +11,29 @@ RSpec.describe Feature, :type => :model do
     let(:attributes) { super().merge :directory => directory }
   end # shared_context
 
+  ### Class Methods ###
+
+  describe '::reserved_slugs' do
+    it { expect(described_class).to have_reader(:reserved_slugs) }
+
+    it { expect(described_class.reserved_slugs).to include 'admin' }
+
+    it 'contains resourceful actions' do
+      expect(described_class.reserved_slugs).to include *%w(
+        index
+        new
+        edit
+      ) # end array
+    end # it
+
+    it 'contains directory and feature names' do
+      expect(described_class.reserved_slugs).to include *%w(
+        directories
+        features
+      ) # end array
+    end # it
+  end # describe
+
   ### Attributes ###
 
   describe '#title' do
@@ -62,6 +85,32 @@ RSpec.describe Feature, :type => :model do
       let(:attributes) { super().merge :title => nil }
 
       it { expect(instance).to have_errors.on(:slug).with_message("can't be blank") }
+    end # describe
+
+    describe 'slug must not match reserved values' do
+      context 'with "admin"' do
+        let(:attributes) { super().merge :slug => 'admin' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "index"' do
+        let(:attributes) { super().merge :slug => 'index' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "edit"' do
+        let(:attributes) { super().merge :slug => 'edit' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "directories"' do
+        let(:attributes) { super().merge :slug => 'directories' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
     end # describe
 
     describe 'slug must be unique within parent_id scope' do
