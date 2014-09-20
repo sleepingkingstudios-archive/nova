@@ -1,4 +1,17 @@
 - # app/views/directories/show.html.haml
 
-%h1 Directories#show
-%p  Find me at app/views/directories/show.html.haml
+%h2
+  = @current_directory.try(:title)
+  %small This is a Test of the Emergency Broadcast System. This is Only a Test.
+
+%p
+  Current path:
+  = params[:directories] || "None"
+
+%p
+  Current directories:
+%ul
+  - if @directories.blank?
+    %li None
+  - @directories.each do |directory|
+    %li= directory.slug

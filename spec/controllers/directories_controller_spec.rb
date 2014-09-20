@@ -22,6 +22,7 @@ RSpec.describe DirectoriesController, :type => :controller do
       it 'assigns an empty array to @directories' do
         perform_action
         expect(assigns :directories).to be == []
+        expect(assigns :current_directory).to be nil
       end # it
     end # describe
 
@@ -45,6 +46,7 @@ RSpec.describe DirectoriesController, :type => :controller do
       it 'assigns the directories to @directories' do
         perform_action
         expect(assigns :directories).to be == directories
+        expect(assigns :current_directory).to be == directories.last
       end # it
     end # describe
 
@@ -68,6 +70,7 @@ RSpec.describe DirectoriesController, :type => :controller do
       it 'assigns the found directories to @directories' do
         perform_action
         expect(assigns :directories).to be == directories
+        expect(assigns :current_directory).to be == directories.last
       end # it
     end # describe
   end # describe

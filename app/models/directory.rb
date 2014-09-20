@@ -91,7 +91,7 @@ class Directory
         "#{search.join('/').inspect}.\n"\
         "Summary:\n"\
         "  When calling Directory.find_by_ancestry with an array of slugs, "\
-        "the array must match a valid chain of directories terminating at a "\
+        "the array must match a valid chain of directories originating at a "\
         "root directory. The search was for the slug(s): "\
         "#{search.join(', ')} ... (#{search.count} total) and the "\
         "following slug(s) were not found: #{missing.join(', ')}.\n"\
