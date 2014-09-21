@@ -1,21 +1,41 @@
 # app/controllers/directories_controller.rb
 
+require 'presenters/directory_presenter'
+
 class DirectoriesController < ApplicationController
   include DirectoryLookup
 
-  before_action :lookup_directories, :only => %i(show)
+  before_action :lookup_directories
+  before_action :authenticate_user!, :except => %i(show)
 
   # GET /path/to/directory
   def show
     @current_directory = @directories.last
   end # action show
 
+  # GET /path/to/directory/index
+  def index
+    @current_directory = @directories.last
+  end # action index
+
+  private
+
+  def redirect_to_last_directory
+    redirect_to "/#{@directories.map(&:slug).join('/')}"
+  end # method redirect_to_last_directory
+
   rescue_from Directory::NotFoundError do |exception|
-    flash.now[:warning] = "Unable to locate directory — #{exception.missing.join('/')} (#{exception.missing.count} total)"
+    flash[:warning] = "Unable to locate directory — #{exception.missing.join('/')} (#{exception.missing.count} total)"
 
     @directories       = exception.found
     @current_directory = @directories.last
 
-    render :show
+    redirect_to_last_directory
+  end # rescue_from
+
+  rescue_from Nova::AuthenticationError do |exception|
+    flash[:warning] = "Unauthorized action"
+
+    redirect_to_last_directory
   end # rescue_from
 end # controller

@@ -1,7 +1,9 @@
 - # app/views/directories/show.html.haml
 
+- presenter = DirectoryPresenter.new @current_directory
+
 %h2
-  = @current_directory.try(:title)
+  = presenter.title
   %small This is a Test of the Emergency Broadcast System. This is Only a Test.
 
 %p

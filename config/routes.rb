@@ -12,7 +12,9 @@ Rails.application.routes.draw do
       :sign_up  => 'register'
     }
 
-  get '*directories', :to => 'directories#show', :constraints => lambda { |request| !(request.path =~ /\A\/?admin/) }
+  get 'index',              :to => 'directories#index'
+  get '*directories/index', :to => 'directories#index'
+  get '*directories',       :to => 'directories#show', :constraints => lambda { |request| !(request.path =~ /\A\/?admin/) }
 
   root 'directories#show'
 end # draw

@@ -3,75 +3,159 @@
 require 'rails_helper'
 
 RSpec.describe DirectoriesController, :type => :controller do
+  shared_context 'with an empty path', :path => :empty do
+    let(:path)        { nil }
+    let(:directories) { [] }
+  end # shared_context
+
+  shared_context 'with an invalid path', :path => :invalid do
+    let(:segments) { %w(weapons swords japanese) }
+    let(:path)     { segments.join('/') }
+    let!(:directories) do
+      [].tap do |ary|
+        segments[0...-1].each do |segment|
+          ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
+        end # each
+      end # tap
+    end # let!
+  end # shared_context
+
+  shared_context 'with a valid path', :path => :valid do
+    let(:segments) { %w(weapons swords japanese) }
+    let(:path)     { segments.join('/') }
+    let!(:directories) do
+      [].tap do |ary|
+        segments.each do |segment|
+          ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
+        end # each
+      end # tap
+    end # let!
+  end # shared_context
+
+  shared_examples 'assigns directories' do
+    it 'assigns the directories to @directories' do
+      perform_action
+
+      expect(assigns :directories).to be == directories
+      expect(assigns :current_directory).to be == directories.last
+    end # it
+  end # shared_examples
+
+  shared_examples 'redirects to the last found directory' do
+    it 'redirects to the last found directory' do
+      perform_action
+
+      expect(response.status).to be == 302
+      expect(response).to redirect_to "/#{segments[0...-1].join('/')}"
+
+      expect(request.flash[:warning]).not_to be_blank
+    end # it
+  end # shared_examples
+
+  shared_examples 'requires authentication' do
+    before(:each) { sign_out :user }
+
+    describe 'with an empty path', :path => :empty do
+      it 'redirects to root' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to root_path
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+
+    describe 'with an invalid path', :path => :invalid do
+      it 'redirects to the last found directory' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to "/#{segments[0...-1].join('/')}"
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+
+    describe 'with a valid path', :path => :valid do
+      it 'redirects to the last found directory' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to "/#{segments.join('/')}"
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+  end # shared_examples
+
+  let(:user) { create(:user) }
+
   describe 'GET #show' do
     def perform_action
       get :show, :directories => path
     end # method perform_action
 
-    describe 'with an empty path' do
-      def perform_action
-        get :show
-      end # method perform_action
-
+    describe 'with an empty path', :path => :empty do
       it 'renders the show template' do
         perform_action
+
         expect(response.status).to be == 200
         expect(response).to render_template(:show)
       end # it
 
-      it 'assigns an empty array to @directories' do
-        perform_action
-        expect(assigns :directories).to be == []
-        expect(assigns :current_directory).to be nil
-      end # it
+      expect_behavior 'assigns directories'
     end # describe
 
-    describe 'with a valid path' do
-      let(:segments) { %w(weapons swords japanese) }
-      let(:path)     { segments.join('/') }
-      let!(:directories) do
-        [].tap do |ary|
-          segments.each do |segment|
-            ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
-          end # each
-        end # tap
-      end # let!
-
-      it 'renders the show template' do
-        perform_action
-        expect(response.status).to be == 200
-        expect(response).to render_template(:show)
-      end # it
-
-      it 'assigns the directories to @directories' do
-        perform_action
-        expect(assigns :directories).to be == directories
-        expect(assigns :current_directory).to be == directories.last
-      end # it
+    describe 'with an invalid path', :path => :invalid do
+      expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with an invalid path' do
-      let(:segments) { %w(weapons swords japanese) }
-      let(:path)     { segments.join('/') }
-      let!(:directories) do
-        [].tap do |ary|
-          segments[0...-1].each do |segment|
-            ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
-          end # each
-        end # tap
-      end # let!
-
+    describe 'with a valid path', :path => :valid do
       it 'renders the show template' do
         perform_action
+
         expect(response.status).to be == 200
         expect(response).to render_template(:show)
       end # it
 
-      it 'assigns the found directories to @directories' do
+      expect_behavior 'assigns directories'
+    end # describe
+  end # describe
+
+  describe 'GET #index' do
+    expect_behavior 'requires authentication'
+
+    def perform_action
+      get :index, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an empty path', :path => :empty do
+      it 'renders the index template' do
         perform_action
-        expect(assigns :directories).to be == directories
-        expect(assigns :current_directory).to be == directories.last
+
+        expect(response.status).to be == 200
+        expect(response).to render_template(:index)
       end # it
+
+      expect_behavior 'assigns directories'
+    end # describe
+
+    describe 'with an invalid path', :path => :invalid do
+      expect_behavior 'redirects to the last found directory'
+    end # describe
+
+    describe 'with a valid path', :path => :valid do
+      it 'renders the index template' do
+        perform_action
+
+        expect(response.status).to be == 200
+        expect(response).to render_template(:index)
+      end # it
+
+      expect_behavior 'assigns directories'
     end # describe
   end # describe
 end # describe
