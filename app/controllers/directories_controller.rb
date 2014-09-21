@@ -10,21 +10,22 @@ class DirectoriesController < ApplicationController
 
   # GET /path/to/directory
   def show
-    @current_directory = @directories.last
   end # action show
 
   # GET /path/to/directory/index
   def index
-    @current_directory = @directories.last
   end # action index
+
+  # GET /path/to/directory/directories/new
+  def new
+  end # action new
 
   private
 
   rescue_from Directory::NotFoundError do |exception|
     flash[:warning] = "Unable to locate directory — #{exception.missing.join('/')} (#{exception.missing.count} total)"
 
-    @directories       = exception.found
-    @current_directory = @directories.last
+    @directories = exception.found
 
     redirect_to directories_path(@directories)
   end # rescue_from

@@ -33,6 +33,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
         instance.lookup_directories
 
         expect(assigns.fetch :directories).to be == directories
+        expect(assigns.fetch :current_directory).to be == directories.last
       end # it
     end # describe
 
@@ -69,6 +70,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
         instance.lookup_directories
 
         expect(assigns.fetch :directories).to be == directories
+        expect(assigns.fetch :current_directory).to be == directories.last
       end # it
     end # describe
   end # describe

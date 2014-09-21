@@ -77,6 +77,22 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.index_directory_path directories.last).to be == "/#{slugs.join '/'}/index" }
     end # describe
   end # describe
+
+  describe '#new_directory_path' do
+    it { expect(instance).to respond_to(:new_directory_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.new_directory_path nil).to be == '/directories/new' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.new_directory_path directory).to be == "/#{slug}/directories/new" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.new_directory_path directories.last).to be == "/#{slugs.join '/'}/directories/new" }
+    end # describe
+  end # describe
 end # describe
 
 RSpec.describe 'Rails url_helpers' do

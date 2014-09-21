@@ -160,4 +160,40 @@ RSpec.describe DirectoriesController, :type => :controller do
       expect_behavior 'assigns directories'
     end # describe
   end # describe
+
+  describe 'GET #new' do
+    expect_behavior 'requires authentication'
+
+    def perform_action
+      get :new, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an empty path', :path => :empty do
+      it 'renders the new template' do
+        perform_action
+
+        expect(response.status).to be == 200
+        expect(response).to render_template(:new)
+      end # it
+
+      expect_behavior 'assigns directories'
+    end # describe
+
+    describe 'with an invalid path', :path => :invalid do
+      expect_behavior 'redirects to the last found directory'
+    end # describe
+
+    describe 'with a valid path', :path => :valid do
+      it 'renders the new template' do
+        perform_action
+
+        expect(response.status).to be == 200
+        expect(response).to render_template(:new)
+      end # it
+
+      expect_behavior 'assigns directories'
+    end # describe
+  end # describe
 end # describe

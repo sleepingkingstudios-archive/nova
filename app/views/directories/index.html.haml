@@ -18,7 +18,7 @@
 
 %h3 Directories
 %p
-  = link_to '', :class => '.text-primary' do
+  = link_to new_directory_path(@current_directory), :class => '.text-primary' do
     %span.fa-stack.fa-sm
       = icon :folder_o, :fixed => true, :class => 'fa-stack-2x'
       = icon :pencil, :fixed => true, :class => 'fa-stack-1x'

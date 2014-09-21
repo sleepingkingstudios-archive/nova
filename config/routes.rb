@@ -14,7 +14,11 @@ Rails.application.routes.draw do
 
   get 'index',              :to => 'directories#index'
   get '*directories/index', :to => 'directories#index'
-  get '*directories',       :to => 'directories#show', :constraints => lambda { |request| !(request.path =~ /\A\/?admin/) }
+
+  get 'directories/new',              :to => 'directories#new'
+  get '*directories/directories/new', :to => 'directories#new'
+
+  get '*directories', :to => 'directories#show', :constraints => lambda { |request| !(request.path =~ /\A\/?admin/) }
 
   root 'directories#show'
 end # draw

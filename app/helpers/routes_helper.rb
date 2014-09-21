@@ -24,4 +24,10 @@ module RoutesHelper
 
     "#{directory_path(directory)}/index"
   end # method directory_path
+
+  def new_directory_path directory
+    return '/directories/new' if directory.blank?
+
+    "#{directory_path(directory)}/directories/new"
+  end # method directory_path
 end # module
