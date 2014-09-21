@@ -8,6 +8,8 @@ class DirectoriesController < ApplicationController
   before_action :lookup_directories
   before_action :authenticate_user!, :except => %i(show)
 
+  before_action :build_directory, :only => %i(new create)
+
   # GET /path/to/directory
   def show
   end # action show
@@ -20,7 +22,26 @@ class DirectoriesController < ApplicationController
   def new
   end # action new
 
+  # POST /path/to/directory/directories
+  def create
+    if @directory.save
+      flash[:success] = 'Directory successfully created.'
+
+      redirect_to directory_path(@directory)
+    else
+      render :new
+    end # if
+  end # action create
+
   private
+
+  def build_directory
+    @directory = Directory.new params_for_directory
+  end # method build_directory
+
+  def params_for_directory
+    params.fetch(:directory, {}).permit(:title, :slug)
+  end # method params_for_directory
 
   rescue_from Directory::NotFoundError do |exception|
     flash[:warning] = "Unable to locate directory — #{exception.missing.join('/')} (#{exception.missing.count} total)"

@@ -93,7 +93,7 @@ RSpec.describe DirectoriesController, :type => :controller do
 
   let(:user) { create(:user) }
 
-  describe 'GET #show' do
+  describe '#show' do
     def perform_action
       get :show, :directories => path
     end # method perform_action
@@ -125,7 +125,7 @@ RSpec.describe DirectoriesController, :type => :controller do
     end # describe
   end # describe
 
-  describe 'GET #index' do
+  describe '#index' do
     expect_behavior 'requires authentication'
 
     def perform_action
@@ -161,7 +161,7 @@ RSpec.describe DirectoriesController, :type => :controller do
     end # describe
   end # describe
 
-  describe 'GET #new' do
+  describe '#new' do
     expect_behavior 'requires authentication'
 
     def perform_action
@@ -176,6 +176,8 @@ RSpec.describe DirectoriesController, :type => :controller do
 
         expect(response.status).to be == 200
         expect(response).to render_template(:new)
+
+        expect(assigns :directory).to be_a(Directory)
       end # it
 
       expect_behavior 'assigns directories'
@@ -191,9 +193,103 @@ RSpec.describe DirectoriesController, :type => :controller do
 
         expect(response.status).to be == 200
         expect(response).to render_template(:new)
+
+        expect(assigns :directory).to be_a(Directory)
       end # it
 
       expect_behavior 'assigns directories'
+    end # describe
+  end # describe
+
+  describe '#create' do
+    let(:attributes) { {} }
+
+    expect_behavior 'requires authentication'
+
+    def perform_action
+      post :create, :directories => path, :directory => attributes
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an empty path', :path => :empty do
+      describe 'with invalid params' do
+        let(:attributes) { super().merge :title => nil }
+
+        it 'renders the new template' do
+          perform_action
+
+          expect(response.status).to be == 200
+          expect(response).to render_template(:new)
+
+          expect(assigns :directory).to be_a(Directory)
+        end # it
+
+        it 'does not create a directory' do
+          expect { perform_action }.not_to change(Directory, :count)
+        end # it
+
+        expect_behavior 'assigns directories'
+      end # describe
+
+      describe 'with valid params' do
+        let(:attributes) { attributes_for(:directory) }
+
+        it 'redirects to the directory' do
+          perform_action
+
+          expect(response.status).to be == 302
+          expect(response).to redirect_to(directory_path(assigns :directory))
+
+          expect(request.flash[:success]).not_to be_blank
+        end # it
+
+        it 'creates a new directory' do
+          expect { perform_action }.to change(Directory, :count).by(1)
+        end # it
+      end # describe
+    end # describe
+
+    describe 'with an invalid path', :path => :invalid do
+      expect_behavior 'redirects to the last found directory'
+    end # describe
+
+    describe 'with a valid path', :path => :valid do
+      describe 'with invalid params' do
+        let(:attributes) { super().merge :title => nil }
+
+        it 'renders the new template' do
+          perform_action
+
+          expect(response.status).to be == 200
+          expect(response).to render_template(:new)
+
+          expect(assigns :directory).to be_a(Directory)
+        end # it
+
+        it 'does not create a directory' do
+          expect { perform_action }.not_to change(Directory, :count)
+        end # it
+
+        expect_behavior 'assigns directories'
+      end # describe
+
+      describe 'with valid params' do
+        let(:attributes) { attributes_for(:directory) }
+
+        it 'redirects to the directory' do
+          perform_action
+
+          expect(response.status).to be == 302
+          expect(response).to redirect_to(directory_path(assigns :directory))
+
+          expect(request.flash[:success]).not_to be_blank
+        end # it
+
+        it 'creates a new directory' do
+          expect { perform_action }.to change(Directory, :count).by(1)
+        end # it
+      end # describe
     end # describe
   end # describe
 end # describe

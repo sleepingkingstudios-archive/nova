@@ -18,10 +18,13 @@ Rails.application.routes.draw do
   get 'directories/new',              :to => 'directories#new'
   get '*directories/directories/new', :to => 'directories#new'
 
+  post 'directories',              :to => 'directories#create'
+  post '*directories/directories', :to => 'directories#create'
+
   get '*directories', :to => 'directories#show', :constraints => lambda { |request| !(request.path =~ /\A\/?admin/) }
 
   root 'directories#show'
 end # draw
 
 # Include custom routing helpers.
-Rails.application.routes.url_helpers.send :include, RoutesHelper 
+Rails.application.routes.url_helpers.send :include, RoutesHelper
