@@ -2,13 +2,32 @@
 
 - presenter = DirectoryPresenter.new @current_directory
 
+%h2
+  = presenter.label
+  %small Directory Index
+
 %p
-  = link_to '/' do
-    = icon(:arrow_circle_left)
-    Back to
-
-%h2= presenter.label
-
+  %strong Parent:
+  = presenter.parent_link :index
 %p
   %strong Title:
   = presenter.title
+%p
+  %strong Slug:
+  = presenter.slug
+
+%h3 Directories
+%p
+  = link_to '', :class => '.text-primary' do
+    %span.fa-stack.fa-sm
+      = icon :folder_o, :fixed => true, :class => 'fa-stack-2x'
+      = icon :pencil, :fixed => true, :class => 'fa-stack-1x'
+    Create Directory
+
+= render :partial => 'table', :locals => { :directories => presenter.children }
+
+%p
+  = link_to directories_path(@directories) do
+    = icon(:arrow_circle_left)
+    Back to
+    = presenter.label

@@ -1,0 +1,34 @@
+- # app/views/directories/_table.html.haml
+
+%table.table
+  %thead
+    %tr
+      %th Title
+      %th Slug
+      %th &nbsp;
+  %tbody
+    - if directories.blank?
+      %tr
+        %td(colspan=3) There are no directories.
+    - else
+      - directories.each do |directory|
+        - presenter = DirectoryPresenter.new(directory)
+        %tr
+          %td= presenter.title
+          %td= presenter.slug
+          %td
+            = link_to directory_path(directory), :class => 'text-info' do
+              = icon :cube, :fixed => true
+              Show
+            &nbsp;
+            = link_to index_directory_path(directory), :class => 'text-info' do
+              = icon :cubes, :fixed => true
+              Index
+            &nbsp;
+            = link_to '', :class => 'text-warning' do
+              = icon :edit, :fixed => true
+              Edit
+            &nbsp;
+            = link_to '', :class => 'text-danger', :method => :delete do
+              = icon :trash, :fixed => true
+              Delete
