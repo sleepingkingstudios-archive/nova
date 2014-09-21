@@ -1,4 +1,14 @@
 - # app/views/directories/index.html.haml
 
-%h1 Directories#index
-%p  Find me at app/views/directories/index.html.haml
+- presenter = DirectoryPresenter.new @current_directory
+
+%p
+  = link_to '/' do
+    = icon(:arrow_circle_left)
+    Back to
+
+%h2= presenter.label
+
+%p
+  %strong Title:
+  = presenter.title

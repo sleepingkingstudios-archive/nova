@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe DirectoriesController, :type => :controller do
+  include Rails.application.routes.url_helpers
+
   shared_context 'with an empty path', :path => :empty do
     let(:path)        { nil }
     let(:directories) { [] }
@@ -46,7 +48,7 @@ RSpec.describe DirectoriesController, :type => :controller do
       perform_action
 
       expect(response.status).to be == 302
-      expect(response).to redirect_to "/#{segments[0...-1].join('/')}"
+      expect(response).to redirect_to directory_path(assigns :directories)
 
       expect(request.flash[:warning]).not_to be_blank
     end # it
@@ -71,7 +73,7 @@ RSpec.describe DirectoriesController, :type => :controller do
         perform_action
 
         expect(response.status).to be == 302
-        expect(response).to redirect_to "/#{segments[0...-1].join('/')}"
+        expect(response).to redirect_to directory_path(assigns :directories)
 
         expect(request.flash[:warning]).not_to be_blank
       end # it
@@ -82,7 +84,7 @@ RSpec.describe DirectoriesController, :type => :controller do
         perform_action
 
         expect(response.status).to be == 302
-        expect(response).to redirect_to "/#{segments.join('/')}"
+        expect(response).to redirect_to directory_path(assigns :directories)
 
         expect(request.flash[:warning]).not_to be_blank
       end # it

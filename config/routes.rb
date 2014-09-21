@@ -18,3 +18,6 @@ Rails.application.routes.draw do
 
   root 'directories#show'
 end # draw
+
+# Include custom routing helpers.
+Rails.application.routes.url_helpers.send :include, RoutesHelper 

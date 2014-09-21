@@ -20,22 +20,18 @@ class DirectoriesController < ApplicationController
 
   private
 
-  def redirect_to_last_directory
-    redirect_to "/#{@directories.map(&:slug).join('/')}"
-  end # method redirect_to_last_directory
-
   rescue_from Directory::NotFoundError do |exception|
     flash[:warning] = "Unable to locate directory — #{exception.missing.join('/')} (#{exception.missing.count} total)"
 
     @directories       = exception.found
     @current_directory = @directories.last
 
-    redirect_to_last_directory
+    redirect_to directory_path(@directories)
   end # rescue_from
 
   rescue_from Nova::AuthenticationError do |exception|
     flash[:warning] = "Unauthorized action"
 
-    redirect_to_last_directory
+    redirect_to directory_path(@directories)
   end # rescue_from
 end # controller
