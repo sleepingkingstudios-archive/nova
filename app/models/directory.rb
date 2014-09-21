@@ -62,6 +62,10 @@ class Directory
       return directories
     end # class method find_by_ancestry
 
+    def join *slugs
+      slugs.map(&:to_s).join('/').gsub(/\/{2,}/, '/')
+    end # class method join
+
     def reserved_slugs
       %w(admin).concat(RESERVED_ACTIONS).concat(feature_names.to_a)
     end # class method reserved_slugs

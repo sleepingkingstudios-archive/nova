@@ -1,6 +1,12 @@
 # app/helpers/routes_helper.rb
 
 module RoutesHelper
+  def create_directory_path directory
+    return '/directories' if directory.blank?
+
+    Directory.join directory_path(directory), 'directories'
+  end # method directory_path
+
   def directories_path *directories
     directories = directories.first if directories.count == 1 && directories.first.is_a?(Array)
 
@@ -8,26 +14,27 @@ module RoutesHelper
       directory.respond_to?(:slug) ? directory.slug : directory
     end # directories
 
-    "/#{slugs.join '/'}"
+    Directory.join '/', *slugs
   end # method directories_path
 
   def directory_path directory
     return '/' if directory.blank?
 
-    slugs = directory.ancestors.map(&:slug).push(directory.slug)
+    slugs = directory.ancestors.map(&:slug)
+    slugs.push(directory.slug) unless directory.slug.blank?
 
-    "/#{slugs.join '/'}"
+    Directory.join '/', *slugs
   end # method directory_path
 
   def index_directory_path directory
     return '/index' if directory.blank?
 
-    "#{directory_path(directory)}/index"
+    Directory.join directory_path(directory), 'index'
   end # method directory_path
 
   def new_directory_path directory
     return '/directories/new' if directory.blank?
 
-    "#{directory_path(directory)}/directories/new"
+    Directory.join directory_path(directory), 'directories', 'new'
   end # method directory_path
 end # module

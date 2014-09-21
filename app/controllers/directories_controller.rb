@@ -1,5 +1,6 @@
 # app/controllers/directories_controller.rb
 
+require 'form_builders/bootstrap_horizontal_form_builder'
 require 'presenters/directory_presenter'
 
 class DirectoriesController < ApplicationController
@@ -27,7 +28,7 @@ class DirectoriesController < ApplicationController
     if @directory.save
       flash[:success] = 'Directory successfully created.'
 
-      redirect_to directory_path(@directory)
+      redirect_to index_directory_path(@directory)
     else
       render :new
     end # if
@@ -40,7 +41,9 @@ class DirectoriesController < ApplicationController
   end # method build_directory
 
   def params_for_directory
-    params.fetch(:directory, {}).permit(:title, :slug)
+    params.fetch(:directory, {}).permit(:title, :slug).tap do |permitted|
+      permitted[:parent] = @current_directory
+    end # tap
   end # method params_for_directory
 
   rescue_from Directory::NotFoundError do |exception|

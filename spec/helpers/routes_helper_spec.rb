@@ -59,6 +59,12 @@ RSpec.describe RoutesHelper, :type => :helper do
 
     describe 'with a non-root directory', :directories => :many do
       it { expect(instance.directory_path directories.last).to be == "/#{slugs.join '/'}" }
+
+      context 'with empty slug' do
+        let(:directory) { build(:directory, :parent => directories.last, :slug => nil) }
+
+        it { expect(instance.directory_path directory).to be == "/#{slugs.join '/'}" }
+      end # context
     end # describe
   end # describe
 
@@ -91,6 +97,22 @@ RSpec.describe RoutesHelper, :type => :helper do
 
     describe 'with a non-root directory', :directories => :many do
       it { expect(instance.new_directory_path directories.last).to be == "/#{slugs.join '/'}/directories/new" }
+    end # describe
+  end # describe
+
+  describe '#create_directory_path' do
+    it { expect(instance).to respond_to(:create_directory_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.create_directory_path nil).to be == '/directories' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.create_directory_path directory).to be == "/#{slug}/directories" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.create_directory_path directories.last).to be == "/#{slugs.join '/'}/directories" }
     end # describe
   end # describe
 end # describe

@@ -239,7 +239,7 @@ RSpec.describe DirectoriesController, :type => :controller do
           perform_action
 
           expect(response.status).to be == 302
-          expect(response).to redirect_to(directory_path(assigns :directory))
+          expect(response).to redirect_to(index_directory_path(assigns :directory))
 
           expect(request.flash[:success]).not_to be_blank
         end # it
@@ -281,13 +281,15 @@ RSpec.describe DirectoriesController, :type => :controller do
           perform_action
 
           expect(response.status).to be == 302
-          expect(response).to redirect_to(directory_path(assigns :directory))
+          expect(response).to redirect_to(index_directory_path(assigns :directory))
 
           expect(request.flash[:success]).not_to be_blank
         end # it
 
         it 'creates a new directory' do
           expect { perform_action }.to change(Directory, :count).by(1)
+
+          expect(assigns(:directory).ancestors).to be == directories
         end # it
       end # describe
     end # describe

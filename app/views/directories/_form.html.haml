@@ -1,0 +1,20 @@
+- # app/views/directories/_form.html.haml
+
+- form_path = directory.persisted? ? '' : create_directory_path(directory)
+= form_for directory, :builder => BootstrapHorizontalFormBuilder, :url => form_path do |form|
+  - unless directory.errors.blank?
+    .panel.panel-warning
+      .panel-heading Directory Errors
+      .panel-body
+        %p The following error(s) prevent the Directory from being saved:
+        %ul
+          - directory.errors.full_messages.each do |message|
+            %li= message
+
+  = form.form_group :title do
+    = form.text_field :title, :autofocus => true
+  = form.form_group :slug do
+    = form.text_field :slug
+  = form.form_group do
+    = form.submit directory.persisted? ? 'Update Directory' : 'Create Directory'
+    = form.button 'Cancel', directory.persisted? ? index_directory_path(directory) : index_directory_path(directory.parent)

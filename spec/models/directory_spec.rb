@@ -253,6 +253,23 @@ RSpec.describe Directory, :type => :model do
     end # describe
   end # describe
 
+  describe '::join' do
+    it { expect(described_class).to respond_to(:join).with(0..9001).arguments }
+
+    describe 'with an array of strings' do
+      let(:slugs) { %w(weapons swords japanese) }
+
+      it { expect(described_class.join *slugs).to be == slugs.join('/') }
+
+      it 'compacts consecutive dividers' do
+        expected = slugs.join('/')
+        slugs[1] = "#{slugs[1]}/"
+
+        expect(described_class.join *slugs).to be == expected
+      end # it
+    end # describe
+  end # describe
+
   describe '::reserved_slugs' do
     it { expect(described_class).to have_reader(:reserved_slugs) }
 
