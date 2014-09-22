@@ -54,19 +54,21 @@ RSpec.describe DirectoriesController, :type => :controller do
     end # it
   end # shared_examples
 
-  shared_examples 'requires authentication' do
+  shared_examples 'requires authentication' do |authenticate_root: true|
     before(:each) { sign_out :user }
 
-    describe 'with an empty path', :path => :empty do
-      it 'redirects to root' do
-        perform_action
+    if authenticate_root
+      describe 'with an empty path', :path => :empty do
+        it 'redirects to root' do
+          perform_action
 
-        expect(response.status).to be == 302
-        expect(response).to redirect_to root_path
+          expect(response.status).to be == 302
+          expect(response).to redirect_to root_path
 
-        expect(request.flash[:warning]).not_to be_blank
-      end # it
-    end # describe
+          expect(request.flash[:warning]).not_to be_blank
+        end # it
+      end # describe
+    end # if
 
     describe 'with an invalid path', :path => :invalid do
       it 'redirects to the last found directory' do
@@ -292,6 +294,33 @@ RSpec.describe DirectoriesController, :type => :controller do
           expect(assigns(:directory).ancestors).to be == directories
         end # it
       end # describe
+    end # describe
+  end # describe
+
+  describe '#edit' do
+    expect_behavior 'requires authentication', :authenticate_root => false
+
+    def perform_action
+      get :edit, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an invalid path', :path => :invalid do
+      expect_behavior 'redirects to the last found directory'
+    end # describe
+
+    describe 'with a valid path', :path => :valid do
+      it 'renders the edit template' do
+        perform_action
+
+        expect(response.status).to be == 200
+        expect(response).to render_template(:edit)
+
+        expect(assigns :directory).to be == directories.last
+      end # it
+
+      expect_behavior 'assigns directories'
     end # describe
   end # describe
 end # describe

@@ -21,6 +21,22 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # let
   end # shared_examples
 
+  describe '#create_directory_path' do
+    it { expect(instance).to respond_to(:create_directory_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.create_directory_path nil).to be == '/directories' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.create_directory_path directory).to be == "/#{slug}/directories" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.create_directory_path directories.last).to be == "/#{slugs.join '/'}/directories" }
+    end # describe
+  end # describe
+
   describe '#directories_path' do
     it { expect(instance).to respond_to(:directories_path).with(0..9001).arguments }
 
@@ -68,6 +84,22 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#edit_directory_path' do
+    it { expect(instance).to respond_to(:edit_directory_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.edit_directory_path nil).to be == '/edit' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.edit_directory_path directory).to be == "/#{slug}/edit" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.edit_directory_path directories.last).to be == "/#{slugs.join '/'}/edit" }
+    end # describe
+  end # describe
+
   describe '#index_directory_path' do
     it { expect(instance).to respond_to(:index_directory_path).with(1).arguments }
 
@@ -97,22 +129,6 @@ RSpec.describe RoutesHelper, :type => :helper do
 
     describe 'with a non-root directory', :directories => :many do
       it { expect(instance.new_directory_path directories.last).to be == "/#{slugs.join '/'}/directories/new" }
-    end # describe
-  end # describe
-
-  describe '#create_directory_path' do
-    it { expect(instance).to respond_to(:create_directory_path).with(1).arguments }
-
-    describe 'with nil' do
-      it { expect(instance.create_directory_path nil).to be == '/directories' }
-    end # describe
-
-    describe 'with a root directory', :directories => :one do
-      it { expect(instance.create_directory_path directory).to be == "/#{slug}/directories" }
-    end # describe
-
-    describe 'with a non-root directory', :directories => :many do
-      it { expect(instance.create_directory_path directories.last).to be == "/#{slugs.join '/'}/directories" }
     end # describe
   end # describe
 end # describe

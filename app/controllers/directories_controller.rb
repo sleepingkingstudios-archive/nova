@@ -34,6 +34,11 @@ class DirectoriesController < ApplicationController
     end # if
   end # action create
 
+  # GET /path/to/directory/edit
+  def edit
+    @directory = @current_directory
+  end # action edit
+
   private
 
   def build_directory

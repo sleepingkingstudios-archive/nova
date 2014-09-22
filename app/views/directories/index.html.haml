@@ -6,6 +6,12 @@
   = presenter.label
   %small Directory Index
 
+- if @current_directory
+  %p
+    = link_to edit_directory_path(@current_directory), :class => 'text-warning' do
+      = icon :edit, :scale => :large
+      Edit Directory
+
 %p
   %strong Parent:
   = presenter.parent_link :index

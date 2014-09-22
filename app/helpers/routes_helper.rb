@@ -26,6 +26,12 @@ module RoutesHelper
     Directory.join '/', *slugs
   end # method directory_path
 
+  def edit_directory_path directory
+    return '/edit' if directory.blank?
+
+    Directory.join directory_path(directory), 'edit'
+  end # method edit_directory_path
+
   def index_directory_path directory
     return '/index' if directory.blank?
 
