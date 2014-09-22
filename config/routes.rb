@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post '*directories/directories',    :to => 'directories#create'
   get '*directories/edit',            :to => 'directories#edit'
   patch '*directories',               :to => 'directories#update'
+  delete '*directories',              :to => 'directories#destroy'
 
   get '*directories', :to => 'directories#show', :constraints => lambda { |request| !(request.path =~ /\A\/?admin/) }
 

@@ -152,4 +152,20 @@ RSpec.describe 'routing for directories', :type => :routing do
       end # it
     end # describe
   end # describe
+
+  describe 'destroy routes' do
+    let(:action) { 'destroy' }
+
+    describe 'DELETE /path/to/directory' do
+      let(:path) { 'weapons/bows/arbalests' }
+
+      it 'routes to DirectoriesController#update' do
+        expect(:delete => "/#{path}").to route_to({
+          :controller  => controller,
+          :action      => action,
+          :directories => 'weapons/bows/arbalests'
+        }) # end hash
+      end # it
+    end # describe
+  end # describe
 end # describe

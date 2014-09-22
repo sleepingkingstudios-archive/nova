@@ -11,6 +11,10 @@
     = link_to edit_directory_path(@current_directory), :class => 'text-warning' do
       = icon :edit, :scale => :large
       Edit Directory
+    &nbsp;
+    = link_to directory_path(@current_directory), :class => 'text-danger', :method => :delete do
+      = icon :trash, :scale => :large
+      Delete Directory
 
 %p
   %strong Parent:

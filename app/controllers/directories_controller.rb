@@ -43,11 +43,20 @@ class DirectoriesController < ApplicationController
     if @current_directory.update params_for_directory
       flash[:success] = 'Directory successfully updated.'
 
-      redirect_to index_directory_path(@directory)
+      redirect_to index_directory_path(@current_directory)
     else
       render :edit
     end # if-else
   end # action update
+
+  # DELETE /path/to/directory
+  def destroy
+    flash[:danger] = 'Directory successfully destroyed.'
+
+    @current_directory.destroy
+
+    redirect_to index_directory_path(@directories[-2])
+  end # action destroy
 
   private
 
