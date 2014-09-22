@@ -16,6 +16,8 @@ class Feature
     end # class method reserved_slugs
   end # class << self
 
+  scope :roots, ->() { where(:directory_id => nil) }
+
   ### Attributes ###
   field :title, :type => String
 

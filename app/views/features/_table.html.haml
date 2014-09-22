@@ -1,0 +1,34 @@
+- # app/views/features/_table.html.haml
+
+%table.table
+  %thead
+    %tr
+      %th &nbsp;
+      %th Title
+      %th Slug
+      %th Type
+      %th &nbsp;
+  %tbody
+    - if features.blank?
+      %tr
+        %td(colspan=3) There are no features.
+    - else
+      - features.each do |feature|
+        - presenter = present(feature)
+        %tr
+          %td= presenter.icon
+          %td= presenter.title
+          %td= presenter.slug
+          %td= presenter.type
+          %td
+            = link_to '', :class => 'text-info' do
+              = icon :cube, :fixed => true
+              Show
+            &nbsp;
+            = link_to '', :class => 'text-warning' do
+              = icon :edit, :fixed => true
+              Edit
+            &nbsp;
+            = link_to '', :class => 'text-danger', :method => :delete do
+              = icon :trash, :fixed => true
+              Delete

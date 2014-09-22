@@ -35,6 +35,31 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
     end # context
   end # describe
 
+  describe '#features' do
+    it { expect(instance).to have_reader(:features) }
+
+    context 'without a directory' do
+      let(:roots) do
+        %w(about contact help).map { |slug| double(:feature, :slug => slug) }
+      end # let
+      let(:directory) { nil }
+
+      before(:each) { allow(Feature).to receive(:roots).and_return(roots) }
+
+      it { expect(instance.features).to be == roots }
+    end # context
+
+    context 'with a directory' do
+      let(:features) do
+        %w(bec-de-corbin bohemian-earspoon spontoon).map { |slug| double(:feature, :slug => slug) }
+      end # let
+
+      before(:each) { allow(directory).to receive(:features).and_return(features) }
+
+      it { expect(instance.features).to be == features }
+    end # context
+  end # describe
+
   describe '#directory' do
     it { expect(instance).to have_reader(:directory).with(directory) }
   end # describe

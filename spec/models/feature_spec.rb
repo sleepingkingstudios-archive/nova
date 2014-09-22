@@ -34,6 +34,14 @@ RSpec.describe Feature, :type => :model do
     end # it
   end # describe
 
+  describe '::roots' do
+    it { expect(described_class).to have_reader(:roots) }
+
+    it { expect(described_class.roots).to be_a Mongoid::Criteria }
+
+    it { expect(described_class.roots.selector).to be == { 'directory_id' => nil } }
+  end # describe
+
   ### Attributes ###
 
   describe '#title' do

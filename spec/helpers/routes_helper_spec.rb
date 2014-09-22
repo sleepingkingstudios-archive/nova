@@ -37,31 +37,6 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
-  describe '#directories_path' do
-    it { expect(instance).to respond_to(:directories_path).with(0..9001).arguments }
-
-    describe 'with no arguments' do
-      it { expect(instance.directories_path).to be == '/' }
-    end # describe
-
-    describe 'with an array of strings' do
-      let(:slugs) { %w(weapons swords japanese) }
-
-      it { expect(instance.directories_path *slugs).to be == "/#{slugs.join '/'}" }
-    end # describe
-
-    describe 'with an array of directories' do
-      let(:slugs) { %w(weapons swords japanese) }
-      let(:directories) do
-        %w(weapons swords japanese).map do |slug|
-          build(:directory, :slug => slug)
-        end # let
-      end # let
-
-      it { expect(instance.directories_path *directories).to be == "/#{slugs.join '/'}" }
-    end # describe
-  end # describe
-
   describe '#directory_path' do
     it { expect(instance).to respond_to(:directory_path).with(1).arguments }
 

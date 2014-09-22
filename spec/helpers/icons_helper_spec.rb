@@ -1,8 +1,8 @@
-# spec/helpers/application_helper_spec.rb
+# spec/helpers/icons_helper_spec.rb
 
 require 'rails_helper'
 
-RSpec.describe ApplicationHelper, :type => :helper do
+RSpec.describe IconsHelper, :type => :helper do
   let(:instance) { Object.new.extend described_class }
 
   describe '#icon' do

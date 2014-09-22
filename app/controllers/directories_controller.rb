@@ -79,12 +79,12 @@ class DirectoriesController < ApplicationController
 
     @directories = exception.found
 
-    redirect_to directories_path(@directories)
+    redirect_to directory_path(@directories.last)
   end # rescue_from
 
   rescue_from Nova::AuthenticationError do |exception|
     flash[:warning] = "Unauthorized action"
 
-    redirect_to directories_path(@directories)
+    redirect_to directory_path(@directories.last)
   end # rescue_from
 end # controller

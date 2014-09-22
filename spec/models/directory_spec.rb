@@ -78,8 +78,8 @@ RSpec.describe Directory, :type => :model do
 
       before(:each) { Directory.feature model_name, :class => model_class }
 
-      it 'appends the plural name to ::feature_names' do
-        expect(described_class.feature_names).to include scope_name
+      it 'appends the plural name and class to ::features' do
+        expect(described_class.features).to include({ scope_name => model_class })
       end # it
 
       it 'appends the plural name to ::reserved_slugs' do
@@ -180,18 +180,11 @@ RSpec.describe Directory, :type => :model do
     end # describe
   end # describe
 
-  describe '::feature_names' do
-    it { expect(described_class).to have_reader(:feature_names) }
+  describe '::features' do
+    it { expect(described_class).to have_reader(:features) }
 
     it 'is immutable' do
-      expect { described_class.feature_names << 'autodefenestrate' }.not_to change(described_class, :feature_names)
-    end # it
-
-    it 'contains directory and feature names' do
-      expect(described_class.feature_names).to include *%w(
-        directories
-        features
-      ) # end array
+      expect { described_class.features['autodefenestrate'] = Class.new }.not_to change(described_class, :features)
     end # it
   end # describe
 
@@ -477,6 +470,31 @@ RSpec.describe Directory, :type => :model do
 
     describe 'with a parent directory', :parent => :one do
       it { expect(instance.root?).to be false }
+    end # describe
+  end # describe
+
+  describe '#to_partial_path' do
+    it { expect(instance).to respond_to(:to_partial_path).with(0).arguments }
+
+    it { expect(instance.to_partial_path).to be == instance.slug }
+
+    describe 'with a parent directory', :parent => :one do
+      let(:slugs) { instance.ancestors.map(&:slug).push(instance.slug) }
+
+      it { expect(instance.to_partial_path).to be == slugs.join('/') }
+
+      context 'with an empty slug' do
+        let(:attributes) { super().merge :slug => nil }
+        let(:slugs)      { super()[0...-1] }
+
+        it { expect(instance.to_partial_path).to be == slugs.join('/') }        
+      end # context
+    end # describe
+
+    describe 'with many ancestor directories', :ancestors => :many do
+      let(:slugs) { instance.ancestors.map(&:slug).push(instance.slug) }
+
+      it { expect(instance.to_partial_path).to be == slugs.join('/') }
     end # describe
   end # describe
 end # describe

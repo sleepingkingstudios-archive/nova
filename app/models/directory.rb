@@ -18,11 +18,11 @@ class Directory
     def feature name, options = {}
       model_name  = name.to_s.singularize
       scope_name  = model_name.pluralize
-      class_name  = options[:class].to_s || model_name.camelize
+      class_name  = options.key?(:class) ? options[:class].to_s : model_name.camelize
       model_class = class_name.constantize
 
       # Append to the feature_names collection.
-      (@feature_names ||= default_feature_names) << scope_name
+      (@features ||= {})[scope_name] = model_class
 
       send :define_method, scope_name do
         features.where(:_type => class_name)
@@ -41,9 +41,9 @@ class Directory
       end # define_method
     end # method feature
 
-    def feature_names
-      (@feature_names ||= default_feature_names).dup
-    end # method feature_names
+    def features
+      (@features ||= {}).dup
+    end # method feature
 
     def find_by_ancestry segments
       raise ArgumentError.new "path can't be blank" if segments.blank?
@@ -67,14 +67,10 @@ class Directory
     end # class method join
 
     def reserved_slugs
-      %w(admin).concat(RESERVED_ACTIONS).concat(feature_names.to_a)
+      %w(admin).concat(RESERVED_ACTIONS).concat(%w(directories features)).concat(features.keys)
     end # class method reserved_slugs
 
     private
-
-    def default_feature_names
-      Set.new %w(directories features)
-    end # class method default_feature_names
   end # class << self
 
   ### Attributes ###
@@ -96,6 +92,10 @@ class Directory
   def ancestors
     parent ? parent.ancestors.push(parent) : []
   end # method ancestors
+
+  def to_partial_path
+    Directory.join *ancestors.push(self).map(&:slug).reject { |slug| slug.blank? }
+  end # method to_partial_path
 
   class NotFoundError < StandardError
     def initialize search, found, missing

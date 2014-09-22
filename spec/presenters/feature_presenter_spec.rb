@@ -11,4 +11,30 @@ RSpec.describe FeaturePresenter, :type => :decorator do
   describe '#feature' do
     it { expect(instance).to have_reader(:feature).with(feature) }
   end # describe
+
+  describe '#icon' do
+    let(:expected) { %{<span class="fa fa-cube"></span>} }
+
+    it { expect(instance).to respond_to(:icon).with(0..1).arguments }
+
+    it { expect(instance.icon).to be == expected }
+
+    describe 'with options' do
+      let(:expected) { %{<span class="fa fa-cube fa-2x"></span>} }
+
+      it { expect(instance.icon :scale => 2).to be == expected }      
+    end # describe
+  end # describe
+
+  describe '#slug' do
+    it { expect(instance).to have_reader(:slug).with(feature.slug) }
+  end # describe
+
+  describe '#title' do
+    it { expect(instance).to have_reader(:title).with(feature.title) }
+  end # describe
+
+  describe '#type' do
+    it { expect(instance).to have_reader(:type).with(feature._type) }
+  end # describe
 end # describe

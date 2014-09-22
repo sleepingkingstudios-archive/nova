@@ -12,7 +12,7 @@
         %td(colspan=3) There are no directories.
     - else
       - directories.each do |directory|
-        - presenter = DirectoryPresenter.new(directory)
+        - presenter = present(directory)
         %tr
           %td= presenter.title
           %td= presenter.slug

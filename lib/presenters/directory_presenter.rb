@@ -9,6 +9,10 @@ class DirectoryPresenter < Presenter
     directory.blank? ? Directory.roots : directory.children
   end # method children
 
+  def features
+    directory.blank? ? Feature.roots : directory.features
+  end # method features
+
   def label
     return 'Root Directory' if directory.blank?
     

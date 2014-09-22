@@ -48,7 +48,7 @@ RSpec.describe DirectoriesController, :type => :controller do
       perform_action
 
       expect(response.status).to be == 302
-      expect(response).to redirect_to directories_path(assigns :directories)
+      expect(response).to redirect_to directory_path(assigns(:directories).last)
 
       expect(request.flash[:warning]).not_to be_blank
     end # it
@@ -75,7 +75,7 @@ RSpec.describe DirectoriesController, :type => :controller do
         perform_action
 
         expect(response.status).to be == 302
-        expect(response).to redirect_to directories_path(assigns :directories)
+        expect(response).to redirect_to directory_path(assigns(:directories).last)
 
         expect(request.flash[:warning]).not_to be_blank
       end # it
@@ -86,7 +86,7 @@ RSpec.describe DirectoriesController, :type => :controller do
         perform_action
 
         expect(response.status).to be == 302
-        expect(response).to redirect_to directories_path(assigns :directories)
+        expect(response).to redirect_to directory_path(assigns(:directories).last)
 
         expect(request.flash[:warning]).not_to be_blank
       end # it

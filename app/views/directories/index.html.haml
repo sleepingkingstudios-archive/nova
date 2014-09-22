@@ -16,6 +16,7 @@
       = icon :trash, :scale => :large
       Delete Directory
 
+%h3 Properties
 %p
   %strong Parent:
   = presenter.parent_link :index
@@ -28,16 +29,26 @@
 
 %h3 Directories
 %p
-  = link_to new_directory_path(@current_directory), :class => '.text-primary' do
-    %span.fa-stack.fa-sm
-      = icon :folder_o, :fixed => true, :class => 'fa-stack-2x'
-      = icon :pencil, :fixed => true, :class => 'fa-stack-1x'
+  = link_to new_directory_path(@current_directory), :class => 'text-primary' do
+    = icon :folder_o, :fixed => true, :scale => :large
     Create Directory
 
-= render :partial => 'table', :locals => { :directories => presenter.children }
+= render :partial => 'directories/table', :locals => { :directories => presenter.children }
+
+%h3 Features
+%p
+  - Directory.features.each.with_index do |(name, klass), index|
+    - feature_presenter = present(klass.new)
+    - if 0 != index
+      &nbsp;
+    = link_to '', :class => 'text-primary' do
+      = feature_presenter.icon :fixed => true, :scale => :large
+      = "Create #{feature_presenter.type}"
+
+= render :partial => 'features/table', :locals => { :features => presenter.features }
 
 %p
-  = link_to directories_path(@directories) do
+  = link_to directory_path(@directories.last) do
     = icon(:arrow_circle_left)
     Back to
     = presenter.label

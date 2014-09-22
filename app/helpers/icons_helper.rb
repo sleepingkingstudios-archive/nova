@@ -1,6 +1,6 @@
-# app/helpers/application_helper.rb
+# app/helpers/icons_helper.rb
 
-module ApplicationHelper
+module IconsHelper
   def icon name, options = {}
     icon_name = name.to_s.split(/[-_\s]+/).join('-')
 
