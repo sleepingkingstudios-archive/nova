@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   scope :module => :admin do
     get 'dashboard',                    :to => 'directories#dashboard'
     get '*directories/dashboard',       :to => 'directories#dashboard'
+
+    get 'directories',                  :to => 'directories#index'
+    get '*directories/directories',     :to => 'directories#index'
   end # namespace
 
   get 'directories/new', :to => 'directories#new'

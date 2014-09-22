@@ -1,0 +1,11 @@
+- # app/views/admin/directories/index.html.haml
+
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Directory Index
+
+= render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
+
+= render :partial => 'admin/directories/table', :locals => { :directories => presenter.children }

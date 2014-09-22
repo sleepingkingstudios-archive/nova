@@ -1,10 +1,10 @@
-- # app/views/directories/index.html.haml
+- # app/views/admin/directories/dashboard.html.haml
 
 - presenter = DirectoryPresenter.new @current_directory
 
 %h2
   = presenter.label
-  %small Directory Index
+  %small Dashboard
 
 - if @current_directory
   %p

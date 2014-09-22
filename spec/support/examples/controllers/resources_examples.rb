@@ -1,5 +1,7 @@
 # spec/support/examples/controllers/resources_examples.rb
 
+require 'support/contexts/controllers/resources_contexts'
+
 module Spec
   module Examples
     module Controllers
