@@ -31,24 +31,38 @@ class DirectoriesController < ApplicationController
       redirect_to index_directory_path(@directory)
     else
       render :new
-    end # if
+    end # if-else
   end # action create
 
   # GET /path/to/directory/edit
   def edit
-    @directory = @current_directory
   end # action edit
+
+  # PATCH /path/to/directory/edit
+  def update
+    if @current_directory.update params_for_directory
+      flash[:success] = 'Directory successfully created.'
+
+      redirect_to index_directory_path(@directory)
+    else
+      render :edit
+    end # if-else
+  end # action update
 
   private
 
   def build_directory
-    @directory = Directory.new params_for_directory
+    @directory = Directory.new create_params_for_directory
   end # method build_directory
 
-  def params_for_directory
-    params.fetch(:directory, {}).permit(:title, :slug).tap do |permitted|
+  def create_params_for_directory
+    params_for_directory.tap do |permitted|
       permitted[:parent] = @current_directory
     end # tap
+  end # method create_params_for_directory
+
+  def params_for_directory
+    params.fetch(:directory, {}).permit(:title, :slug)
   end # method params_for_directory
 
   rescue_from Directory::NotFoundError do |exception|

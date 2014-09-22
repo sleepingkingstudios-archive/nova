@@ -136,4 +136,20 @@ RSpec.describe 'routing for directories', :type => :routing do
       end # it
     end # describe
   end # describe
+
+  describe 'update routes' do
+    let(:action) { 'update' }
+
+    describe 'PATCH /path/to/directory' do
+      let(:path) { 'weapons/bows/arbalests' }
+
+      it 'routes to DirectoriesController#update' do
+        expect(:patch => "/#{path}").to route_to({
+          :controller  => controller,
+          :action      => action,
+          :directories => 'weapons/bows/arbalests'
+        }) # end hash
+      end # it
+    end # describe
+  end # describe
 end # describe
