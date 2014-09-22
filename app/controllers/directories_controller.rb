@@ -41,7 +41,7 @@ class DirectoriesController < ApplicationController
   # PATCH /path/to/directory/edit
   def update
     if @current_directory.update params_for_directory
-      flash[:success] = 'Directory successfully created.'
+      flash[:success] = 'Directory successfully updated.'
 
       redirect_to index_directory_path(@directory)
     else

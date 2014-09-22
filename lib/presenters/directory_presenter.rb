@@ -10,7 +10,9 @@ class DirectoryPresenter < Presenter
   end # method children
 
   def label
-    directory.blank? ? 'Root Directory' : directory.title
+    return 'Root Directory' if directory.blank?
+    
+    directory.title_changed? && !directory.title_was.blank? ? directory.title_was : directory.title
   end # method label
 
   def parent

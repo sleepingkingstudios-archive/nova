@@ -50,6 +50,15 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
     context 'with a directory' do
       it { expect(instance.label).to be == directory.title }
+
+      context 'with a changed title' do
+        before(:each) do
+          directory.save!
+          directory.title = attributes_for(:directory).fetch(:title)
+        end # before each
+
+        it { expect(instance.label).to be == directory.title_was }
+      end # context
     end # context
   end # describe
 

@@ -16,17 +16,17 @@ class UniqueWithinSiblingsValidator < ActiveModel::EachValidator
     end # case
 
     if matching_directories.exists? || matching_features.exists?
-      record.errors[attribute] << I18n.t('mongoid.errors.messages.taken')
+      record.errors.add(attribute, I18n.t('mongoid.errors.messages.taken'))
     end # if
   end # method validate_each
 
   private
 
   def matching_directories
-    Directory.where(:parent_id => parent.try(:id), attribute => value)
+    Directory.where(:parent_id => parent.try(:id), attribute => value).ne(:id => record.id)
   end # method matching_directories
 
   def matching_features
-    Feature.where(:directory_id => parent.try(:id), attribute => value)
+    Feature.where(:directory_id => parent.try(:id), attribute => value).ne(:id => record.id)
   end # method matching_features
 end # class

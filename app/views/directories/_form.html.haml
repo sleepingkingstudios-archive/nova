@@ -1,7 +1,8 @@
 - # app/views/directories/_form.html.haml
 
-- form_path = directory.persisted? ? '' : create_directory_path(directory)
-= form_for directory, :builder => BootstrapHorizontalFormBuilder, :url => form_path do |form|
+- form_path   = directory.persisted? ? directory_path(directory) : create_directory_path(directory)
+- form_method = directory.persisted? ? :patch : :post
+= form_for directory, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method do |form|
   - unless directory.errors.blank?
     .panel.panel-warning
       .panel-heading Directory Errors
