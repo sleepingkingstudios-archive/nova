@@ -401,6 +401,22 @@ RSpec.describe DirectoriesController, :type => :controller do
       it 'destroys the directory' do
         expect { perform_action }.to change(Directory, :count).by(-1)
       end # it
+
+      describe 'with a child directory' do
+        before(:each) { create(:directory, :parent => directories.last) }
+
+        it 'destroys the directory and child' do
+          expect { perform_action }.to change(Directory, :count).by(-2)
+        end # it
+      end # describe
+
+      describe 'with a feature' do
+        before(:each) { create(:feature, :directory => directories.last) }
+
+        it 'destroys the feature' do
+          expect { perform_action }.to change(Feature, :count).by(-1)
+        end # it
+      end # describe
     end # describe
   end # describe
 end # describe

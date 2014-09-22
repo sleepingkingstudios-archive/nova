@@ -353,6 +353,13 @@ RSpec.describe Directory, :type => :model do
 
     context 'with many child directories', :children => :one do
       it { expect(instance.children).to be == children }
+
+      it 'destroys the children on destroy' do
+        instance.save!
+        children.map &:save!
+
+        expect { instance.destroy }.to change(Directory, :count).by(-(1 + children.count))
+      end # it
     end # context
   end # describe
 
@@ -361,6 +368,13 @@ RSpec.describe Directory, :type => :model do
 
     context 'with many features', :features => :many do
       it { expect(instance.features).to be == features }
+
+      it 'destroys the features on destroy' do
+        instance.save!
+        features.map &:save!
+
+        expect { instance.destroy }.to change(Feature, :count).by(-features.count)
+      end # it
     end # context
   end # describe
 

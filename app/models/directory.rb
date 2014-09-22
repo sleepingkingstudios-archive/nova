@@ -81,11 +81,11 @@ class Directory
   field :title, :type => String, :default => ''
 
   ### Concerns ###
-  has_tree
+  has_tree :children => { :dependent => :destroy }
   slugify :title, :lockable => true
 
   ### Relations ###
-  has_many :features
+  has_many :features, :dependent => :destroy
 
   ### Validations ###
   validates :title, :presence => true
