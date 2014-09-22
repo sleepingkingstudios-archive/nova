@@ -3,36 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe DirectoriesController, :type => :controller do
-  include Rails.application.routes.url_helpers
+  include Spec::Contexts::Controllers::ResourcesContexts
 
-  shared_context 'with an empty path', :path => :empty do
-    let(:path)        { nil }
-    let(:directories) { [] }
-  end # shared_context
-
-  shared_context 'with an invalid path', :path => :invalid do
-    let(:segments) { %w(weapons swords japanese) }
-    let(:path)     { segments.join('/') }
-    let!(:directories) do
-      [].tap do |ary|
-        segments[0...-1].each do |segment|
-          ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
-        end # each
-      end # tap
-    end # let!
-  end # shared_context
-
-  shared_context 'with a valid path', :path => :valid do
-    let(:segments) { %w(weapons swords japanese) }
-    let(:path)     { segments.join('/') }
-    let!(:directories) do
-      [].tap do |ary|
-        segments.each do |segment|
-          ary << create(:directory, :parent => ary[-1], :title => segment.capitalize)
-        end # each
-      end # tap
-    end # let!
-  end # shared_context
+  include Spec::Examples::Controllers::ResourcesExamples
+  include Spec::Examples::Controllers::RenderingExamples
 
   shared_examples 'assigns directories' do
     it 'assigns the directories to @directories' do
@@ -54,45 +28,6 @@ RSpec.describe DirectoriesController, :type => :controller do
     end # it
   end # shared_examples
 
-  shared_examples 'requires authentication' do |authenticate_root: true|
-    before(:each) { sign_out :user }
-
-    if authenticate_root
-      describe 'with an empty path', :path => :empty do
-        it 'redirects to root' do
-          perform_action
-
-          expect(response.status).to be == 302
-          expect(response).to redirect_to root_path
-
-          expect(request.flash[:warning]).not_to be_blank
-        end # it
-      end # describe
-    end # if
-
-    describe 'with an invalid path', :path => :invalid do
-      it 'redirects to the last found directory' do
-        perform_action
-
-        expect(response.status).to be == 302
-        expect(response).to redirect_to directory_path(assigns(:directories).last)
-
-        expect(request.flash[:warning]).not_to be_blank
-      end # it
-    end # describe
-
-    describe 'with a valid path', :path => :valid do
-      it 'redirects to the last found directory' do
-        perform_action
-
-        expect(response.status).to be == 302
-        expect(response).to redirect_to directory_path(assigns(:directories).last)
-
-        expect(request.flash[:warning]).not_to be_blank
-      end # it
-    end # describe
-  end # shared_examples
-
   let(:user) { create(:user) }
 
   describe '#show' do
@@ -111,52 +46,16 @@ RSpec.describe DirectoriesController, :type => :controller do
       expect_behavior 'assigns directories'
     end # describe
 
-    describe 'with an invalid path', :path => :invalid do
+    describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with a valid path', :path => :valid do
+    describe 'with a valid path', :path => :valid_directory do
       it 'renders the show template' do
         perform_action
 
         expect(response.status).to be == 200
         expect(response).to render_template(:show)
-      end # it
-
-      expect_behavior 'assigns directories'
-    end # describe
-  end # describe
-
-  describe '#index' do
-    expect_behavior 'requires authentication'
-
-    def perform_action
-      get :index, :directories => path
-    end # method perform_action
-
-    before(:each) { sign_in :user, user }
-
-    describe 'with an empty path', :path => :empty do
-      it 'renders the index template' do
-        perform_action
-
-        expect(response.status).to be == 200
-        expect(response).to render_template(:index)
-      end # it
-
-      expect_behavior 'assigns directories'
-    end # describe
-
-    describe 'with an invalid path', :path => :invalid do
-      expect_behavior 'redirects to the last found directory'
-    end # describe
-
-    describe 'with a valid path', :path => :valid do
-      it 'renders the index template' do
-        perform_action
-
-        expect(response.status).to be == 200
-        expect(response).to render_template(:index)
       end # it
 
       expect_behavior 'assigns directories'
@@ -185,11 +84,11 @@ RSpec.describe DirectoriesController, :type => :controller do
       expect_behavior 'assigns directories'
     end # describe
 
-    describe 'with an invalid path', :path => :invalid do
+    describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with a valid path', :path => :valid do
+    describe 'with a valid path', :path => :valid_directory do
       it 'renders the new template' do
         perform_action
 
@@ -252,11 +151,11 @@ RSpec.describe DirectoriesController, :type => :controller do
       end # describe
     end # describe
 
-    describe 'with an invalid path', :path => :invalid do
+    describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with a valid path', :path => :valid do
+    describe 'with a valid path', :path => :valid_directory do
       describe 'with invalid params' do
         let(:attributes) { super().merge :title => nil }
 
@@ -306,11 +205,11 @@ RSpec.describe DirectoriesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid do
+    describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with a valid path', :path => :valid do
+    describe 'with a valid path', :path => :valid_directory do
       it 'renders the edit template' do
         perform_action
 
@@ -333,11 +232,11 @@ RSpec.describe DirectoriesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid do
+    describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with a valid path', :path => :valid do
+    describe 'with a valid path', :path => :valid_directory do
       describe 'with invalid params' do
         let(:attributes) { super().merge :title => nil }
 
@@ -384,11 +283,11 @@ RSpec.describe DirectoriesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid do
+    describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with a valid path', :path => :valid do
+    describe 'with a valid path', :path => :valid_directory do
       it 'redirects to the directory' do
         perform_action
 

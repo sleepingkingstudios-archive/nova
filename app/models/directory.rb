@@ -10,7 +10,7 @@ class Directory
   include Mongoid::SleepingKingStudios::HasTree
   include Mongoid::SleepingKingStudios::Sluggable
 
-  RESERVED_ACTIONS = %w(index new edit).map(&:freeze).freeze
+  RESERVED_ACTIONS = %w(index new edit dashboard).map(&:freeze).freeze
 
   ### Class Methods ###
 

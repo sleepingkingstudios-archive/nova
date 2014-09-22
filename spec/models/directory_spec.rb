@@ -58,6 +58,7 @@ RSpec.describe Directory, :type => :model do
         index
         new
         edit
+        dashboard
       ) # end array
     end # it
   end # describe

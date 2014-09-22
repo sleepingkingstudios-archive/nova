@@ -28,12 +28,10 @@
   = presenter.slug
 
 %h3 Directories
-%p
-  = link_to new_directory_path(@current_directory), :class => 'text-primary' do
-    = icon :folder_o, :fixed => true, :scale => :large
-    Create Directory
 
-= render :partial => 'directories/table', :locals => { :directories => presenter.children }
+= render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
+
+= render :partial => 'admin/directories/table', :locals => { :directories => presenter.children }
 
 %h3 Features
 %p
@@ -45,7 +43,7 @@
       = feature_presenter.icon :fixed => true, :scale => :large
       = "Create #{feature_presenter.type}"
 
-= render :partial => 'features/table', :locals => { :features => presenter.features }
+= render :partial => 'admin/features/table', :locals => { :features => presenter.features }
 
 %p
   = link_to directory_path(@directories.last) do

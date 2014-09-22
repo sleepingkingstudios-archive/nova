@@ -7,6 +7,12 @@ module RoutesHelper
     Directory.join directory_path(directory), 'directories'
   end # method directory_path
 
+  def dashboard_directory_path directory
+    return '/dashboard' if directory.blank?
+
+    Directory.join directory_path(directory), 'dashboard'
+  end # method directory_path
+
   def directory_path directory
     "/#{directory.try(:to_partial_path)}"
   end # method directory_path

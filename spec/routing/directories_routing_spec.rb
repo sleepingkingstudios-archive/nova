@@ -40,33 +40,6 @@ RSpec.describe 'routing for directories', :type => :routing do
     end # describe
   end # describe
 
-  describe 'index routes' do
-    let(:action) { 'index' }
-
-    describe 'GET /index' do
-      let(:path) { '/index' }
-
-      it 'routes to DirectoriesController#index' do
-        expect(:get => "/#{path}").to route_to({
-          :controller  => controller,
-          :action      => action
-        }) # end hash
-      end # it
-    end # describe
-
-    describe 'GET /path/to/directory/index' do
-      let(:path) { 'weapons/bows/arbalests/index' }
-
-      it 'routes to DirectoriesController#index' do
-        expect(:get => "/#{path}").to route_to({
-          :controller  => controller,
-          :action      => action,
-          :directories => 'weapons/bows/arbalests'
-        }) # end hash
-      end # it
-    end # describe
-  end # describe
-
   describe 'new routes' do
     let(:action) { 'new' }
 

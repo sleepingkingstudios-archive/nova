@@ -37,6 +37,22 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#dashboard_directory_path' do
+    it { expect(instance).to respond_to(:dashboard_directory_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.dashboard_directory_path nil).to be == '/dashboard' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.dashboard_directory_path directory).to be == "/#{slug}/dashboard" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.dashboard_directory_path directories.last).to be == "/#{slugs.join '/'}/dashboard" }
+    end # describe
+  end # describe
+
   describe '#directory_path' do
     it { expect(instance).to respond_to(:directory_path).with(1).arguments }
 

@@ -12,11 +12,14 @@ Rails.application.routes.draw do
       :sign_up  => 'register'
     }
 
-  get 'index',           :to => 'directories#index'
+  scope :module => :admin do
+    get 'dashboard',                    :to => 'directories#dashboard'
+    get '*directories/dashboard',       :to => 'directories#dashboard'
+  end # namespace
+
   get 'directories/new', :to => 'directories#new'
   post 'directories',    :to => 'directories#create'
 
-  get '*directories/index',           :to => 'directories#index'
   get '*directories/directories/new', :to => 'directories#new'
   post '*directories/directories',    :to => 'directories#create'
   get '*directories/edit',            :to => 'directories#edit'
