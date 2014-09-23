@@ -18,18 +18,19 @@ Rails.application.routes.draw do
 
     get 'directories',                  :to => 'directories#index'
     get '*directories/directories',     :to => 'directories#index'
+
+    get 'directories/new',              :to => 'directories#new'
+    get '*directories/directories/new', :to => 'directories#new'
   end # namespace
 
-  get 'directories/new', :to => 'directories#new'
   post 'directories',    :to => 'directories#create'
 
-  get '*directories/directories/new', :to => 'directories#new'
   post '*directories/directories',    :to => 'directories#create'
   get '*directories/edit',            :to => 'directories#edit'
   patch '*directories',               :to => 'directories#update'
   delete '*directories',              :to => 'directories#destroy'
 
-  get '*directories', :to => 'directories#show', :constraints => lambda { |request| !(request.path =~ /\A\/?admin/) }
+  get '*directories', :to => 'directories#show', :constraints => lambda { |request| !Directory.reserved_slugs.any? { |slug| request.path =~ /\A\/?#{slug}/ } }
 
   root 'directories#show'
 end # draw

@@ -1,9 +1,36 @@
 # app/controllers/admin/resources_controller.rb
 
+Dir[Rails.root.join 'app', 'controllers', 'delegates', '**', '*.rb'].each do |file|
+  require file
+end # each
+
 class Admin::ResourcesController < Admin::AdminController
+  include DecoratorsHelper
+
+  before_action :initialize_delegate
+
   # GET /path/to/directory/resources
   def index
+    delegate.index(request)
   end # action index
+
+  # GET /path/to/directory/resources/new
+  def new
+    delegate.new(request)
+  end # action new
+
+  private
+
+  attr_reader :delegate
+
+  def initialize_delegate
+    @delegate = decorate resource_class, :Delegate, :plural => true
+    @delegate.controller = self
+  end # method initialize_delegate
+
+  def resource_class
+    nil
+  end # method resource_class
 
   rescue_from Directory::NotFoundError do |exception|
     flash[:warning] = "Unable to locate directory — #{exception.missing.join('/')} (#{exception.missing.count} total)"

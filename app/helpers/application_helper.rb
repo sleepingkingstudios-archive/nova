@@ -2,5 +2,5 @@
 
 module ApplicationHelper
   include IconsHelper
-  include PresentersHelper
+  include DecoratorsHelper
 end # module

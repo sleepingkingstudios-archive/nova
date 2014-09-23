@@ -8,26 +8,6 @@ RSpec.describe DirectoriesController, :type => :controller do
   include Spec::Examples::Controllers::ResourcesExamples
   include Spec::Examples::Controllers::RenderingExamples
 
-  shared_examples 'assigns directories' do
-    it 'assigns the directories to @directories' do
-      perform_action
-
-      expect(assigns :directories).to be == directories
-      expect(assigns :current_directory).to be == directories.last
-    end # it
-  end # shared_examples
-
-  shared_examples 'redirects to the last found directory' do
-    it 'redirects to the last found directory' do
-      perform_action
-
-      expect(response.status).to be == 302
-      expect(response).to redirect_to directory_path(assigns(:directories).last)
-
-      expect(request.flash[:warning]).not_to be_blank
-    end # it
-  end # shared_examples
-
   let(:user) { create(:user) }
 
   describe '#show' do
@@ -62,47 +42,7 @@ RSpec.describe DirectoriesController, :type => :controller do
     end # describe
   end # describe
 
-  describe '#new' do
-    expect_behavior 'requires authentication'
-
-    def perform_action
-      get :new, :directories => path
-    end # method perform_action
-
-    before(:each) { sign_in :user, user }
-
-    describe 'with an empty path', :path => :empty do
-      it 'renders the new template' do
-        perform_action
-
-        expect(response.status).to be == 200
-        expect(response).to render_template(:new)
-
-        expect(assigns :directory).to be_a(Directory)
-      end # it
-
-      expect_behavior 'assigns directories'
-    end # describe
-
-    describe 'with an invalid path', :path => :invalid_directory do
-      expect_behavior 'redirects to the last found directory'
-    end # describe
-
-    describe 'with a valid path', :path => :valid_directory do
-      it 'renders the new template' do
-        perform_action
-
-        expect(response.status).to be == 200
-        expect(response).to render_template(:new)
-
-        expect(assigns :directory).to be_a(Directory)
-      end # it
-
-      expect_behavior 'assigns directories'
-    end # describe
-  end # describe
-
-  describe '#create' do
+  xdescribe '#create' do
     let(:attributes) { {} }
 
     expect_behavior 'requires authentication'
