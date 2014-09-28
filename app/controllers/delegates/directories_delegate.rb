@@ -7,6 +7,10 @@ class DirectoriesDelegate < ResourcesDelegate
 
   attr_accessor :directories
 
+  def initialize object = nil
+    super object || Directory
+  end # method initialize
+
   ### Instance Methods ###
 
   def build_resource_params params
@@ -14,12 +18,28 @@ class DirectoriesDelegate < ResourcesDelegate
   end # method build_resource_params
 
   def resource_params params
-    params.permit(:title, :slug)
+    params.fetch(:directory, {}).permit(:title, :slug)
   end # method resource_params
 
   ### Routing Methods ###
 
+  def dashboard_resource_path
+    # binding.pry
+    Directory.join directory_path(resource), 'dashboard'
+  end # method dashboard_resource_path
+
   def resources_path
     create_directory_path(directories.try(:last))
   end # method resources_path
+
+  private
+
+  def redirect_path action, status = nil
+    case "#{action}#{status ? "_#{status}" : ''}"
+    when 'create_success'
+      dashboard_resource_path
+    else
+      super
+    end # case
+  end # method redirect_path
 end # class

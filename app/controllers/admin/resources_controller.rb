@@ -19,6 +19,11 @@ class Admin::ResourcesController < Admin::AdminController
     delegate.new(request)
   end # action new
 
+  # POST /path/to/directory/resources
+  def create
+    delegate.create(request)
+  end # action create
+
   private
 
   attr_reader :delegate

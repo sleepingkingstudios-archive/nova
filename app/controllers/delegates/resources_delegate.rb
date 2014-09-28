@@ -44,11 +44,32 @@ class ResourcesDelegate
     resource_class.name.to_s.tableize
   end # method resource_name
 
+  def set_flash_message key, message, options = {}
+    flash = options.fetch(:now, false) ? controller.flash.now : controller.flash
+
+    flash[key] = message
+  end # method set_flash_message
+
   def resource_params params
     params.permit()
   end # method resource_params
 
   ### Actions ###
+
+  def create request
+    params = ActionController::Parameters.new(request.params)
+    assign :resource, build_resource(build_resource_params params)
+
+    if resource.save
+      set_flash_message :success, flash_message(:create, :success)
+
+      controller.redirect_to redirect_path(:create, :success)
+    else
+      set_flash_message :warning, flash_message(:create, :failure), :now => true
+
+      controller.render new_template_path
+    end # if-else
+  end # action create
 
   def index request
     assign :resources, load_resources
@@ -75,6 +96,14 @@ class ResourcesDelegate
 
   ### Routing Methods ###
 
+  def create_resource_path
+    resources_path
+  end # method create_resource_path
+
+  def index_resources_path
+    resources_path
+  end # method index_resources_path
+
   def resource_path object = nil
     resource_id = case
     when object.blank?
@@ -91,4 +120,24 @@ class ResourcesDelegate
   def resources_path
     resource_name
   end # method resource_path
+
+  private
+
+  def flash_message action, status = nil
+    name = resource_class.name.split('::').last
+
+    case "#{action}#{status ? "_#{status}" : ''}"
+    when 'create_failure'
+      "Unable to create #{name.downcase}."
+    when 'create_success'
+      "#{name} successfully created."
+    end # case
+  end # method flash_message
+
+  def redirect_path action, status = nil
+    case "#{action}#{status ? "_#{status}" : ''}"
+    when 'create_success'
+      index_resources_path
+    end # case
+  end # method redirect_path
 end # class

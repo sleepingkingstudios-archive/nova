@@ -5,15 +5,10 @@ require 'rails_helper'
 require 'delegates/resources_delegate'
 
 RSpec.describe ResourcesDelegate, :type => :decorator do
+  include Spec::Contexts::Delegates::DelegateContexts
+
   let(:object)     { Feature.new }
   let(:instance)   { described_class.new object }
-  let(:controller) { double('controller', :render => nil) }
-  
-  def assigns
-    controller.instance_variables.each.with_object({}) do |key, hsh|
-      hsh[key.to_s.sub(/\A@/, '')] = controller.instance_variable_get(key)
-    end.with_indifferent_access
-  end # method assigns
 
   shared_context 'with an array of objects', :object => :array do
     let(:object) { Array.new(3).map { Object.new } }
@@ -31,9 +26,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
   ### Instance Methods ###
 
-  describe '#assign' do
-    before(:each) { instance.controller = controller }
-
+  describe '#assign', :controller => true do
     it { expect(instance).to respond_to(:assign).with(2).arguments }
 
     it 'changes the assigned variables in the controller' do
@@ -57,7 +50,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   end # describe
 
   describe '#build_resource_params' do
-    let(:params) { ActionController::Parameters.new({ :evil => 'malicious' }) }
+    let(:params) { ActionController::Parameters.new(:feature => { :evil => 'malicious' }) }
 
     it { expect(instance).to respond_to(:build_resource_params).with(1).argument }
 
@@ -148,25 +141,41 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   end # describe
 
   describe '#resource_params' do
-    let(:params) { ActionController::Parameters.new({ :evil => 'malicious' }) }
+    let(:params) { ActionController::Parameters.new(:feature => { :evil => 'malicious' }) }
 
     it { expect(instance).to respond_to(:resource_params).with(1).argument }
 
     it { expect(instance.resource_params params).to be == {} }
   end # describe
 
+  describe '#set_flash_message', :controller => true do
+    let(:key) { :warning }
+    let(:message) do
+      'Unable to log you out because you are not logged in. Please log in so you can log out.'
+    end # message
+
+    it { expect(instance).to respond_to(:set_flash_message).with(2..3).arguments }
+
+    it 'sets the flash message for the next request' do
+      expect { instance.set_flash_message key, message }.to change { flash_messages[key] }.to(message)
+    end # it
+
+    context 'with now => true' do
+      it 'sets the flash message for the next request' do
+        expect { instance.set_flash_message key, message, :now => true }.to change { flash_messages.now[key] }.to(message)
+      end # it
+    end # context
+  end # describe
+
   ### Actions ###
 
-  describe '#index' do
+  describe '#index', :controller => true do
     let(:documents)  { Array.new(3).map { double('document') } }
-    let(:controller) { double('controller', :render => nil) }
     let(:object)     { Feature }
     let(:request)    { double('request') }
 
     before(:each) do
       allow(object).to receive(:all).and_return(documents)
-
-      instance.controller = controller
     end # before each
 
     it { expect(instance).to respond_to(:index).with(1).arguments }
@@ -184,14 +193,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#new' do
-    let(:controller) { double('controller', :render => nil) }
-    let(:object)     { Feature }
-    let(:request)    { double('request', :params => ActionController::Parameters.new({})) }
-
-    before(:each) do
-      instance.controller = controller
-    end # before each
+  describe '#new', :controller => true do
+    let(:object)  { Feature }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
     it { expect(instance).to respond_to(:new).with(1).arguments }
 
@@ -208,6 +212,62 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # it
   end # describe
 
+  describe '#create', :controller => true do
+    let(:object)     { Feature }
+    let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
+
+    before(:each) do
+      allow(instance).to receive(:build_resource_params) do |params|
+        params.fetch(:feature).permit(:title, :slug)
+      end # allow
+    end # before each
+
+    it { expect(instance).to respond_to(:create).with(1).arguments }
+
+    it 'assigns resource with attributes' do
+      instance.create request
+
+      resource = assigns.fetch(:resource)
+      expect(resource).to be_a Feature
+
+      expect(resource.title).to be == attributes.fetch(:title)
+      expect(resource.slug).to  be == attributes.fetch(:slug)
+    end # it
+
+    describe 'with invalid params' do
+      let(:attributes) { {} }
+
+      it 'renders the new template' do
+        expect(controller).to receive(:render).with(instance.new_template_path)
+
+        instance.create request
+
+        expect(flash_messages.now[:warning]).to be == "Unable to create feature."
+      end # it
+
+      it 'does not create a resource' do
+        expect { instance.create request }.not_to change(Feature, :count)
+      end # it
+    end # describe
+
+    describe 'with valid params' do
+      let(:attributes) { attributes_for :feature }
+
+      it 'redirects to the index template' do
+        expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
+
+        instance.create request
+
+        expect(flash_messages[:success]).to be == "Feature successfully created."
+      end # it
+
+      it 'creates a resource' do
+        expect { instance.create request }.to change(Feature, :count).by(1)
+      end # it
+    end # describe
+  end # describe
+
   ### Partial Methods ###
 
   describe '#index_template_path' do
@@ -219,6 +279,14 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   end # describe
 
   ### Routing Methods ###
+
+  describe '#create_resource_path' do
+    it { expect(instance).to have_reader(:create_resource_path).with('features') }
+  end # describe
+
+  describe '#index_resources_path' do
+    it { expect(instance).to have_reader(:index_resources_path).with('features') }
+  end # describe
 
   describe '#resource_path' do
     it { expect(instance).to have_reader(:resource_path).with("features/#{object.id}") }
