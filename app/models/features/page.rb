@@ -1,6 +1,8 @@
 # app/models/features/page.rb
 
 class Page < Feature
+  Directory.feature :page
+
   ### Class Methods ###
 
   class << self
