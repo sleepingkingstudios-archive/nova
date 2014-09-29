@@ -24,9 +24,9 @@ module RoutesHelper
   end # method edit_directory_path
 
   def index_directory_path directory
-    return '/index' if directory.blank?
+    return '/directories' if directory.blank?
 
-    Directory.join directory_path(directory), 'index'
+    Directory.join directory_path(directory), 'directories'
   end # method directory_path
 
   def new_directory_path directory

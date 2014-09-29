@@ -95,15 +95,15 @@ RSpec.describe RoutesHelper, :type => :helper do
     it { expect(instance).to respond_to(:index_directory_path).with(1).arguments }
 
     describe 'with nil' do
-      it { expect(instance.index_directory_path nil).to be == '/index' }
+      it { expect(instance.index_directory_path nil).to be == '/directories' }
     end # describe
 
     describe 'with a root directory', :directories => :one do
-      it { expect(instance.index_directory_path directory).to be == "/#{slug}/index" }
+      it { expect(instance.index_directory_path directory).to be == "/#{slug}/directories" }
     end # describe
 
     describe 'with a non-root directory', :directories => :many do
-      it { expect(instance.index_directory_path directories.last).to be == "/#{slugs.join '/'}/index" }
+      it { expect(instance.index_directory_path directories.last).to be == "/#{slugs.join '/'}/directories" }
     end # describe
   end # describe
 

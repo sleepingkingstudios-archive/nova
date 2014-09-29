@@ -27,6 +27,8 @@ class DirectoryPresenter < Presenter
     return empty_value if directory.blank?
 
     path = case action.to_s
+    when 'dashboard'
+      dashboard_directory_path(parent)
     when 'index'
       index_directory_path(parent)
     else

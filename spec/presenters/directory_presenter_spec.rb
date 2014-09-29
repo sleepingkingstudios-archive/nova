@@ -118,6 +118,10 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
       it { expect(instance.parent_link).to be == empty_value }
 
+      context 'with action => dashboard' do
+        it { expect(instance.parent_link :dashboard).to be == empty_value }
+      end # context
+
       context 'with action => index' do
         it { expect(instance.parent_link :index).to be == empty_value }
       end # context
@@ -129,8 +133,14 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
         it { expect(instance.parent_link).to be == link }
 
+        context 'with action => dashboard' do
+          let(:link) { %{<a href="/dashboard">Root Directory</a>} }
+
+          it { expect(instance.parent_link :dashboard).to be == link }
+        end # context
+
         context 'with action => index' do
-          let(:link) { %{<a href="/index">Root Directory</a>} }
+          let(:link) { %{<a href="/directories">Root Directory</a>} }
 
           it { expect(instance.parent_link :index).to be == link }
         end # context
@@ -143,8 +153,14 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
         it { expect(instance.parent_link).to be == link }
 
+        context 'with action => dashboard' do
+          let(:link) { %{<a href="/#{parent.slug}/dashboard">#{parent.title}</a>} }
+
+          it { expect(instance.parent_link :dashboard).to be == link }
+        end # context
+
         context 'with action => index' do
-          let(:link) { %{<a href="/#{parent.slug}/index">#{parent.title}</a>} }
+          let(:link) { %{<a href="/#{parent.slug}/directories">#{parent.title}</a>} }
 
           it { expect(instance.parent_link :index).to be == link }
         end # context

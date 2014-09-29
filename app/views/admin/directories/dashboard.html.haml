@@ -6,8 +6,12 @@
   = presenter.label
   %small Dashboard
 
-- if @current_directory
-  %p
+%p
+  = link_to directory_path(@current_directory), :class => 'text-info' do
+    = icon :cube, :scale => :large
+    Show Directory
+  - if @current_directory
+    &nbsp;
     = link_to edit_directory_path(@current_directory), :class => 'text-warning' do
       = icon :edit, :scale => :large
       Edit Directory
@@ -19,7 +23,7 @@
 %h3 Properties
 %p
   %strong Parent:
-  = presenter.parent_link :index
+  = presenter.parent_link :dashboard
 %p
   %strong Title:
   = presenter.title
