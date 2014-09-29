@@ -266,7 +266,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     describe 'with valid params' do
       let(:attributes) { attributes_for :feature }
 
-      it 'redirects to the index template' do
+      it 'redirects to the index path' do
         expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
 
         instance.create request
@@ -335,7 +335,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     describe 'with valid params' do
       let(:attributes) { attributes_for :feature }
 
-      it 'redirects to the index template' do
+      it 'redirects to the index path' do
         expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
 
         instance.update request
@@ -347,6 +347,25 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
         expect { instance.update request }.to change { object.reload.title }.to(attributes[:title])
       end # it
     end # describe
+  end # describe
+
+  describe '#destroy', :controller => true do
+    let(:object)  { create(:feature) }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    it { expect(instance).to respond_to(:destroy).with(1).argument }
+
+    it 'redirects to the index path' do
+      expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
+
+      instance.destroy request
+
+      expect(flash_messages[:danger]).to be == "Feature successfully destroyed."
+    end # it
+
+    it 'destroys the resource' do
+      expect { instance.destroy request }.to change(Feature, :count).by(-1)
+    end # it
   end # describe
 
   ### Partial Methods ###

@@ -86,4 +86,35 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # describe
     end # describe
   end # describe
+
+  describe '#destroy' do
+    expect_behavior 'requires authentication'
+
+    def perform_action
+      delete :destroy, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an invalid path', :path => :invalid_directory do
+      expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    describe 'with a valid path to a directory', :path => :valid_directory do
+      it 'redirects to the parent directory' do
+        parent_directory = directories.last.parent
+
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(dashboard_directory_path(parent_directory))
+
+        expect(request.flash[:danger]).not_to be_blank
+      end # it
+
+      it 'destroys the resource' do
+        expect { perform_action }.to change(Directory, :count).by(-1)
+      end # it
+    end # describe
+  end # describe
 end # describe

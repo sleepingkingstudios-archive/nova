@@ -15,15 +15,6 @@ class DirectoriesController < ApplicationController
   def show
   end # action show
 
-  # DELETE /path/to/directory
-  def destroy
-    flash[:danger] = 'Directory successfully destroyed.'
-
-    @current_directory.destroy
-
-    redirect_to index_directory_path(@directories[-2])
-  end # action destroy
-
   private
 
   def build_directory

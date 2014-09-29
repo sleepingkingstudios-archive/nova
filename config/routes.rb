@@ -29,9 +29,9 @@ Rails.application.routes.draw do
 
     patch '*directories',               :to => 'resources#update'
     put '*directories',                 :to => 'resources#update'
-  end # namespace
 
-  delete '*directories',              :to => 'directories#destroy'
+    delete '*directories',              :to => 'resources#destroy'
+  end # namespace
 
   get '*directories', :to => 'directories#show', :constraints => lambda { |request| !Directory.reserved_slugs.any? { |slug| request.path =~ /\A\/?#{slug}/ } }
 

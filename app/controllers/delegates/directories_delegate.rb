@@ -22,7 +22,6 @@ class DirectoriesDelegate < ResourcesDelegate
   ### Routing Methods ###
 
   def dashboard_resource_path
-    # binding.pry
     Directory.join directory_path(resource), 'dashboard'
   end # method dashboard_resource_path
 
@@ -38,6 +37,8 @@ class DirectoriesDelegate < ResourcesDelegate
       dashboard_resource_path
     when 'update_success'
       dashboard_resource_path
+    when 'destroy_success'
+      Directory.join directory_path(resource.parent), 'dashboard'
     else
       super
     end # case

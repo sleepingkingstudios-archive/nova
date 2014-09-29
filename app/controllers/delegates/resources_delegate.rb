@@ -107,6 +107,14 @@ class ResourcesDelegate
     end # if-else
   end # action update
 
+  def destroy request
+    resource.destroy
+
+    set_flash_message :danger, flash_message(:destroy, :success)
+
+    controller.redirect_to redirect_path(:destroy, :success)
+  end # action destroy
+
   ### Partial Methods ###
 
   def index_template_path
@@ -162,6 +170,8 @@ class ResourcesDelegate
       "Unable to update #{name.downcase}."
     when 'update_success'
       "#{name} successfully updated."
+    when 'destroy_success'
+      "#{name} successfully destroyed."
     end # case
   end # method flash_message
 
@@ -170,6 +180,8 @@ class ResourcesDelegate
     when 'create_success'
       index_resources_path
     when 'update_success'
+      index_resources_path
+    when 'destroy_success'
       index_resources_path
     end # case
   end # method redirect_path
