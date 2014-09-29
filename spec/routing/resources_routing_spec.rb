@@ -1,14 +1,14 @@
-# spec/routing/directories_routing_spec.rb
+# spec/routing/resources_routing_spec.rb
 
 require 'rails_helper'
 
-RSpec.describe 'routing for directories', :type => :routing do
-  let(:controller) { 'directories' }
+RSpec.describe 'routing for resources', :type => :routing do
+  let(:controller) { 'resources' }
 
   describe 'GET /' do
     let(:path) { '/' }
 
-    it 'routes to DirectoriesController#show' do
+    it 'routes to ResourcesController#show' do
       expect(:get => "/#{path}").to route_to({
         :controller  => controller,
         :action      => 'show'
@@ -19,7 +19,7 @@ RSpec.describe 'routing for directories', :type => :routing do
   describe 'GET /path/to/directory' do
     let(:path) { 'weapons/bows/arbalests' }
 
-    it 'routes to DirectoriesController#show' do
+    it 'routes to ResourcesController#show' do
       expect(:get => "/#{path}").to route_to({
         :controller  => controller,
         :action      => 'show',

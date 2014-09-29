@@ -286,6 +286,19 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # describe
   end # describe
 
+  describe '#show', :controller => true do
+    let(:object)  { build(:feature) }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    it { expect(instance).to respond_to(:show).with(1).argument }
+
+    it 'renders the show template' do
+      expect(controller).to receive(:render).with(instance.show_template_path)
+
+      instance.show request
+    end # it
+  end # describe
+
   describe '#edit', :controller => true do
     let(:object)  { build(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
@@ -382,6 +395,10 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
   describe '#new_template_path' do
     it { expect(instance).to have_reader(:new_template_path).with('admin/features/new') }
+  end # describe
+
+  describe '#show_template_path' do
+    it { expect(instance).to have_reader(:show_template_path).with('features/show') }
   end # describe
 
   describe '#edit_template_path' do

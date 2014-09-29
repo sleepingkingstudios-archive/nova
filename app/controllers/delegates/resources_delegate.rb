@@ -94,6 +94,10 @@ class ResourcesDelegate
     controller.render edit_template_path
   end # action edit
 
+  def show request
+    controller.render show_template_path
+  end # action show
+
   def update request
     params = ActionController::Parameters.new(request.params)
     assign :resource, resource
@@ -126,6 +130,10 @@ class ResourcesDelegate
   def new_template_path
     "admin/#{resource_name}/new"
   end # method new_template_path
+
+  def show_template_path
+    "#{resource_name}/show"
+  end # method show_template_path
 
   def edit_template_path
     "admin/#{resource_name}/edit"

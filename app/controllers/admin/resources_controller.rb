@@ -13,6 +13,12 @@ class Admin::ResourcesController < Admin::AdminController
   before_action :authenticate_user!
   before_action :initialize_delegate
 
+  rescue_from Directory::NotFoundError,  :with => :handle_missing_directory
+
+  rescue_from Nova::AuthenticationError, :with => :handle_unauthorized_user
+
+  rescue_from Nova::ResourceNotFoundError, :with => :handle_missing_resource
+
   # GET /path/to/directory/resources
   def index
     delegate.index(request)
@@ -70,10 +76,4 @@ class Admin::ResourcesController < Admin::AdminController
 
     redirect_to directory_path(@directories.last)
   end # method handle_unauthorized_user
-
-  rescue_from Directory::NotFoundError,  :with => :handle_missing_directory
-
-  rescue_from Nova::AuthenticationError, :with => :handle_unauthorized_user
-
-  rescue_from Nova::ResourceNotFoundError, :with => :handle_missing_resource
 end # class

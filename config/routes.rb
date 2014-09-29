@@ -33,9 +33,9 @@ Rails.application.routes.draw do
     delete '*directories',              :to => 'resources#destroy'
   end # namespace
 
-  get '*directories', :to => 'directories#show', :constraints => lambda { |request| !Directory.reserved_slugs.any? { |slug| request.path =~ /\A\/?#{slug}/ } }
+  get '*directories', :to => 'resources#show', :constraints => lambda { |request| Directory.reserved_slugs.none? { |slug| request.path =~ /\A\/?#{slug}/ } }
 
-  root 'directories#show'
+  root 'resources#show'
 end # draw
 
 # Include custom routing helpers.
