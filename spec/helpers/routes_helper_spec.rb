@@ -91,19 +91,99 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
-  describe '#index_directory_path' do
-    it { expect(instance).to respond_to(:index_directory_path).with(1).arguments }
+  describe '#index_directories_path' do
+    it { expect(instance).to respond_to(:index_directories_path).with(1).arguments }
 
     describe 'with nil' do
-      it { expect(instance.index_directory_path nil).to be == '/directories' }
+      it { expect(instance.index_directories_path nil).to be == '/directories' }
     end # describe
 
     describe 'with a root directory', :directories => :one do
-      it { expect(instance.index_directory_path directory).to be == "/#{slug}/directories" }
+      it { expect(instance.index_directories_path directory).to be == "/#{slug}/directories" }
     end # describe
 
     describe 'with a non-root directory', :directories => :many do
-      it { expect(instance.index_directory_path directories.last).to be == "/#{slugs.join '/'}/directories" }
+      it { expect(instance.index_directories_path directories.last).to be == "/#{slugs.join '/'}/directories" }
+    end # describe
+  end # describe
+
+  describe '#index_pages_path' do
+    it { expect(instance).to respond_to(:index_pages_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.index_pages_path nil).to be == '/pages' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.index_pages_path directory).to be == "/#{slug}/pages" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.index_pages_path directories.last).to be == "/#{slugs.join '/'}/pages" }
+    end # describe
+  end # describe
+
+  describe '#index_resources_path' do
+    it { expect(instance).to respond_to(:index_resources_path).with(2).arguments }
+
+    describe 'with nil' do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.index_resources_path nil, resource_name).to be == "/#{resource_name.tableize}" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.index_resources_path nil, resource_class).to be == "/#{resource_class.to_s.tableize}" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.index_resources_path nil, resource).to be == "/#{resource.class.to_s.tableize}" }
+      end # describe
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.index_resources_path directory, resource_name).to be == "/#{slug}/#{resource_name.tableize}" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.index_resources_path directory, resource_class).to be == "/#{slug}/#{resource_class.to_s.tableize}" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.index_resources_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}" }
+      end # describe
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.index_resources_path directories.last, resource_name).to be == "/#{slugs.join '/'}/#{resource_name.tableize}" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.index_resources_path directories.last, resource_class).to be == "/#{slugs.join '/'}/#{resource_class.to_s.tableize}" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.index_resources_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}" }
+      end # describe
     end # describe
   end # describe
 

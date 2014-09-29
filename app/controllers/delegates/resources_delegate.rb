@@ -45,7 +45,7 @@ class ResourcesDelegate
   end # method resource_name
 
   def resource_params params
-    params.fetch(resource_name, {}).permit()
+    params.fetch(resource_name.singularize, {}).permit()
   end # method resource_params
 
   def set_flash_message key, message, options = {}

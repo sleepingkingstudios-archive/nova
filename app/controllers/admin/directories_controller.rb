@@ -18,12 +18,6 @@ class Admin::DirectoriesController < Admin::ResourcesController
     @directory = @resource
   end # method assign_directory
 
-  def initialize_delegate
-    super
-
-    delegate.directories = @directories
-  end # method initialize_delegate
-
   def resource_class
     :directory
   end # method resource_class

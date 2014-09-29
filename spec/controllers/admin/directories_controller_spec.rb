@@ -10,21 +10,6 @@ RSpec.describe Admin::DirectoriesController do
 
   let(:user) { create(:user) }
 
-  shared_examples 'requires authentication for root directory' do
-    before(:each) { sign_out :user }
-
-    describe 'with an empty path', :path => :empty do
-      it 'redirects to root' do
-        perform_action
-
-        expect(response.status).to be == 302
-        expect(response).to redirect_to root_path
-
-        expect(request.flash[:warning]).not_to be_blank
-      end # it
-    end # describe
-  end # shared_examples
-
   describe '#dashboard' do
     expect_behavior 'requires authentication'
 

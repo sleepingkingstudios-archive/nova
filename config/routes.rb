@@ -25,6 +25,9 @@ Rails.application.routes.draw do
     post 'directories',                 :to => 'directories#create'
     post '*directories/directories',    :to => 'directories#create'
 
+    get 'pages',                        :to => 'features/pages#index'
+    get '*directories/pages',           :to => 'features/pages#index'
+
     get '*directories/edit',            :to => 'resources#edit'
 
     patch '*directories',               :to => 'resources#update'

@@ -30,7 +30,7 @@ class DirectoryPresenter < Presenter
     when 'dashboard'
       dashboard_directory_path(parent)
     when 'index'
-      index_directory_path(parent)
+      index_directories_path(parent)
     else
       directory_path(parent)
     end # when
