@@ -92,6 +92,16 @@ RSpec.describe DecoratorsHelper, :type => :helper do
 
         it { expect(instance.decorate object, decorator_type, :plural => true).to be_a custom_decorator_class }
       end # describe
+
+      describe 'with a default decorator' do
+        let(:decorator_type) { :RubyDefenestrator }
+
+        it { expect(instance.decorate object, :Defenestrator, :default => :RubyDefenestrator).to be_a decorator_class }
+
+        it 'decorates the object' do
+          expect(instance.decorate(object, :Defenestrator, :default => :RubyDefenestrator).object).to be object
+        end # it
+      end # describe
     end # describe
 
     describe 'with a string' do

@@ -10,6 +10,8 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate_user!
-    raise Nova::AuthenticationError.new(request) unless user_signed_in?
+    # Null operation by default to allow any action or filter to run
+    # authentication defensively. Can and should be overriden in
+    # subclasses.
   end # method authenticate_user
 end # class

@@ -34,7 +34,7 @@ module DecoratorsHelper
       end # begin-rescue
     end # while
     
-    decorator_name.constantize.new(object)
+    options.fetch(:default, decorator_name).to_s.constantize.new(object)
   end # method decorate
 
   def present object
