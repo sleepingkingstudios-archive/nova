@@ -18,4 +18,4 @@
     = form.text_field :slug
   = form.form_group do
     = form.submit directory.persisted? ? 'Update Directory' : 'Create Directory'
-    = form.button 'Cancel', directory.persisted? ? index_directory_path(directory) : index_directory_path(directory.parent)
+    = form.button 'Cancel', directory.persisted? ? dashboard_directory_path(directory) : dashboard_directory_path(directory.parent)

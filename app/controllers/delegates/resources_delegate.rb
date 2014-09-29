@@ -49,6 +49,8 @@ class ResourcesDelegate
   end # method resource_params
 
   def set_flash_message key, message, options = {}
+    return if message.blank?
+
     flash = options.fetch(:now, false) ? controller.flash.now : controller.flash
 
     flash[key] = message
@@ -162,12 +164,8 @@ class ResourcesDelegate
     name = resource_class.name.split('::').last
 
     case "#{action}#{status ? "_#{status}" : ''}"
-    when 'create_failure'
-      "Unable to create #{name.downcase}."
     when 'create_success'
       "#{name} successfully created."
-    when 'update_failure'
-      "Unable to update #{name.downcase}."
     when 'update_success'
       "#{name} successfully updated."
     when 'destroy_success'

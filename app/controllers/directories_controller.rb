@@ -1,6 +1,5 @@
 # app/controllers/directories_controller.rb
 
-require 'form_builders/bootstrap_horizontal_form_builder'
 require 'presenters/directory_presenter'
 
 class DirectoriesController < ApplicationController

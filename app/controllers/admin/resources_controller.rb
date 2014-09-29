@@ -1,5 +1,7 @@
 # app/controllers/admin/resources_controller.rb
 
+require 'form_builders/bootstrap_horizontal_form_builder'
+
 Dir[Rails.root.join 'app', 'controllers', 'delegates', '**', '*.rb'].each do |file|
   require file
 end # each

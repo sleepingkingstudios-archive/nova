@@ -164,6 +164,12 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       expect { instance.set_flash_message key, message }.to change { flash_messages[key] }.to(message)
     end # it
 
+    context 'with an empty string' do
+      it 'does not set the flash message' do
+        expect { instance.set_flash_message key, '' }.not_to change { flash_messages[key] }
+      end # it
+    end # context
+
     context 'with now => true' do
       it 'sets the flash message for the next request' do
         expect { instance.set_flash_message key, message, :now => true }.to change { flash_messages.now[key] }.to(message)
@@ -255,7 +261,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
         instance.create request
 
-        expect(flash_messages.now[:warning]).to be == "Unable to create feature."
+        expect(flash_messages.now[:warning]).to be_blank
       end # it
 
       it 'does not create a resource' do
@@ -324,7 +330,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
         instance.update request
 
-        expect(flash_messages.now[:warning]).to be == "Unable to update feature."
+        expect(flash_messages.now[:warning]).to be_blank
       end # it
 
       it 'does not update the resource' do
