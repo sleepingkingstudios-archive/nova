@@ -75,6 +75,17 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     expect_behavior 'sanitizes directory attributes'
   end # describe
 
+  describe '#update_resource_params', :params => true do
+    let(:directories) { [] }
+    let(:sanitized)   { instance.update_resource_params params }
+
+    before(:each) do
+      instance.directories = directories
+    end # before each
+
+    expect_behavior 'sanitizes directory attributes'
+  end # describe
+
   ### Actions ###
 
   describe '#new', :controller => true do

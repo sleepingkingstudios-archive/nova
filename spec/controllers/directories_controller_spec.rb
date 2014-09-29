@@ -42,59 +42,6 @@ RSpec.describe DirectoriesController, :type => :controller do
     end # describe
   end # describe
 
-  describe '#update' do
-    let(:attributes) { {} }
-
-    expect_behavior 'requires authentication', :authenticate_root => false
-
-    def perform_action
-      patch :update, :directories => path, :directory => attributes
-    end # method perform_action
-
-    before(:each) { sign_in :user, user }
-
-    describe 'with an invalid path', :path => :invalid_directory do
-      expect_behavior 'redirects to the last found directory'
-    end # describe
-
-    describe 'with a valid path', :path => :valid_directory do
-      describe 'with invalid params' do
-        let(:attributes) { super().merge :title => nil }
-
-        it 'renders the edit template' do
-          perform_action
-
-          expect(response.status).to be == 200
-          expect(response).to render_template(:edit)
-        end # it
-
-        it 'does not update the directory' do
-          expect { perform_action }.not_to change { Directory.last.reload.title }
-        end # it
-
-        expect_behavior 'assigns directories'
-      end # describe
-
-      describe 'with valid params' do
-        let(:title)      { attributes_for(:directory).fetch(:title) }
-        let(:attributes) { { :title => title } }
-
-        it 'redirects to the directory' do
-          perform_action
-
-          expect(response.status).to be == 302
-          expect(response).to redirect_to(index_directory_path(assigns :current_directory))
-
-          expect(request.flash[:success]).not_to be_blank
-        end # it
-
-        it 'updates the directory' do
-          expect { perform_action }.to change { Directory.last.reload.title }.to(title)
-        end # it
-      end # describe
-    end # describe
-  end # describe
-
   describe '#destroy' do
     expect_behavior 'requires authentication', :authenticate_root => false
 

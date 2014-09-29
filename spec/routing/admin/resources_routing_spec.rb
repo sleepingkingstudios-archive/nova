@@ -16,4 +16,28 @@ RSpec.describe 'admin routing for directories', :type => :routing do
       }) # end hash
     end # it
   end # describe
+
+  describe 'PATCH /path/to/directory' do
+    let(:path) { 'weapons/bows/arbalests' }
+
+    it 'routes to Admin::ResourcesController#update' do
+      expect(:patch => "/#{path}").to route_to({
+        :controller  => resources_controller,
+        :action      => 'update',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'PUT /path/to/directory' do
+    let(:path) { 'weapons/bows/arbalests' }
+
+    it 'routes to Admin::ResourcesController#update' do
+      expect(:put => "/#{path}").to route_to({
+        :controller  => resources_controller,
+        :action      => 'update',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
 end # describe

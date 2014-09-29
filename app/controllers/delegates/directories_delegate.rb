@@ -36,6 +36,8 @@ class DirectoriesDelegate < ResourcesDelegate
     case "#{action}#{status ? "_#{status}" : ''}"
     when 'create_success'
       dashboard_resource_path
+    when 'update_success'
+      dashboard_resource_path
     else
       super
     end # case

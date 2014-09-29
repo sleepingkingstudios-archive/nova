@@ -15,17 +15,6 @@ class DirectoriesController < ApplicationController
   def show
   end # action show
 
-  # PATCH /path/to/directory/edit
-  def update
-    if @current_directory.update params_for_directory
-      flash[:success] = 'Directory successfully updated.'
-
-      redirect_to index_directory_path(@current_directory)
-    else
-      render :edit
-    end # if-else
-  end # action update
-
   # DELETE /path/to/directory
   def destroy
     flash[:danger] = 'Directory successfully destroyed.'

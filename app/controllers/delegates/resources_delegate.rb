@@ -44,15 +44,19 @@ class ResourcesDelegate
     resource_class.name.to_s.tableize
   end # method resource_name
 
+  def resource_params params
+    params.fetch(resource_name, {}).permit()
+  end # method resource_params
+
   def set_flash_message key, message, options = {}
     flash = options.fetch(:now, false) ? controller.flash.now : controller.flash
 
     flash[key] = message
   end # method set_flash_message
 
-  def resource_params params
-    params.permit()
-  end # method resource_params
+  def update_resource_params params
+    resource_params params
+  end # method update_resource_params
 
   ### Actions ###
 
@@ -87,6 +91,21 @@ class ResourcesDelegate
   def edit request
     controller.render edit_template_path
   end # action edit
+
+  def update request
+    params = ActionController::Parameters.new(request.params)
+    assign :resource, resource
+
+    if resource.update update_resource_params(params)
+      set_flash_message :success, flash_message(:update, :success)
+
+      controller.redirect_to redirect_path(:update, :success)
+    else
+      set_flash_message :warning, flash_message(:update, :failure), :now => true
+
+      controller.render edit_template_path
+    end # if-else
+  end # action update
 
   ### Partial Methods ###
 
@@ -139,12 +158,18 @@ class ResourcesDelegate
       "Unable to create #{name.downcase}."
     when 'create_success'
       "#{name} successfully created."
+    when 'update_failure'
+      "Unable to update #{name.downcase}."
+    when 'update_success'
+      "#{name} successfully updated."
     end # case
   end # method flash_message
 
   def redirect_path action, status = nil
     case "#{action}#{status ? "_#{status}" : ''}"
     when 'create_success'
+      index_resources_path
+    when 'update_success'
       index_resources_path
     end # case
   end # method redirect_path

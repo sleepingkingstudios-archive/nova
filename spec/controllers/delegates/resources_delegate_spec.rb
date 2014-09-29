@@ -171,6 +171,14 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # context
   end # describe
 
+  describe '#update_resource_params' do
+    let(:params) { ActionController::Parameters.new(:feature => { :evil => 'malicious' }) }
+
+    it { expect(instance).to respond_to(:update_resource_params).with(1).argument }
+
+    it { expect(instance.update_resource_params params).to be == {} }
+  end # describe
+
   ### Actions ###
 
   describe '#index', :controller => true do
@@ -283,6 +291,62 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
       instance.edit request
     end # it
+  end # describe
+
+  describe '#update', :controller => true do
+    let(:object)     { create(:feature) }
+    let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
+
+    it { expect(instance).to respond_to(:update).with(1).argument }
+
+    before(:each) do
+      allow(instance).to receive(:update_resource_params) do |params|
+        params.fetch(:feature).permit(:title, :slug)
+      end # allow
+    end # before each
+
+    it 'updates the resource attributes' do
+      instance.update request
+
+      resource = assigns.fetch(:resource)
+      expect(resource).to be == object
+
+      expect(resource.title).to be == attributes.fetch(:title)
+      expect(resource.slug).to  be == attributes.fetch(:slug)
+    end # it
+
+    describe 'with invalid params' do
+      let(:attributes) { { :title => nil } }
+
+      it 'renders the edit template' do
+        expect(controller).to receive(:render).with(instance.edit_template_path)
+
+        instance.update request
+
+        expect(flash_messages.now[:warning]).to be == "Unable to update feature."
+      end # it
+
+      it 'does not update the resource' do
+        expect { instance.create request }.not_to change { object.reload.title }
+      end # it
+    end # describe
+
+    describe 'with valid params' do
+      let(:attributes) { attributes_for :feature }
+
+      it 'redirects to the index template' do
+        expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
+
+        instance.update request
+
+        expect(flash_messages[:success]).to be == "Feature successfully updated."
+      end # it
+
+      it 'updates the resource' do
+        expect { instance.update request }.to change { object.reload.title }.to(attributes[:title])
+      end # it
+    end # describe
   end # describe
 
   ### Partial Methods ###

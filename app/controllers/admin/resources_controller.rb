@@ -9,7 +9,7 @@ class Admin::ResourcesController < Admin::AdminController
   include DirectoryLookup
 
   before_action :lookup_directories, :only => %i(index new create)
-  before_action :lookup_resource,    :only => %i(edit)
+  before_action :lookup_resource,    :only => %i(edit update)
   before_action :authenticate_user!
   before_action :initialize_delegate
 
@@ -32,6 +32,11 @@ class Admin::ResourcesController < Admin::AdminController
   def edit
     delegate.edit(request)
   end # action edit
+
+  # PATCH /path/to/resource
+  def update
+    delegate.update(request)
+  end # action update
 
   private
 
