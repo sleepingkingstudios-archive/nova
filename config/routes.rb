@@ -24,9 +24,10 @@ Rails.application.routes.draw do
 
     post 'directories',                 :to => 'directories#create'
     post '*directories/directories',    :to => 'directories#create'
+
+    get '*directories/edit',            :to => 'resources#edit'
   end # namespace
 
-  get '*directories/edit',            :to => 'directories#edit'
   patch '*directories',               :to => 'directories#update'
   delete '*directories',              :to => 'directories#destroy'
 

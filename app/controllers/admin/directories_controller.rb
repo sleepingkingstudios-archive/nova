@@ -1,10 +1,10 @@
 # app/controllers/admin/directories_controller.rb
 
 class Admin::DirectoriesController < Admin::ResourcesController
-  include DirectoryLookup
-
-  prepend_before_action :authenticate_user!
-  prepend_before_action :lookup_directories
+  # When creating a filter, Rails removes other filters with the same name,
+  # even if they have different filtering options. As a workaround, we're
+  # invoking the method through a block.
+  prepend_before_action(:only => %i(dashboard)) { lookup_directories }
 
   after_action :assign_directory, :only => %w(create new edit update)
 

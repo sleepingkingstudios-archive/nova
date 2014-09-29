@@ -15,29 +15,6 @@ class DirectoriesController < ApplicationController
   def show
   end # action show
 
-  # GET /path/to/directory/index
-  def index
-  end # action index
-
-  # GET /path/to/directory/directories/new
-  def new
-  end # action new
-
-  # POST /path/to/directory/directories
-  def create
-    if @directory.save
-      flash[:success] = 'Directory successfully created.'
-
-      redirect_to index_directory_path(@directory)
-    else
-      render :new
-    end # if-else
-  end # action create
-
-  # GET /path/to/directory/edit
-  def edit
-  end # action edit
-
   # PATCH /path/to/directory/edit
   def update
     if @current_directory.update params_for_directory

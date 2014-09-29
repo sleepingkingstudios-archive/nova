@@ -7,8 +7,8 @@ require 'delegates/resources_delegate'
 RSpec.describe ResourcesDelegate, :type => :decorator do
   include Spec::Contexts::Delegates::DelegateContexts
 
-  let(:object)     { Feature.new }
-  let(:instance)   { described_class.new object }
+  let(:object)   { Feature.new }
+  let(:instance) { described_class.new object }
 
   shared_context 'with an array of objects', :object => :array do
     let(:object) { Array.new(3).map { Object.new } }
@@ -61,6 +61,10 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it { expect(instance).to have_property(:controller) }
 
     it { expect(instance.controller).to be nil }
+  end # describe
+
+  describe '#directories' do
+    it { expect(instance).to have_property(:directories) }
   end # describe
 
   describe '#load_resources' do
@@ -268,6 +272,19 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # describe
   end # describe
 
+  describe '#edit', :controller => true do
+    let(:object)  { build(:feature) }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    it { expect(instance).to respond_to(:edit).with(1).argument }
+
+    it 'renders the new template' do
+      expect(controller).to receive(:render).with(instance.edit_template_path)
+
+      instance.edit request
+    end # it
+  end # describe
+
   ### Partial Methods ###
 
   describe '#index_template_path' do
@@ -276,6 +293,10 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
   describe '#new_template_path' do
     it { expect(instance).to have_reader(:new_template_path).with('admin/features/new') }
+  end # describe
+
+  describe '#edit_template_path' do
+    it { expect(instance).to have_reader(:edit_template_path).with('admin/features/edit') }
   end # describe
 
   ### Routing Methods ###

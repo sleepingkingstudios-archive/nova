@@ -10,8 +10,25 @@ RSpec.describe Admin::DirectoriesController do
 
   let(:user) { create(:user) }
 
+  shared_examples 'requires authentication for root directory' do
+    before(:each) { sign_out :user }
+
+    describe 'with an empty path', :path => :empty do
+      it 'redirects to root' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to root_path
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+  end # shared_examples
+
   describe '#dashboard' do
     expect_behavior 'requires authentication'
+
+    expect_behavior 'requires authentication for root directory'
 
     def perform_action
       get :dashboard, :directories => path
@@ -26,7 +43,7 @@ RSpec.describe Admin::DirectoriesController do
     end # describe
 
     describe 'with an invalid path', :path => :invalid_directory do
-      expect_behavior 'redirects to the last found directory'
+      expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
     describe 'with a valid path', :path => :valid_directory do
@@ -38,6 +55,8 @@ RSpec.describe Admin::DirectoriesController do
 
   describe '#index' do
     expect_behavior 'requires authentication'
+
+    expect_behavior 'requires authentication for root directory'
 
     def perform_action
       get :index, :directories => path
@@ -52,7 +71,7 @@ RSpec.describe Admin::DirectoriesController do
     end # describe
 
     describe 'with an invalid path', :path => :invalid_directory do
-      expect_behavior 'redirects to the last found directory'
+      expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
     describe 'with a valid path', :path => :valid_directory do
@@ -64,6 +83,8 @@ RSpec.describe Admin::DirectoriesController do
 
   describe '#new' do
     expect_behavior 'requires authentication'
+
+    expect_behavior 'requires authentication for root directory'
 
     def perform_action
       get :new, :directories => path
@@ -80,7 +101,7 @@ RSpec.describe Admin::DirectoriesController do
     end # describe
 
     describe 'with an invalid path', :path => :invalid_directory do
-      expect_behavior 'redirects to the last found directory'
+      expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
     describe 'with a valid path', :path => :valid_directory do
@@ -96,6 +117,8 @@ RSpec.describe Admin::DirectoriesController do
     let(:attributes) { {} }
 
     expect_behavior 'requires authentication'
+
+    expect_behavior 'requires authentication for root directory'
 
     def perform_action
       post :create, :directories => path, :directory => attributes
@@ -135,7 +158,7 @@ RSpec.describe Admin::DirectoriesController do
     end # describe
 
     describe 'with an invalid path', :path => :invalid_directory do
-      expect_behavior 'redirects to the last found directory'
+      expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
     describe 'with a valid path', :path => :valid_directory do

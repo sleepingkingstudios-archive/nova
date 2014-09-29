@@ -69,10 +69,6 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # context
   end # describe
 
-  describe '#directories' do
-    it { expect(instance).to have_property(:directories) }
-  end # describe
-
   describe '#resource_params', :params => true do
     let(:sanitized) { instance.resource_params params }
 
@@ -114,7 +110,8 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # describe
 
     describe 'with valid params' do
-      let(:attributes) { attributes_for :directory }
+      let(:attributes)        { attributes_for :directory }
+      let(:created_directory) { Directory.where(attributes).first }
 
       it 'creates a directory' do
         expect { instance.create request }.to change(Directory, :count).by(1)
@@ -130,7 +127,7 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
         it 'sets the directory parent' do
           instance.create request
 
-          expect(Directory.last.ancestors).to be == directories
+          expect(created_directory.ancestors).to be == directories
         end # it
 
         it 'redirects to dashboard' do

@@ -5,8 +5,6 @@ require 'delegates/resources_delegate'
 class DirectoriesDelegate < ResourcesDelegate
   include RoutesHelper
 
-  attr_accessor :directories
-
   def initialize object = nil
     super object || Directory
   end # method initialize

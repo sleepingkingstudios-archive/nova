@@ -42,31 +42,6 @@ RSpec.describe DirectoriesController, :type => :controller do
     end # describe
   end # describe
 
-  describe '#edit' do
-    expect_behavior 'requires authentication', :authenticate_root => false
-
-    def perform_action
-      get :edit, :directories => path
-    end # method perform_action
-
-    before(:each) { sign_in :user, user }
-
-    describe 'with an invalid path', :path => :invalid_directory do
-      expect_behavior 'redirects to the last found directory'
-    end # describe
-
-    describe 'with a valid path', :path => :valid_directory do
-      it 'renders the edit template' do
-        perform_action
-
-        expect(response.status).to be == 200
-        expect(response).to render_template(:edit)
-      end # it
-
-      expect_behavior 'assigns directories'
-    end # describe
-  end # describe
-
   describe '#update' do
     let(:attributes) { {} }
 

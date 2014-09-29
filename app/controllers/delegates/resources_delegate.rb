@@ -14,7 +14,7 @@ class ResourcesDelegate
     end # when
   end # constructor
 
-  attr_accessor :controller
+  attr_accessor :controller, :directories
 
   attr_reader :resource, :resources, :resource_class
 
@@ -84,6 +84,10 @@ class ResourcesDelegate
     controller.render new_template_path
   end # action new
 
+  def edit request
+    controller.render edit_template_path
+  end # action edit
+
   ### Partial Methods ###
 
   def index_template_path
@@ -93,6 +97,10 @@ class ResourcesDelegate
   def new_template_path
     "admin/#{resource_name}/new"
   end # method new_template_path
+
+  def edit_template_path
+    "admin/#{resource_name}/edit"
+  end # method edit_template_path
 
   ### Routing Methods ###
 

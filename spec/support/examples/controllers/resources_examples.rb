@@ -35,11 +35,11 @@ module Spec
           end # it
         end # shared_examples
 
-        shared_examples 'assigns resources' do
-          fit 'assigns the resources to @resources' do
+        shared_examples 'assigns the resource' do
+          it 'assigns the resource to @resource' do
             perform_action
 
-            expect(assigns :resources).to be == resources
+            expect(assigns :resource).to be == resource
           end # it
         end # shared_examples
 
@@ -54,21 +54,19 @@ module Spec
           end # it
         end # shared_examples
 
-        shared_examples 'requires authentication' do |authenticate_root: true|
+        shared_examples 'redirects to the last found directory dashboard' do
+          it 'redirects to the last found directory dashboard' do
+            perform_action
+
+            expect(response.status).to be == 302
+            expect(response).to redirect_to dashboard_directory_path(assigns(:directories).last)
+
+            expect(request.flash[:warning]).not_to be_blank
+          end # it
+        end # shared_examples
+
+        shared_examples 'requires authentication' do
           before(:each) { sign_out :user }
-
-          if authenticate_root
-            describe 'with an empty path', :path => :empty do
-              it 'redirects to root' do
-                perform_action
-
-                expect(response.status).to be == 302
-                expect(response).to redirect_to root_path
-
-                expect(request.flash[:warning]).not_to be_blank
-              end # it
-            end # describe
-          end # if
 
           describe 'with an invalid path', :path => :invalid_directory do
             it 'redirects to the last found directory' do

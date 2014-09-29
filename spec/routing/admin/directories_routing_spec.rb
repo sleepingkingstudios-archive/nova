@@ -20,7 +20,7 @@ RSpec.describe 'admin routing for directories', :type => :routing do
   describe 'GET /path/to/directory/dashboard' do
     let(:path) { 'weapons/bows/arbalests/dashboard' }
 
-    it 'routes to DirectoriesController#dashboard' do
+    it 'routes to Admin::DirectoriesController#dashboard' do
       expect(:get => "/#{path}").to route_to({
         :controller  => directories_controller,
         :action      => 'dashboard',
@@ -43,7 +43,7 @@ RSpec.describe 'admin routing for directories', :type => :routing do
   describe 'GET /path/to/directory/directories' do
     let(:path) { 'weapons/bows/arbalests/directories' }
 
-    it 'routes to DirectoriesController#index' do
+    it 'routes to Admin::DirectoriesController#index' do
       expect(:get => "/#{path}").to route_to({
         :controller  => directories_controller,
         :action      => 'index',
@@ -55,7 +55,7 @@ RSpec.describe 'admin routing for directories', :type => :routing do
   describe 'GET /directories/new' do
     let(:path) { 'directories/new' }
 
-    it 'routes to DirectoriesController#new' do
+    it 'routes to Admin::DirectoriesController#new' do
       expect(:get => "/#{path}").to route_to({
         :controller  => directories_controller,
         :action      => 'new'
@@ -66,7 +66,7 @@ RSpec.describe 'admin routing for directories', :type => :routing do
   describe 'GET /path/to/directory/directories/new' do
     let(:path) { 'weapons/bows/arbalests/directories/new' }
 
-    it 'routes to DirectoriesController#new' do
+    it 'routes to Admin::DirectoriesController#new' do
       expect(:get => "/#{path}").to route_to({
         :controller  => directories_controller,
         :action      => 'new',
@@ -78,7 +78,7 @@ RSpec.describe 'admin routing for directories', :type => :routing do
   describe 'POST /directories' do
     let(:path) { 'directories' }
 
-    it 'routes to DirectoriesController#create' do
+    it 'routes to Admin::DirectoriesController#create' do
       expect(:post => "/#{path}").to route_to({
         :controller  => directories_controller,
         :action      => 'create'
@@ -89,7 +89,7 @@ RSpec.describe 'admin routing for directories', :type => :routing do
   describe 'POST /path/to/directory/directories' do
     let(:path) { 'weapons/bows/arbalests/directories' }
 
-    it 'routes to DirectoriesController#create' do
+    it 'routes to Admin::DirectoriesController#create' do
       expect(:post => "/#{path}").to route_to({
         :controller  => directories_controller,
         :action      => 'create',
