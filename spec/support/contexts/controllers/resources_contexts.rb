@@ -32,6 +32,13 @@ module Spec
             end # tap
           end # let!
         end # shared_context
+
+        shared_context 'with a valid path to a feature', :path => :valid_feature do |feature_type = :feature|
+          include_context 'with a valid path to a directory'
+
+          let(:resource) { create(feature_type) }
+          let(:path)     { segments.push(resource.slug).join('/') }
+        end # shared_context
       end # module
     end # module
   end # module

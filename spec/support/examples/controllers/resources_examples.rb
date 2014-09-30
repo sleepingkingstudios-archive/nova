@@ -22,7 +22,6 @@ module Spec
             perform_action
 
             expect(assigns :directories).to be == directories
-            expect(assigns :current_directory).to be == directories.last
           end # it
         end # shared_examples
 

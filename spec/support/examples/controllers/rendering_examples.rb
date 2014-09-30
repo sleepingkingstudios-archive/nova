@@ -5,7 +5,7 @@ module Spec
     module Controllers
       module RenderingExamples
         shared_examples 'renders template' do |template, options = {}|
-          it "renders the #{template} template}" do
+          it "renders the #{template} template" do
             perform_action
 
             expect(response.status).to be == options.fetch(:status, 200)

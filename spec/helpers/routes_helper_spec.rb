@@ -188,6 +188,34 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#edit_page_path' do
+    it { expect(instance).to respond_to(:edit_page_path).with(1).argument }
+
+    describe 'with a root feature' do
+      include_context 'with a root feature', :page
+
+      it { expect(instance.edit_page_path feature).to be == "/#{slug}/edit" }
+    end # describe
+
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :page
+
+      it { expect(instance.edit_page_path feature).to be == "/#{slugs.join '/'}/edit" }
+    end # describe
+  end # describe
+
+  describe '#edit_resource_path' do
+    it { expect(instance).to respond_to(:edit_resource_path).with(1).argument }
+
+    describe 'with a root feature', :feature => :root do
+      it { expect(instance.edit_resource_path feature).to be == "/#{slug}/edit" }
+    end # describe
+
+    describe 'with a non-root directory', :feature => :leaf do
+      it { expect(instance.edit_resource_path feature).to be == "/#{slugs.join '/'}/edit" }
+    end # describe
+  end # describe
+
   describe '#index_directories_path' do
     it { expect(instance).to respond_to(:index_directories_path).with(1).arguments }
 

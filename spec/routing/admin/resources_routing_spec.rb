@@ -44,7 +44,7 @@ RSpec.describe 'admin routing for resources', :type => :routing do
   describe 'DELETE /path/to/directory' do
     let(:path) { 'weapons/bows/arbalests' }
 
-    it 'routes to DirectoriesController#update' do
+    it 'routes to Admin::ResourcesController#destroy' do
       expect(:delete => "/#{path}").to route_to({
         :controller  => resources_controller,
         :action      => 'destroy',
