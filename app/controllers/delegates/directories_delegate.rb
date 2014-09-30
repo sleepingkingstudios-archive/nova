@@ -19,28 +19,28 @@ class DirectoriesDelegate < ResourcesDelegate
     params.fetch(:directory, {}).permit(:title, :slug)
   end # method resource_params
 
-  ### Routing Methods ###
-
-  def dashboard_resource_path
-    Directory.join directory_path(resource), 'dashboard'
-  end # method dashboard_resource_path
-
-  def resources_path
-    create_directory_path(directories.try(:last))
-  end # method resources_path
-
   private
 
   def redirect_path action, status = nil
     case "#{action}#{status ? "_#{status}" : ''}"
     when 'create_success'
-      dashboard_resource_path
+      _dashboard_resource_path
     when 'update_success'
-      dashboard_resource_path
+      _dashboard_resource_path
     when 'destroy_success'
       Directory.join directory_path(resource.parent), 'dashboard'
     else
       super
     end # case
   end # method redirect_path
+
+  ### Routing Methods ###
+
+  def _dashboard_resource_path
+    Directory.join directory_path(resource), 'dashboard'
+  end # method _dashboard_resource_path
+
+  def _resources_path
+    create_directory_path(directories.try(:last))
+  end # method _resources_path
 end # class

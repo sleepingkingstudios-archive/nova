@@ -50,4 +50,27 @@ RSpec.describe 'admin routing for pages', :type => :routing do
       }) # end hash
     end # it
   end # describe
+
+  describe 'POST /pages' do
+    let(:path) { 'pages' }
+
+    it 'routes to Admin::Features::PagesController#create' do
+      expect(:post => "/#{path}").to route_to({
+        :controller  => pages_controller,
+        :action      => 'create'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'POST /path/to/directory/pages' do
+    let(:path) { 'weapons/bows/arbalests/pages' }
+
+    it 'routes to Admin::Features::PagesController#create' do
+      expect(:post => "/#{path}").to route_to({
+        :controller  => pages_controller,
+        :action      => 'create',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
 end # describe

@@ -31,6 +31,9 @@ Rails.application.routes.draw do
     get 'pages/new',                    :to => 'features/pages#new'
     get '*directories/pages/new',       :to => 'features/pages#new'
 
+    post 'pages',                       :to => 'features/pages#create'
+    post '*directories/pages',          :to => 'features/pages#create'
+
     get '*directories/edit',            :to => 'resources#edit'
 
     patch '*directories',               :to => 'resources#update'

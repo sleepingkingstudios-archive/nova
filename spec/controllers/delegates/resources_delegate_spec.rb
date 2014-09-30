@@ -273,7 +273,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       let(:attributes) { attributes_for :feature }
 
       it 'redirects to the index path' do
-        expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
+        expect(controller).to receive(:redirect_to).with(instance.send :_index_resources_path)
 
         instance.create request
 
@@ -355,7 +355,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       let(:attributes) { attributes_for :feature }
 
       it 'redirects to the index path' do
-        expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
+        expect(controller).to receive(:redirect_to).with(instance.send :_index_resources_path)
 
         instance.update request
 
@@ -375,7 +375,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it { expect(instance).to respond_to(:destroy).with(1).argument }
 
     it 'redirects to the index path' do
-      expect(controller).to receive(:redirect_to).with(instance.index_resources_path)
+      expect(controller).to receive(:redirect_to).with(instance.send :_index_resources_path)
 
       instance.destroy request
 
@@ -407,19 +407,19 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
   ### Routing Methods ###
 
-  describe '#create_resource_path' do
-    it { expect(instance).to have_reader(:create_resource_path).with('features') }
+  describe '#_create_resource_path' do
+    it { expect(instance.send :_create_resource_path).to be == 'features' }
   end # describe
 
-  describe '#index_resources_path' do
-    it { expect(instance).to have_reader(:index_resources_path).with('features') }
+  describe '#_index_resources_path' do
+    it { expect(instance.send :_index_resources_path).to be == 'features' }
   end # describe
 
-  describe '#resource_path' do
-    it { expect(instance).to have_reader(:resource_path).with("features/#{object.id}") }
+  describe '#_resource_path' do
+    it { expect(instance.send :_resource_path).to be == "features/#{object.id}" }
   end # describe
 
-  describe '#resources_path' do
-    it { expect(instance).to have_reader(:resources_path).with('features') }
+  describe '#_resources_path' do
+    it { expect(instance.send :_resources_path).to be == 'features' }
   end # describe
 end # describe

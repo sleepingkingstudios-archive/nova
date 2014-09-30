@@ -117,11 +117,13 @@ RSpec.describe Admin::DirectoriesController do
 
         expect_behavior 'renders template', :new
 
+        expect_behavior 'assigns new directory'
+
+        expect_behavior 'assigns directories'
+
         it 'does not create a directory' do
           expect { perform_action }.not_to change(Directory, :count)
         end # it
-
-        expect_behavior 'assigns directories'
       end # describe
 
       describe 'with valid params' do

@@ -71,4 +71,23 @@ RSpec.describe FeaturesDelegate, :type => :decorator do
   describe '#edit_template_path' do
     it { expect(instance).to have_reader(:edit_template_path).with('admin/features/features/edit') }
   end # describe
+
+  ### Routing Methods ###
+
+  describe '#_resource_path' do
+    context 'with a resource' do
+      let(:attributes) { {} }
+      let(:resource)   { build(:feature, attributes) }
+
+      before(:each) { allow(instance).to receive(:resource).and_return(resource) }
+
+      it { expect(instance.send :_resource_path).to be == "/#{resource.slug}" }
+
+      context 'with many directories', :path => :valid_directory do
+        let(:attributes) { super().merge :directory => directories.last }
+
+        it { expect(instance.send :_resource_path).to be == "/#{segments.join '/'}/#{resource.slug}" }
+      end # context
+    end # pending
+  end # describe
 end # describe

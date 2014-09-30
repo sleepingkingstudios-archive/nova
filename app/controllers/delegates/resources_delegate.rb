@@ -62,6 +62,19 @@ class ResourcesDelegate
 
   ### Actions ###
 
+  def index request
+    assign :resources, load_resources
+
+    controller.render index_template_path
+  end # action index
+
+  def new request
+    params = ActionController::Parameters.new(request.params)
+    assign :resource, build_resource(build_resource_params params)
+
+    controller.render new_template_path
+  end # action new
+
   def create request
     params = ActionController::Parameters.new(request.params)
     assign :resource, build_resource(build_resource_params params)
@@ -76,19 +89,6 @@ class ResourcesDelegate
       controller.render new_template_path
     end # if-else
   end # action create
-
-  def index request
-    assign :resources, load_resources
-
-    controller.render index_template_path
-  end # action index
-
-  def new request
-    params = ActionController::Parameters.new(request.params)
-    assign :resource, build_resource(build_resource_params params)
-
-    controller.render new_template_path
-  end # action new
 
   def edit request
     controller.render edit_template_path
@@ -141,31 +141,6 @@ class ResourcesDelegate
 
   ### Routing Methods ###
 
-  def create_resource_path
-    resources_path
-  end # method create_resource_path
-
-  def index_resources_path
-    resources_path
-  end # method index_resources_path
-
-  def resource_path object = nil
-    resource_id = case
-    when object.blank?
-      resource.try(:id)
-    when object.respond_to?(:id)
-      object.id
-    else
-      object.to_s
-    end # case
-
-    "#{resources_path}/#{resource_id}"
-  end # method resource_path
-
-  def resources_path
-    resource_name
-  end # method resource_path
-
   private
 
   def flash_message action, status = nil
@@ -184,11 +159,38 @@ class ResourcesDelegate
   def redirect_path action, status = nil
     case "#{action}#{status ? "_#{status}" : ''}"
     when 'create_success'
-      index_resources_path
+      _index_resources_path
     when 'update_success'
-      index_resources_path
+      _index_resources_path
     when 'destroy_success'
-      index_resources_path
+      _index_resources_path
     end # case
   end # method redirect_path
+
+  ### Routing Methods ###
+
+  def _create_resource_path
+    _resources_path
+  end # method _create_resource_path
+
+  def _index_resources_path
+    _resources_path
+  end # method _index_resources_path
+
+  def _resource_path object = nil
+    resource_id = case
+    when object.blank?
+      resource.try(:id)
+    when object.respond_to?(:id)
+      object.id
+    else
+      object.to_s
+    end # case
+
+    "#{_resources_path}/#{resource_id}"
+  end # method _resource_path
+
+  def _resources_path
+    resource_name
+  end # method _resources_path
 end # class

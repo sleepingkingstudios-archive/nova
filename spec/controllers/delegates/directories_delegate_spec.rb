@@ -115,6 +115,12 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     describe 'with invalid params' do
       let(:attributes) { {} }
 
+      it 'renders the new template' do
+        expect(controller).to receive(:render).with(instance.new_template_path)
+
+        instance.create request
+      end # it
+
       it 'does not create a directory' do
         expect { instance.create request }.not_to change(Directory, :count)
       end # it
@@ -152,15 +158,15 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
 
   ### Routing Methods ###
 
-  describe '#dashboard_resource_path' do
-    it { expect(instance.dashboard_resource_path).to be == "/dashboard" }
+  describe '#_dashboard_resource_path' do
+    it { expect(instance.send :_dashboard_resource_path).to be == '/dashboard' }
 
     context 'with one directory' do
       let(:directory) { build(:directory) }
 
       before(:each) { allow(instance).to receive(:resource).and_return(directory) }
 
-      it { expect(instance.dashboard_resource_path).to be == "/#{directory.slug}/dashboard" }
+      it { expect(instance.send :_dashboard_resource_path).to be == "/#{directory.slug}/dashboard" }
     end # pending
 
     context 'with many directories', :path => :valid_directory do
@@ -172,19 +178,19 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
         instance.directories = directories
       end # before each
     
-      it { expect(instance.dashboard_resource_path).to be == "/#{segments.join '/'}/#{directory.slug}/dashboard" }
+      it { expect(instance.send :_dashboard_resource_path).to be == "/#{segments.join '/'}/#{directory.slug}/dashboard" }
     end # context
   end # describe
 
-  describe '#resources_path' do
-    it { expect(instance.resources_path).to be == '/directories' }
+  describe '#_resources_path' do
+    it { expect(instance.send :_resources_path).to be == '/directories' }
 
     context 'with many directories', :path => :valid_directory do
       before(:each) do
         instance.directories = directories
       end # before each
     
-      it { expect(instance.resources_path).to be == "/#{segments.join '/'}/directories" }
+      it { expect(instance.send :_resources_path).to be == "/#{segments.join '/'}/directories" }
     end # context
   end # describe
 end # describe
