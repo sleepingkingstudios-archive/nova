@@ -17,6 +17,23 @@ module Spec
           defined?(super) ? super(options) : options
         end # method default_url_options
 
+        shared_examples 'assigns directories' do
+          it 'assigns the directories to @directories' do
+            perform_action
+
+            expect(assigns :directories).to be == directories
+            expect(assigns :current_directory).to be == directories.last
+          end # it
+        end # shared_examples
+
+        shared_examples 'assigns new content' do
+          it 'assigns the content to @resource.content' do
+            perform_action
+
+            expect(assigns(:resource).content).to be_a Content
+          end # it
+        end # shared_examples
+
         shared_examples 'assigns new directory' do
           it 'assigns the directory to @directory' do
             perform_action
@@ -26,12 +43,23 @@ module Spec
           end # it
         end # shared_examples
 
-        shared_examples 'assigns directories' do
-          it 'assigns the directories to @directories' do
+        shared_examples 'assigns new resource' do |resource, assigns_directory: false|
+          resource_type = case resource
+          when String
+            resource.classify.constantize
+          when Class
+            resource
+          else
+            resource.class
+          end # case
+
+          it 'assigns the resource to @resource' do
             perform_action
 
-            expect(assigns :directories).to be == directories
-            expect(assigns :current_directory).to be == directories.last
+            expect(assigns :resource).to be_a resource_type
+            if assigns_directory
+              expect(assigns(:resource).directory).to be == directories.last
+            end # if
           end # it
         end # shared_examples
 
