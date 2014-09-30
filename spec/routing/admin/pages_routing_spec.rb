@@ -8,7 +8,7 @@ RSpec.describe 'admin routing for pages', :type => :routing do
   describe 'GET /pages' do
     let(:path) { '/pages' }
 
-    it 'routes to Admin::PagesController#index' do
+    it 'routes to Admin::Features::PagesController#index' do
       expect(:get => "/#{path}").to route_to({
         :controller  => pages_controller,
         :action      => 'index'
@@ -19,10 +19,33 @@ RSpec.describe 'admin routing for pages', :type => :routing do
   describe 'GET /path/to/directory/pages' do
     let(:path) { 'weapons/bows/arbalests/pages' }
 
-    it 'routes to Admin::PagesController#index' do
+    it 'routes to Admin::Features::PagesController#index' do
       expect(:get => "/#{path}").to route_to({
         :controller  => pages_controller,
         :action      => 'index',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'GET /pages/new' do
+    let(:path) { 'pages/new' }
+
+    it 'routes to Admin::Features::PagesController#new' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => pages_controller,
+        :action      => 'new'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'GET /path/to/directory/pages/new' do
+    let(:path) { 'weapons/bows/arbalests/pages/new' }
+
+    it 'routes to Admin::Features::PagesController#new' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => pages_controller,
+        :action      => 'new',
         :directories => 'weapons/bows/arbalests'
       }) # end hash
     end # it

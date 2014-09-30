@@ -30,4 +30,12 @@ class Feature
   ### Validations ###
   validates :title, :presence => true
   validates :slug,  :exclusion => { :in => ->(document) { document.class.reserved_slugs } }, :unique_within_siblings => true
+
+  ### Instance Methods ###
+
+  def to_partial_path
+    directory ?
+      Directory.join(*[directory.to_partial_path, slug].reject { |slug| slug.blank? }) :
+      slug
+  end # method to_partial_path
 end # model

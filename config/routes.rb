@@ -28,6 +28,9 @@ Rails.application.routes.draw do
     get 'pages',                        :to => 'features/pages#index'
     get '*directories/pages',           :to => 'features/pages#index'
 
+    get 'pages/new',                    :to => 'features/pages#new'
+    get '*directories/pages/new',       :to => 'features/pages#new'
+
     get '*directories/edit',            :to => 'resources#edit'
 
     patch '*directories',               :to => 'resources#update'

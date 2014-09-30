@@ -5,12 +5,17 @@ require 'rails_helper'
 RSpec.describe RoutesHelper, :type => :helper do
   let(:instance) { Object.new.extend described_class }
 
-  shared_examples 'with a root directory', :directories => :one do
+  shared_context 'with a root directory', :directories => :one do
     let(:slug)      { 'weapons' }
     let(:directory) { build(:directory, :slug => slug) }
-  end # shared_examples
+  end # shared_context
 
-  shared_examples 'with a non-root directory', :directories => :many do
+  shared_context 'with a root feature', :feature => :root do |feature_type = :feature|
+    let(:slug)    { 'character-creation' }
+    let(:feature) { build(feature_type, :slug => slug) }
+  end # shared_context
+
+  shared_context 'with a non-root directory', :directories => :many do
     let(:slugs) { %w(weapons swords japanese) }
     let(:directories) do
       [].tap do |ary|
@@ -19,7 +24,19 @@ RSpec.describe RoutesHelper, :type => :helper do
         end # each
       end # tap
     end # let
-  end # shared_examples
+  end # shared_context
+
+  shared_context 'with a non-root feature', :feature => :leaf do |feature_type = :feature|
+    let(:slugs) { %w(weapons swords japanese tachi) }
+    let(:directories) do
+      [].tap do |ary|
+        slugs[0...-1].each do |slug|
+          ary << create(:directory, :parent => ary[-1], :title => slug.capitalize)
+        end # each
+      end # tap
+    end # let
+    let(:feature) { build(feature_type, :slug => slugs.last, :directory => directories.last) }
+  end # shared_context
 
   describe '#create_directory_path' do
     it { expect(instance).to respond_to(:create_directory_path).with(1).arguments }
@@ -34,6 +51,86 @@ RSpec.describe RoutesHelper, :type => :helper do
 
     describe 'with a non-root directory', :directories => :many do
       it { expect(instance.create_directory_path directories.last).to be == "/#{slugs.join '/'}/directories" }
+    end # describe
+  end # describe
+
+  describe '#create_page_path' do
+    it { expect(instance).to respond_to(:create_page_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.create_page_path nil).to be == '/pages' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.create_page_path directory).to be == "/#{slug}/pages" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.create_page_path directories.last).to be == "/#{slugs.join '/'}/pages" }
+    end # describe
+  end # describe
+
+  describe '#create_resource_path' do
+    it { expect(instance).to respond_to(:create_resource_path).with(2).arguments }
+
+    describe 'with nil' do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.create_resource_path nil, resource_name).to be == "/#{resource_name.tableize}" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.create_resource_path nil, resource_class).to be == "/#{resource_class.to_s.tableize}" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.create_resource_path nil, resource).to be == "/#{resource.class.to_s.tableize}" }
+      end # describe
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.create_resource_path directory, resource_name).to be == "/#{slug}/#{resource_name.tableize}" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.create_resource_path directory, resource_class).to be == "/#{slug}/#{resource_class.to_s.tableize}" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.create_resource_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}" }
+      end # describe
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.create_resource_path directories.last, resource_name).to be == "/#{slugs.join '/'}/#{resource_name.tableize}" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.create_resource_path directories.last, resource_class).to be == "/#{slugs.join '/'}/#{resource_class.to_s.tableize}" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.create_resource_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}" }
+      end # describe
     end # describe
   end # describe
 
@@ -200,6 +297,134 @@ RSpec.describe RoutesHelper, :type => :helper do
 
     describe 'with a non-root directory', :directories => :many do
       it { expect(instance.new_directory_path directories.last).to be == "/#{slugs.join '/'}/directories/new" }
+    end # describe
+  end # describe
+
+  describe '#new_page_path' do
+    it { expect(instance).to respond_to(:new_page_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.new_page_path nil).to be == '/pages/new' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.new_page_path directory).to be == "/#{slug}/pages/new" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.new_page_path directories.last).to be == "/#{slugs.join '/'}/pages/new" }
+    end # describe
+  end # describe
+
+  describe '#new_resource_path' do
+    it { expect(instance).to respond_to(:new_resource_path).with(2).arguments }
+
+    describe 'with nil' do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.new_resource_path nil, resource_name).to be == "/#{resource_name.tableize}/new" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.new_resource_path nil, resource_class).to be == "/#{resource_class.to_s.tableize}/new" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.new_resource_path nil, resource).to be == "/#{resource.class.to_s.tableize}/new" }
+      end # describe
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.new_resource_path directory, resource_name).to be == "/#{slug}/#{resource_name.tableize}/new" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.new_resource_path directory, resource_class).to be == "/#{slug}/#{resource_class.to_s.tableize}/new" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.new_resource_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}/new" }
+      end # describe
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.new_resource_path directories.last, resource_name).to be == "/#{slugs.join '/'}/#{resource_name.tableize}/new" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.new_resource_path directories.last, resource_class).to be == "/#{slugs.join '/'}/#{resource_class.to_s.tableize}/new" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:feature) }
+
+        it { expect(instance.new_resource_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}/new" }
+      end # describe
+    end # describe
+  end # describe
+
+  describe '#page_path' do
+    it { expect(instance).to respond_to(:page_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.page_path nil).to be == '/' }
+    end # describe
+
+    describe 'with a root feature' do
+      include_context 'with a root feature', :page
+
+      it { expect(instance.resource_path feature).to be == "/#{slug}" }
+    end # describe
+
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :page
+
+      it { expect(instance.resource_path feature).to be == "/#{slugs.join '/'}" }
+
+      context 'with empty slug' do
+        let(:feature) { build(:feature, :directory => directories.last, :slug => nil) }
+
+        it { expect(instance.resource_path feature).to be == "/#{slugs[0...-1].join '/'}" }
+      end # context
+    end # describe
+  end # describe
+
+  describe '#resource_path' do
+    it { expect(instance).to respond_to(:resource_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.resource_path nil).to be == '/' }
+    end # describe
+
+    describe 'with a root feature', :feature => :root do
+      it { expect(instance.resource_path feature).to be == "/#{slug}" }
+    end # describe
+
+    describe 'with a non-root feature', :feature => :leaf do
+      it { expect(instance.resource_path feature).to be == "/#{slugs.join '/'}" }
+
+      context 'with empty slug' do
+        let(:feature) { build(:feature, :directory => directories.last, :slug => nil) }
+
+        it { expect(instance.resource_path feature).to be == "/#{slugs[0...-1].join '/'}" }
+      end # context
     end # describe
   end # describe
 end # describe

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'admin routing for directories', :type => :routing do
+RSpec.describe 'admin routing for resources', :type => :routing do
   let(:resources_controller) { 'admin/resources' }
 
   describe 'GET /path/to/directory/edit' do
