@@ -32,5 +32,15 @@ RSpec.describe ResourcesController, :type => :controller do
 
       expect_behavior 'assigns the resource'
     end # describe
+
+    describe 'with a valid path to a page', :path => :valid_feature do
+      let(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
+
+      expect_behavior 'renders template', :show
+
+      expect_behavior 'assigns directories'
+
+      expect_behavior 'assigns the resource'
+    end # describe
   end # describe
 end # describe
