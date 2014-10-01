@@ -273,7 +273,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       let(:attributes) { attributes_for :feature }
 
       it 'redirects to the index path' do
-        expect(controller).to receive(:redirect_to).with(instance.send :_index_resources_path)
+        expect(controller).to receive(:redirect_to).with(/\Afeatures\/[A-Za-z0-9]+\z/)
 
         instance.create request
 
@@ -355,7 +355,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       let(:attributes) { attributes_for :feature }
 
       it 'redirects to the index path' do
-        expect(controller).to receive(:redirect_to).with(instance.send :_index_resources_path)
+        expect(controller).to receive(:redirect_to).with(instance.send :_resource_path)
 
         instance.update request
 

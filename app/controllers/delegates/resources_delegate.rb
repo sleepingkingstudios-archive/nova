@@ -159,9 +159,9 @@ class ResourcesDelegate
   def redirect_path action, status = nil
     case "#{action}#{status ? "_#{status}" : ''}"
     when 'create_success'
-      _index_resources_path
+      _resource_path
     when 'update_success'
-      _index_resources_path
+      _resource_path
     when 'destroy_success'
       _index_resources_path
     end # case
