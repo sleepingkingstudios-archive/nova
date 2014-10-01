@@ -26,6 +26,19 @@ RSpec.describe FeaturePresenter, :type => :decorator do
     end # describe
   end # describe
 
+  describe '#label' do
+    it { expect(instance).to have_reader(:label).with(feature.title) }
+
+    context 'with a changed title' do
+      before(:each) do
+        feature.save!
+        feature.title = attributes_for(:feature).fetch(:title)
+      end # before each
+
+      it { expect(instance.label).to be == feature.title_was }
+    end # context
+  end # describe
+
   describe '#slug' do
     it { expect(instance).to have_reader(:slug).with(feature.slug) }
   end # describe

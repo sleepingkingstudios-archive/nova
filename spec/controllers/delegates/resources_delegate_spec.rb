@@ -296,6 +296,8 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       expect(controller).to receive(:render).with(instance.show_template_path)
 
       instance.show request
+
+      expect(assigns[:resource]).to be == object
     end # it
   end # describe
 
@@ -309,6 +311,8 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       expect(controller).to receive(:render).with(instance.edit_template_path)
 
       instance.edit request
+
+      expect(assigns[:resource]).to be == object
     end # it
   end # describe
 

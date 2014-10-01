@@ -4,16 +4,21 @@
 
 %h2
   = presenter.label
-  %small This is a Test of the Emergency Broadcast System. This is Only a Test.
 
 %p
-  Current path:
-  = params[:directories] || "None"
+  This directory does not currently have an
+  %code /index
+  page to display.
 
-%p
-  Current directories:
-%ul
-  - if @directories.blank?
-    %li None
-  - @directories.each do |directory|
-    %li= directory.slug
+- if user_signed_in?
+  %p
+    To create an index page, go to
+    = link_to new_page_path(@current_directory) do
+      = icon :file_o
+      Create Page
+    and enter
+    %code index
+    as the page slug or short name.
+
+- if @current_directory
+  = presenter.parent_link :icon => :arrow_circle_left, :prefix => 'Back to'

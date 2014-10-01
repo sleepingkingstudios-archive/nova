@@ -32,7 +32,8 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # it
   end # shared_examples
 
-  let(:instance) { described_class.new }
+  let(:object)   { nil }
+  let(:instance) { described_class.new object }
 
   describe '::new' do
     it { expect(described_class).to construct.with(0..1).arguments }
@@ -154,6 +155,37 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
         end # it
       end # context
     end # describe
+  end # describe
+
+  describe '#show', :controller => true do
+    let(:object)  { create(:directory) }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    it 'renders the show template' do
+      expect(controller).to receive(:render).with(instance.show_template_path)
+
+      instance.show request
+
+      expect(assigns[:resource]).to be == object
+    end # it
+
+    describe 'with an index page' do
+      let!(:index_page) { create(:page, :directory => object, :slug => 'index', :content => build(:content)) }
+
+      it 'renders the page show template' do
+        expect(controller).to receive(:render).with(instance.page_template_path)
+
+        instance.show request
+
+        expect(assigns[:resource]).to be == index_page
+      end # it
+    end # describe
+  end # describe
+
+  ### Partial Methods ###
+
+  describe '#page_template_path' do
+    it { expect(instance).to have_reader(:page_template_path).with('features/pages/show') }
   end # describe
 
   ### Routing Methods ###

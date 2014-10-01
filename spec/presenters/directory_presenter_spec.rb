@@ -136,13 +136,25 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
         context 'with action => dashboard' do
           let(:link) { %{<a href="/dashboard">Root Directory</a>} }
 
-          it { expect(instance.parent_link :dashboard).to be == link }
+          it { expect(instance.parent_link :action => :dashboard).to be == link }
         end # context
 
         context 'with action => index' do
           let(:link) { %{<a href="/directories">Root Directory</a>} }
 
-          it { expect(instance.parent_link :index).to be == link }
+          it { expect(instance.parent_link :action => :index).to be == link }
+        end # context
+
+        context 'with icon => cube' do
+          let(:link) { %{<a href="/"><span class="fa fa-cube fa-fw"></span> Root Directory</a>} }
+
+          it { expect(instance.parent_link :icon => :cube).to be == link }
+        end # context
+
+        context 'with prefix => string' do
+          let(:link) { %{<a href="/">Back to Root Directory</a>} }
+
+          it { expect(instance.parent_link :prefix => 'Back to').to be == link }
         end # context
       end # context
 
@@ -156,15 +168,50 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
         context 'with action => dashboard' do
           let(:link) { %{<a href="/#{parent.slug}/dashboard">#{parent.title}</a>} }
 
-          it { expect(instance.parent_link :dashboard).to be == link }
+          it { expect(instance.parent_link :action => :dashboard).to be == link }
         end # context
 
         context 'with action => index' do
           let(:link) { %{<a href="/#{parent.slug}/directories">#{parent.title}</a>} }
 
-          it { expect(instance.parent_link :index).to be == link }
+          it { expect(instance.parent_link :action => :index).to be == link }
+        end # context
+
+        context 'with icon => cube' do
+          let(:link) { %{<a href="/#{parent.slug}"><span class="fa fa-cube fa-fw"></span> #{parent.title}</a>} }
+
+          it { expect(instance.parent_link :icon => :cube).to be == link }
+        end # context
+
+        context 'with prefix => string' do
+          let(:link) { %{<a href="/#{parent.slug}">Back to #{parent.title}</a>} }
+
+          it { expect(instance.parent_link :prefix => 'Back to').to be == link }
         end # context
       end # context
+    end # context
+  end # describe
+
+  describe '#root?' do
+    it { expect(instance).to have_reader(:root?) }
+
+    context 'without a directory' do
+      let(:directory) { nil }
+
+      it { expect(instance.root?).to be true }
+    end # context
+
+    context 'without a parent' do
+      let(:attributes) { super().merge :parent => nil }
+
+      it { expect(instance.root?).to be true }
+    end # context
+
+    context 'with a parent' do
+      let(:parent)     { create(:directory) }
+      let(:attributes) { super().merge :parent => parent }
+
+      it { expect(instance.root?).to be false }
     end # context
   end # describe
 

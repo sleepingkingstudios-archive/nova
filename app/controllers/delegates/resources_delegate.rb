@@ -90,13 +90,17 @@ class ResourcesDelegate
     end # if-else
   end # action create
 
-  def edit request
-    controller.render edit_template_path
-  end # action edit
-
   def show request
+    assign :resource, resource
+    
     controller.render show_template_path
   end # action show
+
+  def edit request
+    assign :resource, resource
+    
+    controller.render edit_template_path
+  end # action edit
 
   def update request
     params = ActionController::Parameters.new(request.params)

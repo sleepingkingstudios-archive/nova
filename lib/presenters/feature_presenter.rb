@@ -13,6 +13,10 @@ class FeaturePresenter < Presenter
     super(icon_name, options)
   end # method icon
 
+  def label
+    feature.title_changed? && !feature.title_was.blank? ? feature.title_was : feature.title
+  end # method label
+
   def type
     feature._type
   end # method type

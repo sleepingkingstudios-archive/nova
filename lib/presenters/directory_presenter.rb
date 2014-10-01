@@ -3,6 +3,8 @@
 require 'presenters/presenter'
 
 class DirectoryPresenter < Presenter
+  include IconsHelper
+
   alias_method :directory, :object
 
   def children
@@ -23,10 +25,10 @@ class DirectoryPresenter < Presenter
     directory.blank? ? nil : directory.parent
   end # method parent
 
-  def parent_link action = nil
+  def parent_link options = {}
     return empty_value if directory.blank?
 
-    path = case action.to_s
+    path = case options[:action].to_s
     when 'dashboard'
       dashboard_directory_path(parent)
     when 'index'
@@ -35,8 +37,18 @@ class DirectoryPresenter < Presenter
       directory_path(parent)
     end # when
 
-    link_to(parent ? parent.title : 'Root Directory', path)
+    content = parent ? parent.title : 'Root Directory'
+
+    content = "#{options[:prefix]} #{content}" if options[:prefix]
+
+    content = "#{icon options[:icon], :width => :fixed} #{content}".html_safe if options[:icon]
+
+    link_to(content, path)
   end # method parent_link
+
+  def root?
+    directory.try(:parent).blank?
+  end # method root?
 
   def slug
     directory.blank? ? empty_value : directory.slug

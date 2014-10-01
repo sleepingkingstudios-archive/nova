@@ -1,4 +1,21 @@
 - # app/views/admin/features/pages/index.html.haml
 
-%h1 Admin::Features::Pages#index
-%p  Find me at app/views/admin/features/pages/index.html.haml
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Pages
+
+= render :partial => 'admin/features/pages/actions', :locals => { :directory => @current_directory }
+
+= render :partial => 'admin/features/table', :locals => { :features => @current_directory.pages }
+
+%p
+  = link_to dashboard_directory_path(@current_directory) do
+    = icon(:arrow_circle_left)
+    Back to Dashboard
+%p
+  = link_to directory_path(@current_directory) do
+    = icon(:arrow_circle_left)
+    Back to
+    = presenter.label

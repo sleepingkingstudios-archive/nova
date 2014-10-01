@@ -19,6 +19,27 @@ class DirectoriesDelegate < ResourcesDelegate
     params.fetch(:directory, {}).permit(:title, :slug)
   end # method resource_params
 
+  ### Actions ###
+
+  def show request
+    scope      = resource ? resource.pages : Page.roots
+    index_page = scope.where(:slug => 'index').first
+
+    if index_page.blank?
+      super
+    else
+      assign :resource, index_page
+
+      controller.render page_template_path
+    end # if-else
+  end # action show
+
+  ### Partial Methods ###
+
+  def page_template_path
+    "features/pages/show"
+  end # method page_template_path
+
   private
 
   def redirect_path action, status = nil
