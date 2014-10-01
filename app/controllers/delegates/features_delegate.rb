@@ -37,8 +37,8 @@ class FeaturesDelegate < ResourcesDelegate
 
   def redirect_path action, status = nil
     case "#{action}#{status ? "_#{status}" : ''}"
-    when 'create_success'
-      _resource_path
+    when 'destroy_success'
+      dashboard_directory_path(directories.last)
     else
       super
     end # case

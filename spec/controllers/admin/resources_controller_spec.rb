@@ -162,5 +162,24 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
         expect { perform_action }.to change(Directory, :count).by(-1)
       end # it
     end # describe
+
+    describe 'with a valid path to a page', :path => :valid_feature do
+      let!(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
+
+      it 'redirects to the parent directory' do
+        parent_directory = directories.last
+
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(dashboard_directory_path(parent_directory))
+
+        expect(request.flash[:danger]).not_to be_blank
+      end # it
+
+      it 'destroys the resource' do
+        expect { perform_action }.to change(Page, :count).by(-1)
+      end # it
+    end # describe
   end # describe
 end # describe
