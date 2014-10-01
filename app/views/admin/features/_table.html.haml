@@ -21,14 +21,14 @@
           %td= presenter.slug
           %td= presenter.type
           %td
-            = link_to '', :class => 'text-info' do
+            = link_to resource_path(feature), :class => 'text-info' do
               = icon :cube, :fixed => true
               Show
             &nbsp;
-            = link_to '', :class => 'text-warning' do
+            = link_to edit_resource_path(feature), :class => 'text-warning' do
               = icon :edit, :fixed => true
               Edit
             &nbsp;
-            = link_to '', :class => 'text-danger', :method => :delete do
+            = link_to resource_path(feature), :class => 'text-danger', :method => :delete do
               = icon :trash, :fixed => true
               Delete

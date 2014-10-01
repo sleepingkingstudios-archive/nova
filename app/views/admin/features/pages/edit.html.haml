@@ -1,4 +1,7 @@
 - # app/views/admin/features/pages/edit.html.haml
 
-%h1 Admin::Features::Pages#edit
-%p  Find me at app/views/admin/features/pages/edit.html.haml
+%h2
+  = @resource.title
+  %small Edit Page
+
+= render :partial => 'admin/features/pages/form', :locals => { :directories => @directories, :page => @resource }

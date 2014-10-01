@@ -1,4 +1,20 @@
 - # app/views/features/pages/show.html.haml
 
-%h2 Features::Page#show
-%p  Find me at app/views/features/pages/show.html.haml
+- directory_presenter = DirectoryPresenter.new @directories.last
+
+%h2= @resource.title
+- if user_signed_in?
+  %p
+    = link_to edit_resource_path(@resource), :class => 'text-warning' do
+      = icon :edit, :scale => :large
+      Edit Page
+    &nbsp;
+    = link_to resource_path(@resource), :class => 'text-danger', :method => :delete do
+      = icon :trash, :scale => :large
+      Delete Page
+
+%p
+  = link_to directory_path(@directories.last) do
+    = icon(:arrow_circle_left)
+    Back to
+    = directory_presenter.label

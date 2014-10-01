@@ -1,0 +1,21 @@
+- # app/views/admin/features/pages/_form.html.haml
+
+- form_path   = page.persisted? ? page_path(page) : create_page_path(directories.last)
+- form_method = page.persisted? ? :patch : :post
+= form_for page, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method do |form|
+  - unless page.errors.blank?
+    .panel.panel-warning
+      .panel-heading Page Errors
+      .panel-body
+        %p The following error(s) prevent the Page from being saved:
+        %ul
+          - page.errors.full_messages.each do |message|
+            %li= message
+
+  = form.form_group :title do
+    = form.text_field :title, :autofocus => true
+  = form.form_group :slug do
+    = form.text_field :slug
+  = form.form_group do
+    = form.submit page.persisted? ? 'Update Page' : 'Create Page'
+    = form.button 'Cancel', page.persisted? ? page_path(page) : dashboard_directory_path(directories.last)

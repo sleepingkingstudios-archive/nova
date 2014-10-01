@@ -43,7 +43,7 @@
     - feature_presenter = present(klass.new)
     - if 0 != index
       &nbsp;
-    = link_to '', :class => 'text-primary' do
+    = link_to new_resource_path(@directories.last, name), :class => 'text-primary' do
       = feature_presenter.icon :fixed => true, :scale => :large
       = "Create #{feature_presenter.type}"
 

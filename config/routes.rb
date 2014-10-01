@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     delete '*directories',              :to => 'resources#destroy'
   end # namespace
 
-  get '*directories', :to => 'resources#show', :constraints => lambda { |request| Directory.reserved_slugs.none? { |slug| request.path =~ /\A\/?#{slug}/ } }
+  get '*directories', :to => 'resources#show', :constraints => lambda { |request| Page.reserved_slugs.none? { |slug| request.path =~ /\A\/?#{slug}/ } }
 
   root 'resources#show'
 end # draw

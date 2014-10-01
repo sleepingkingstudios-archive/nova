@@ -1,4 +1,9 @@
 - # app/views/admin/features/pages/new.html.haml
 
-%h1 Admin::Features::Pages#new
-%p  Find me at app/views/admin/features/pages/new.html.haml
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Create Page
+
+= render :partial => 'admin/features/pages/form', :locals => { :directories => @directories, :page => @resource }
