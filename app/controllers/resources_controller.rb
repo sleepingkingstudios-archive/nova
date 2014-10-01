@@ -7,7 +7,7 @@ class ResourcesController < ApplicationController
   before_action :lookup_resource, :only => %i(show)
   before_action :initialize_delegate
 
-  rescue_from Nova::ResourceNotFoundError, :with => :handle_missing_resource
+  rescue_from Appleseed::ResourceNotFoundError, :with => :handle_missing_resource
 
   # GET /path/to/resource
   def show

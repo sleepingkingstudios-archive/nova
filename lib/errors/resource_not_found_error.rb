@@ -1,6 +1,6 @@
 # lib/errors/resource_not_found_error.rb
 
-module Nova
+module Appleseed
   class ResourceNotFoundError < StandardError
     def initialize search, found, missing
       @search  = search

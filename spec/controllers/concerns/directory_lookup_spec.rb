@@ -123,7 +123,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
       let(:params)   { super().merge :directories => segments.join('/') }
 
       it 'raises an error' do
-        expect { instance.lookup_resource }.to raise_error Nova::ResourceNotFoundError do |exception|
+        expect { instance.lookup_resource }.to raise_error Appleseed::ResourceNotFoundError do |exception|
           expect(exception.search).to be == segments
           expect(exception.found).to be == directories
           expect(exception.missing).to be == segments.last
@@ -182,7 +182,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
       let(:params)   { super().merge :directories => segments.join('/') }
 
       it 'raises an error' do
-        expect { instance.lookup_resource }.to raise_error Nova::ResourceNotFoundError do |exception|
+        expect { instance.lookup_resource }.to raise_error Appleseed::ResourceNotFoundError do |exception|
           expect(exception.search).to be == segments
           expect(exception.found).to be == directories
           expect(exception.missing).to be == segments.last

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 require 'errors/authentication_error'
 
-RSpec.describe Nova::AuthenticationError do
+RSpec.describe Appleseed::AuthenticationError do
   let(:action)     { 'autodefenestrate' }
   let(:controller) { 'spec/examples' }
   let(:params)     { { :window => 'nearest' } }

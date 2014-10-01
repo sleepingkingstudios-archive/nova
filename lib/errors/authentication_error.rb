@@ -1,6 +1,6 @@
 # lib/errors/authentication_error.rb
 
-module Nova
+module Appleseed
   class AuthenticationError < StandardError
     def initialize request
       @action     = request[:action]

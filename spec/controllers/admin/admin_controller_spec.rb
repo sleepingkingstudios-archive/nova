@@ -10,7 +10,7 @@ RSpec.describe Admin::AdminController, :type => :controller do
       before(:each) { sign_out :user }
 
       it 'raises an error' do
-        expect { controller.send :authenticate_user! }.to raise_error(Nova::AuthenticationError)
+        expect { controller.send :authenticate_user! }.to raise_error(Appleseed::AuthenticationError)
       end # it
     end # context
 

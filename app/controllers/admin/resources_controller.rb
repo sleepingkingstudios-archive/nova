@@ -15,9 +15,9 @@ class Admin::ResourcesController < Admin::AdminController
 
   rescue_from Directory::NotFoundError,  :with => :handle_missing_directory
 
-  rescue_from Nova::AuthenticationError, :with => :handle_unauthorized_user
+  rescue_from Appleseed::AuthenticationError, :with => :handle_unauthorized_user
 
-  rescue_from Nova::ResourceNotFoundError, :with => :handle_missing_resource
+  rescue_from Appleseed::ResourceNotFoundError, :with => :handle_missing_resource
 
   # GET /path/to/directory/resources
   def index

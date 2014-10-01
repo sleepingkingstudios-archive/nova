@@ -4,7 +4,7 @@ require 'rails_helper'
 
 require 'errors/resource_not_found_error'
 
-RSpec.describe Nova::ResourceNotFoundError do
+RSpec.describe Appleseed::ResourceNotFoundError do
   let(:search)   { %w(weapons swords japanese tachi) }
   let(:found)    { %w(weapons swords japanese).map { |slug| double('directory', :slug => slug) } }
   let(:missing)  { 'tachi' }

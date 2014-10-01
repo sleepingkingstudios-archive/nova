@@ -46,7 +46,7 @@ module DirectoryLookup
     features = scope.where(:slug => exception.missing.last)
 
     # If the result is blank, flash a warning and redirect to the directory page.
-    raise Nova::ResourceNotFoundError.new(exception.search, exception.found, exception.missing.last) if features.blank?
+    raise Appleseed::ResourceNotFoundError.new(exception.search, exception.found, exception.missing.last) if features.blank?
 
     @resource = features.last
   end # method lookup_resource

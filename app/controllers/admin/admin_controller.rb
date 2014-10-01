@@ -4,6 +4,6 @@ class Admin::AdminController < ApplicationController
   def authenticate_user!
     super
 
-    raise Nova::AuthenticationError.new(request) unless user_signed_in?
+    raise Appleseed::AuthenticationError.new(request) unless user_signed_in?
   end # method authenticate_user  
 end # class
