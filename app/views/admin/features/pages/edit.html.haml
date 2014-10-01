@@ -1,0 +1,7 @@
+- # app/views/admin/features/pages/edit.html.haml
+
+%h2
+  = @resource.title
+  %small Edit Page
+
+= render :partial => 'admin/features/pages/form', :locals => { :directories => @directories, :page => @resource }

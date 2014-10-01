@@ -1,0 +1,9 @@
+- # app/views/directories/edit.html.haml
+
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Edit Directory
+
+= render :partial => 'form', :locals => { :directory => @current_directory }

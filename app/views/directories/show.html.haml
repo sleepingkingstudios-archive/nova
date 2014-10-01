@@ -1,4 +1,24 @@
 - # app/views/directories/show.html.haml
 
-%h1 Directories#show
-%p  Find me at app/views/directories/show.html.haml
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+
+%p
+  This directory does not currently have an
+  %code /index
+  page to display.
+
+- if user_signed_in?
+  %p
+    To create an index page, go to
+    = link_to new_page_path(@current_directory) do
+      = icon :file_o
+      Create Page
+    and enter
+    %code index
+    as the page slug or short name.
+
+- if @current_directory
+  = presenter.parent_link :icon => :arrow_circle_left, :prefix => 'Back to'

@@ -1,0 +1,21 @@
+- # app/views/admin/directories/index.html.haml
+
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Directories
+
+= render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
+
+= render :partial => 'admin/directories/table', :locals => { :directories => presenter.children }
+
+%p
+  = link_to dashboard_directory_path(@current_directory) do
+    = icon(:arrow_circle_left)
+    Back to Dashboard
+%p
+  = link_to directory_path(@current_directory) do
+    = icon(:arrow_circle_left)
+    Back to
+    = presenter.label

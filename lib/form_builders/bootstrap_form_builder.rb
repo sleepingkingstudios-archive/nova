@@ -8,7 +8,15 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
     super object_name, object, template, options
   end # constructor
 
-  delegate :content_tag, :tag, :to => :@template
+  delegate :content_tag, :link_to, :tag, :to => :@template
+
+  def button name = nil, options = nil, html_options = {}, &block
+    classes = %w(btn)
+    classes << 'btn-default' unless html_options.fetch(:class, '') =~ /btn-/
+    html_options[:class] = concat_class html_options.fetch(:class, ''), *classes
+
+    link_to name, options, html_options, &block
+  end # method button
 
   def email_field method, options = {}
     options[:class] = concat_class options.fetch(:class, ''), 'form-control'
@@ -46,6 +54,7 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
 
   def label method, text = nil, options = {}, &block
     options[:class] = concat_class options.fetch(:class, ''), 'control-label'
+
     super method, text, options, &block
   end # method label
 
@@ -56,13 +65,31 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
     super method, options
   end # method password_field
 
+  def select method, choices = nil, options = {}, html_options = {}, &block
+    html_options[:class] = concat_class html_options.fetch(:class, ''), 'form-control'
+
+    super method, choices, options, html_options, &block
+  end # method select
+
   def submit value = nil, options = {}
     classes = %w(btn)
-    classes << 'btn-default' unless options.fetch(:class, '') =~ /btn-/
+    classes << 'btn-primary' unless options.fetch(:class, '') =~ /btn-/
     options[:class] = concat_class options.fetch(:class, ''), *classes
 
     super value, options
   end # method submit
+
+  def text_area method, options = {}
+    options[:class] = concat_class options.fetch(:class, ''), 'form-control'
+
+    super method, options
+  end # method text_area
+
+  def text_field method, options = {}
+    options[:class] = concat_class options.fetch(:class, ''), 'form-control'
+
+    super method, options
+  end # method text_field
 
   private
 

@@ -1,0 +1,56 @@
+- # app/views/admin/directories/dashboard.html.haml
+
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Dashboard
+
+%p
+  = link_to directory_path(@current_directory), :class => 'text-info' do
+    = icon :cube, :scale => :large
+    Show Directory
+  - if @current_directory
+    &nbsp;
+    = link_to edit_directory_path(@current_directory), :class => 'text-warning' do
+      = icon :edit, :scale => :large
+      Edit Directory
+    &nbsp;
+    = link_to directory_path(@current_directory), :class => 'text-danger', :method => :delete do
+      = icon :trash, :scale => :large
+      Delete Directory
+
+%h3 Properties
+%p
+  %strong Parent:
+  = presenter.parent_link :action => :dashboard
+%p
+  %strong Title:
+  = presenter.title
+%p
+  %strong Slug:
+  = presenter.slug
+
+%h3 Directories
+
+= render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
+
+= render :partial => 'admin/directories/table', :locals => { :directories => presenter.children }
+
+%h3 Features
+%p
+  - Directory.features.each.with_index do |(name, klass), index|
+    - feature_presenter = present(klass.new)
+    - if 0 != index
+      &nbsp;
+    = link_to new_resource_path(@directories.last, name), :class => 'text-primary' do
+      = feature_presenter.icon :fixed => true, :scale => :large
+      = "Create #{feature_presenter.type}"
+
+= render :partial => 'admin/features/table', :locals => { :features => presenter.features }
+
+%p
+  = link_to directory_path(@directories.last) do
+    = icon(:arrow_circle_left)
+    Back to
+    = presenter.label

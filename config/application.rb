@@ -19,6 +19,9 @@ module Nova
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    # Autoload namespaced model classes.
+    config.autoload_paths += Dir[Rails.root.join('app', 'models', '**', '*')].reject { |file| file =~ /.rb\z/ }
+
     # Set FactoryGirl factories directory.
     config.generators do |config|
       config.factory_girl :dir => 'spec/support/factories'

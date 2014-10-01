@@ -45,6 +45,24 @@ RSpec.describe Directory, :type => :model do
     end # let!
   end # shared_context
 
+  describe '::RESERVED_ACTIONS' do
+    it { expect(described_class.const_defined? :RESERVED_ACTIONS).to be true }
+
+    it 'is immutable' do
+      expect { described_class::RESERVED_ACTIONS << 'autodefenestrate' }.to raise_error(RuntimeError)
+      expect { described_class::RESERVED_ACTIONS.first.clear }.to raise_error(RuntimeError)
+    end # it
+
+    it 'lists resourceful actions' do
+      expect(described_class::RESERVED_ACTIONS).to contain_exactly *%w(
+        index
+        new
+        edit
+        dashboard
+      ) # end array
+    end # it
+  end # describe
+
   ### Class Methods ###
 
   describe '::feature' do
@@ -60,6 +78,14 @@ RSpec.describe Directory, :type => :model do
       let(:scope_name)  { model_name.to_s.pluralize }
 
       before(:each) { Directory.feature model_name, :class => model_class }
+
+      it 'appends the plural name and class to ::features' do
+        expect(described_class.features).to include({ scope_name => model_class })
+      end # it
+
+      it 'appends the plural name to ::reserved_slugs' do
+        expect(described_class.reserved_slugs).to include scope_name
+      end # it
 
       describe "##{model_name.to_s.pluralize}" do
         let(:criteria) { instance.send(scope_name) }
@@ -155,6 +181,14 @@ RSpec.describe Directory, :type => :model do
     end # describe
   end # describe
 
+  describe '::features' do
+    it { expect(described_class).to have_reader(:features) }
+
+    it 'is immutable' do
+      expect { described_class.features['autodefenestrate'] = Class.new }.not_to change(described_class, :features)
+    end # it
+  end # describe
+
   describe '::find_by_ancestry' do
     it { expect(described_class).to respond_to(:find_by_ancestry).with(1).arguments }
 
@@ -213,6 +247,44 @@ RSpec.describe Directory, :type => :model do
     end # describe
   end # describe
 
+  describe '::join' do
+    it { expect(described_class).to respond_to(:join).with(0..9001).arguments }
+
+    describe 'with an array of strings' do
+      let(:slugs) { %w(weapons swords japanese) }
+
+      it { expect(described_class.join *slugs).to be == slugs.join('/') }
+
+      it 'compacts consecutive dividers' do
+        expected = slugs.join('/')
+        slugs[1] = "#{slugs[1]}/"
+
+        expect(described_class.join *slugs).to be == expected
+      end # it
+    end # describe
+  end # describe
+
+  describe '::reserved_slugs' do
+    it { expect(described_class).to have_reader(:reserved_slugs) }
+
+    it { expect(described_class.reserved_slugs).to include 'admin' }
+
+    it 'contains resourceful actions' do
+      expect(described_class.reserved_slugs).to include *%w(
+        index
+        new
+        edit
+      ) # end array
+    end # it
+
+    it 'contains directory and feature names' do
+      expect(described_class.reserved_slugs).to include *%w(
+        directories
+        features
+      ) # end array
+    end # it
+  end # describe
+
   describe '::roots' do
     it { expect(described_class).to respond_to(:roots).with(0).arguments }
 
@@ -245,6 +317,10 @@ RSpec.describe Directory, :type => :model do
 
     it { expect(instance).to have_property :slug }
 
+    it 'is generated from the title' do
+      expect(instance.slug).to be == instance.title.parameterize
+    end # it
+
     it 'sets #slug_lock to true' do
       expect { instance.slug = value }.to change(instance, :slug_lock).to(true)
     end # it
@@ -271,6 +347,13 @@ RSpec.describe Directory, :type => :model do
 
     context 'with many child directories', :children => :one do
       it { expect(instance.children).to be == children }
+
+      it 'destroys the children on destroy' do
+        instance.save!
+        children.map &:save!
+
+        expect { instance.destroy }.to change(Directory, :count).by(-(1 + children.count))
+      end # it
     end # context
   end # describe
 
@@ -279,6 +362,13 @@ RSpec.describe Directory, :type => :model do
 
     context 'with many features', :features => :many do
       it { expect(instance.features).to be == features }
+
+      it 'destroys the features on destroy' do
+        instance.save!
+        features.map &:save!
+
+        expect { instance.destroy }.to change(Feature, :count).by(-features.count)
+      end # it
     end # context
   end # describe
 
@@ -299,13 +389,61 @@ RSpec.describe Directory, :type => :model do
       it { expect(instance).to have_errors.on(:slug).with_message("can't be blank") }
     end # describe
 
-    describe 'slug must be unique within parent_id scope' do
-      before(:each) { create :directory, :slug => instance.slug }
+    describe 'slug must not match reserved values' do
+      context 'with "admin"' do
+        let(:attributes) { super().merge :slug => 'admin' }
 
-      it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "index"' do
+        let(:attributes) { super().merge :slug => 'index' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "edit"' do
+        let(:attributes) { super().merge :slug => 'edit' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+
+      context 'with "directories"' do
+        let(:attributes) { super().merge :slug => 'directories' }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+    end # describe
+
+    describe 'slug must be unique within parent_id scope' do
+      context 'with a sibling directory' do
+        before(:each) { create :directory, :slug => instance.slug }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+      end # context
+
+      context 'with a sibling feature' do
+        before(:each) { create :feature, :slug => instance.slug }
+
+        it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+      end # context
 
       context 'with a parent directory', :parent => :one do
+        before(:each) { create :directory, :slug => instance.slug }
+
         it { expect(instance).not_to have_errors.on(:slug) }
+
+        context 'with a sibling directory' do
+          before(:each) { create :directory, :parent => parent, :slug => instance.slug }
+
+          it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+        end # context
+
+        context 'with a sibling feature' do
+          before(:each) { create :feature, :directory => parent, :slug => instance.slug }
+
+          it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
+        end # context
       end # context
     end # describe
   end # describe
@@ -333,6 +471,31 @@ RSpec.describe Directory, :type => :model do
 
     describe 'with a parent directory', :parent => :one do
       it { expect(instance.root?).to be false }
+    end # describe
+  end # describe
+
+  describe '#to_partial_path' do
+    it { expect(instance).to respond_to(:to_partial_path).with(0).arguments }
+
+    it { expect(instance.to_partial_path).to be == instance.slug }
+
+    describe 'with a parent directory', :parent => :one do
+      let(:slugs) { instance.ancestors.map(&:slug).push(instance.slug) }
+
+      it { expect(instance.to_partial_path).to be == slugs.join('/') }
+
+      context 'with an empty slug' do
+        let(:attributes) { super().merge :slug => nil }
+        let(:slugs)      { super()[0...-1] }
+
+        it { expect(instance.to_partial_path).to be == slugs.join('/') }        
+      end # context
+    end # describe
+
+    describe 'with many ancestor directories', :ancestors => :many do
+      let(:slugs) { instance.ancestors.map(&:slug).push(instance.slug) }
+
+      it { expect(instance.to_partial_path).to be == slugs.join('/') }
     end # describe
   end # describe
 end # describe

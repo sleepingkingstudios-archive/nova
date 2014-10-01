@@ -1,0 +1,9 @@
+- # app/views/admin/directories/new.html.haml
+
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Create Directory
+
+= render :partial => 'admin/directories/form', :locals => { :directory => @resource }

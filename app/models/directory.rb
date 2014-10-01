@@ -3,10 +3,14 @@
 require 'mongoid/sleeping_king_studios/has_tree'
 require 'mongoid/sleeping_king_studios/sluggable'
 
+require 'validators/unique_within_siblings_validator'
+
 class Directory
   include Mongoid::Document
   include Mongoid::SleepingKingStudios::HasTree
   include Mongoid::SleepingKingStudios::Sluggable
+
+  RESERVED_ACTIONS = %w(index new edit dashboard).map(&:freeze).freeze
 
   ### Class Methods ###
 
@@ -14,8 +18,11 @@ class Directory
     def feature name, options = {}
       model_name  = name.to_s.singularize
       scope_name  = model_name.pluralize
-      class_name  = options[:class].to_s || model_name.camelize
+      class_name  = options.key?(:class) ? options[:class].to_s : model_name.camelize
       model_class = class_name.constantize
+
+      # Append to the feature_names collection.
+      (@features ||= {})[scope_name] = model_class
 
       send :define_method, scope_name do
         features.where(:_type => class_name)
@@ -34,6 +41,10 @@ class Directory
       end # define_method
     end # method feature
 
+    def features
+      (@features ||= {}).dup
+    end # method feature
+
     def find_by_ancestry segments
       raise ArgumentError.new "path can't be blank" if segments.blank?
 
@@ -50,27 +61,41 @@ class Directory
 
       return directories
     end # class method find_by_ancestry
+
+    def join *slugs
+      slugs.map(&:to_s).join('/').gsub(/\/{2,}/, '/')
+    end # class method join
+
+    def reserved_slugs
+      %w(admin).concat(RESERVED_ACTIONS).concat(%w(directories features)).concat(features.keys)
+    end # class method reserved_slugs
+
+    private
   end # class << self
 
   ### Attributes ###
   field :title, :type => String, :default => ''
 
   ### Concerns ###
-  has_tree
+  has_tree :children => { :dependent => :destroy }
   slugify :title, :lockable => true
 
   ### Relations ###
-  has_many :features
+  has_many :features, :dependent => :destroy
 
   ### Validations ###
   validates :title, :presence => true
-  validates :slug,  :uniqueness => { :scope => :parent_id }
+  validates :slug,  :exclusion => { :in => reserved_slugs }, :unique_within_siblings => true
 
   ### Instance Methods ###
 
   def ancestors
     parent ? parent.ancestors.push(parent) : []
   end # method ancestors
+
+  def to_partial_path
+    Directory.join *ancestors.push(self).map(&:slug).reject { |slug| slug.blank? }
+  end # method to_partial_path
 
   class NotFoundError < StandardError
     def initialize search, found, missing
@@ -89,7 +114,7 @@ class Directory
         "#{search.join('/').inspect}.\n"\
         "Summary:\n"\
         "  When calling Directory.find_by_ancestry with an array of slugs, "\
-        "the array must match a valid chain of directories terminating at a "\
+        "the array must match a valid chain of directories originating at a "\
         "root directory. The search was for the slug(s): "\
         "#{search.join(', ')} ... (#{search.count} total) and the "\
         "following slug(s) were not found: #{missing.join(', ')}.\n"\

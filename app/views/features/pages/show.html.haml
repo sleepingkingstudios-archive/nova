@@ -1,0 +1,34 @@
+- # app/views/features/pages/show.html.haml
+
+- directory_presenter = DirectoryPresenter.new @directories.last
+
+- presenter = present(@resource)
+
+%h2
+  = presenter.label
+  %small Index
+
+- if user_signed_in?
+  %p
+    - if presenter.index?
+      = link_to dashboard_directory_path(@directories.last), :class => 'text-info' do
+        = icon :cubes, :scale => :large
+        Dashboard
+      &nbsp;  
+    = link_to edit_resource_path(@resource), :class => 'text-warning' do
+      = icon :edit, :scale => :large
+      Edit Page
+    &nbsp;
+    = link_to resource_path(@resource), :class => 'text-danger', :method => :delete do
+      = icon :trash, :scale => :large
+      Delete Page
+
+- if presenter.index?
+  - unless directory_presenter.root?
+    %p= directory_presenter.parent_link :icon => :arrow_circle_left, :prefix => 'Back to'
+- else
+  %p
+    = link_to directory_path(@directories.last) do
+      = icon(:arrow_circle_left)
+      Back to
+      = directory_presenter.label
