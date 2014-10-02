@@ -71,6 +71,12 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
     super method, choices, options, html_options, &block
   end # method select
 
+  def static_field text, options = {}
+    options[:class] = concat_class options.fetch(:class, ''), 'form-control-static'
+
+    content_tag :p, text, options
+  end # method static_field
+
   def submit value = nil, options = {}
     classes = %w(btn)
     classes << 'btn-primary' unless options.fetch(:class, '') =~ /btn-/

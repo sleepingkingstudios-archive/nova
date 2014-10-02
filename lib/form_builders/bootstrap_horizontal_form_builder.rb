@@ -5,7 +5,7 @@ require 'form_builders/bootstrap_form_builder'
 class BootstrapHorizontalFormBuilder < BootstrapFormBuilder
   def initialize object_name, object, template, options
     options[:html] ||= {}
-    options[:html][:class] = concat_class options[:html][:class], 'form-horizontal'
+    options[:html][:class] = concat_class options.fetch(:html, {}).fetch(:class, ''), 'form-horizontal'
 
     super object_name, object, template, options
   end # constructor

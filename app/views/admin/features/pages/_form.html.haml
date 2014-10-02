@@ -1,5 +1,7 @@
 - # app/views/admin/features/pages/_form.html.haml
 
+- content_presenter = present page.content
+
 - form_path   = page.persisted? ? page_path(page) : create_page_path(directories.last)
 - form_method = page.persisted? ? :patch : :post
 = form_for page, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method do |form|
@@ -16,6 +18,9 @@
     = form.text_field :title, :autofocus => true
   = form.form_group :slug do
     = form.text_field :slug
+
+  = render :partial => content_presenter.form_partial_path, :locals => { :form => form, :content => page.content }
+
   = form.form_group do
     = form.submit page.persisted? ? 'Update Page' : 'Create Page'
     = form.button 'Cancel', page.persisted? ? page_path(page) : dashboard_directory_path(directories.last)
