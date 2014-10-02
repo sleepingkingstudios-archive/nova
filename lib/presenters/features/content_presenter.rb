@@ -1,5 +1,7 @@
 # lib/presenters/features/content_presenter.rb
 
+require 'presenters/presenter'
+
 class ContentPresenter < Presenter
   alias_method :content, :object
 
@@ -8,6 +10,10 @@ class ContentPresenter < Presenter
 
     "admin/features/contents/#{type.pluralize}/fields"
   end # method form_partial_path
+
+  def render_content template
+
+  end # method render_content
 
   def type
     content.try(:_type).try(:underscore)

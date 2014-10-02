@@ -24,6 +24,10 @@ RSpec.describe ContentPresenter, :type => :decorator do
     end # context
   end # describe
 
+  describe '#render_content' do
+    it { expect(instance).to respond_to(:render_content).with(1).argument }
+  end # describe
+
   describe '#type' do
     it { expect(instance).to have_reader(:type).with('content') }
 
