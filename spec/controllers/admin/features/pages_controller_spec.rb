@@ -44,8 +44,10 @@ RSpec.describe Admin::Features::PagesController do
     expect_behavior 'requires authentication for root directory'
 
     def perform_action
-      get :new, :directories => path
+      get :new, params
     end # method perform_action
+
+    let(:params) { { :directories => path } }
 
     before(:each) { sign_in :user, user }
 
@@ -57,6 +59,12 @@ RSpec.describe Admin::Features::PagesController do
       expect_behavior 'assigns new resource', Page
 
       expect_behavior 'assigns new content'
+
+      describe 'with content_type => text' do
+        let(:params) { super().merge :content_type => 'TextContent' }
+
+        expect_behavior 'assigns new content', TextContent
+      end # describe
     end # describe
 
     describe 'with an invalid path', :path => :invalid_directory do
@@ -71,6 +79,12 @@ RSpec.describe Admin::Features::PagesController do
       expect_behavior 'assigns new resource', Page
 
       expect_behavior 'assigns new content'
+
+      describe 'with content_type => text' do
+        let(:params) { super().merge :content_type => 'TextContent' }
+
+        expect_behavior 'assigns new content', TextContent
+      end # describe
     end # describe
   end # describe
 

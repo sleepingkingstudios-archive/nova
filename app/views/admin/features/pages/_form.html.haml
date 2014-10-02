@@ -5,13 +5,15 @@
 - form_path   = page.persisted? ? page_path(page) : create_page_path(directories.last)
 - form_method = page.persisted? ? :patch : :post
 = form_for page, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method do |form|
-  - unless page.errors.blank?
+  - unless page.errors.blank? && page.content.errors.blank?
     .panel.panel-warning
       .panel-heading Page Errors
       .panel-body
         %p The following error(s) prevent the Page from being saved:
         %ul
           - page.errors.full_messages.each do |message|
+            %li= message
+          - page.content.errors.full_messages.each do |message|
             %li= message
 
   = form.form_group :title do

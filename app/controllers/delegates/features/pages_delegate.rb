@@ -14,7 +14,7 @@ class PagesDelegate < FeaturesDelegate
   def build_resource params
     super
 
-    build_content content_params(params)
+    build_content content_params(request.params), request.try(:params).try(:[], :content_type)
 
     resource
   end # method build_resource

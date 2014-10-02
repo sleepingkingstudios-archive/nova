@@ -14,7 +14,7 @@ class ResourcesDelegate
     end # when
   end # constructor
 
-  attr_accessor :controller, :directories
+  attr_accessor :controller, :directories, :request
 
   attr_reader :resource, :resources, :resource_class
 
@@ -63,12 +63,16 @@ class ResourcesDelegate
   ### Actions ###
 
   def index request
+    self.request = request
+
     assign :resources, load_resources
 
     controller.render index_template_path
   end # action index
 
   def new request
+    self.request = request
+
     params = ActionController::Parameters.new(request.params)
     assign :resource, build_resource(build_resource_params params)
 
@@ -76,6 +80,8 @@ class ResourcesDelegate
   end # action new
 
   def create request
+    self.request = request
+
     params = ActionController::Parameters.new(request.params)
     assign :resource, build_resource(build_resource_params params)
 
@@ -91,18 +97,24 @@ class ResourcesDelegate
   end # action create
 
   def show request
+    self.request = request
+
     assign :resource, resource
     
     controller.render show_template_path
   end # action show
 
   def edit request
+    self.request = request
+
     assign :resource, resource
     
     controller.render edit_template_path
   end # action edit
 
   def update request
+    self.request = request
+
     params = ActionController::Parameters.new(request.params)
     assign :resource, resource
 
@@ -118,6 +130,8 @@ class ResourcesDelegate
   end # action update
 
   def destroy request
+    self.request = request
+
     resource.destroy
 
     set_flash_message :danger, flash_message(:destroy, :success)

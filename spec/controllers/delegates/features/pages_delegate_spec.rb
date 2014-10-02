@@ -50,20 +50,47 @@ RSpec.describe PagesDelegate, :type => :decorator do
   ### Instance Methods ###
 
   describe '#build_resource' do
-    let(:params) { ActionController::Parameters.new({}) }
+    let(:params)  { ActionController::Parameters.new({}) }
+    let(:request) { double('request', :params => ActionController::Parameters.new(params)) }
+
+    def perform_action
+      instance.build_resource instance.build_resource_params(params)
+    end # method perform_action
+
+    before(:each) { instance.request = request }
 
     it { expect(instance).to respond_to(:build_resource).with(1).argument }
 
     it 'creates the specified resource' do
-      expect(instance.build_resource params).to be_a Page
+      expect(perform_action).to be_a Page
     end # expect
 
     it 'creates an embedded content' do
-      object = instance.build_resource params
+      object = perform_action
 
       expect(instance.resource).to be == object
       expect(instance.resource.content).to be_a Content
     end # it
+
+    context 'with an implicit content type' do
+      let(:params) { super().merge :page => { :content => { :_type => 'TextContent' } } }
+
+      it 'creates an embedded content' do
+        object = perform_action
+
+        expect(instance.resource.content).to be_a TextContent
+      end # it
+    end # context    
+
+    context 'with an explicit content type' do
+      let(:params) { super().merge :content_type => 'TextContent' }
+
+      it 'creates an embedded content' do
+        object = perform_action
+
+        expect(instance.resource.content).to be_a TextContent
+      end # it
+    end # context
   end # describe
 
   describe '#build_resource_params', :params => true do
