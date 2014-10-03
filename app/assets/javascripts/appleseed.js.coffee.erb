@@ -1,0 +1,31 @@
+# app/assets/javascripts/drone.js.coffee
+
+# Define top-level constant, namespaces and helpers.
+@Appleseed = {
+  Layouts: {}
+
+  resolveNamespace: (string) ->
+    module = Drone
+    module = module[segment] for segment in string.split('.')
+    module
+}
+
+# Create application.
+Appleseed.application = new Backbone.Marionette.Application()
+
+<% if Rails.env.development? %>
+Appleseed.application.addInitializer (options) ->
+  console.log 'Initializing Appleseed...'
+<% end %>
+
+# Add initializers.
+Appleseed.application.addInitializer (options) ->
+  # Find all elements with declared layouts and create the corresponding
+  # Marionette layouts.
+  for el in $ '[data-backbone-layout]'
+    layoutName  = ($el = $ el).data('backboneLayout')
+    layoutClass = Appleseed.resolveNamespace("Layouts.#{layoutName}")
+    layout      = new layoutClass { el: $el }
+
+  # Apply form and other element-specific JS enhancements.
+  # $(el).autosize() for el in $ 'textarea[data-jquery-autosize="true"]'
