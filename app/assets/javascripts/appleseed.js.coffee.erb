@@ -28,4 +28,4 @@ Appleseed.application.addInitializer (options) ->
     layout      = new layoutClass { el: $el }
 
   # Apply form and other element-specific JS enhancements.
-  # $(el).autosize() for el in $ 'textarea[data-jquery-autosize="true"]'
+  $(el).autosize() for el in $ 'textarea[data-jquery-autosize="true"]'

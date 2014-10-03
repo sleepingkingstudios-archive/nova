@@ -6,6 +6,7 @@
 #= require underscore
 
 # Require supplemental libraries.
+#= require jquery.autosize
 
 # Require HTML/CSS framework files.
 #= require twitter/bootstrap

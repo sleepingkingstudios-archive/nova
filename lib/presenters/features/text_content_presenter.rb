@@ -6,6 +6,8 @@ class TextContentPresenter < ContentPresenter
   delegate :text_content, :to => :content
 
   def render_content template
+    return if text_content.blank?
+
     paragraphs = text_content.gsub(/\r\n|\r/,"\n").split(/\n{2,}/)
     paragraphs.each do |paragraph|
       template.concat '<p>'.html_safe
