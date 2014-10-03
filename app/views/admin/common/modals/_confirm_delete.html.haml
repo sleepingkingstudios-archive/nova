@@ -1,0 +1,21 @@
+- # app/views/admin/common/modals/_confirm_delete.html.haml
+
+#confirm-delete-modal.modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ :type => 'button', :'data-dismiss' => 'modal' }
+          %span{ :'aria-hidden' => true }= icon :close
+          %span.sr-only Close
+        %h4.confirm-delete-title Confirm Delete?
+      .modal-body
+        %p.confirm-delete-body Are you sure you want to delete this object?
+        %p.alert.alert-danger
+          %strong
+            = succeed(':') do
+              Warning
+          %span.confirm-delete-warning This cannot be undone!
+      .modal-footer
+        %button.btn.btn-default.cancel-delete-button{ :type => 'button', :'data-dismiss' => 'modal' } Cancel
+        %button.btn.btn-danger.confirm-delete-button
+          = defined?(submit) ? submit : "#{icon :trash} Delete".html_safe

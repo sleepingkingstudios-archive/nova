@@ -6,11 +6,17 @@ class Appleseed.Layouts.BaseLayout extends Backbone.Marionette.LayoutView
 
   get: (name, strict = true) ->
     sel = @selectors()[name]
-    throw "Undefined selector \"#{name}\"" unless sel?
+    throw "undefined selector \"#{name}\"" unless sel?
 
-    $elements = @$ sel
+    # If the selector is prefixed with 'body', don't scope the selector to the
+    # layout (e.g. shared page content, modals, et cetera).
+    if sel.match /^\s*body/
+      $elements = $ sel
+    else
+      $elements = @$ sel
+
     if strict && (0 == $elements.length)
-      throw "No element found for selector \"#{name}\" ('#{sel}')"
+      throw "no element found for selector \"#{name}\" ('#{sel}')"
 
     $elements
 

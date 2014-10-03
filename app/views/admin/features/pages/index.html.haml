@@ -2,13 +2,15 @@
 
 - presenter = DirectoryPresenter.new @current_directory
 
+= render :partial => 'admin/common/modals/confirm_delete'
+
 %h2
   = presenter.label
   %small Pages
 
 = render :partial => 'admin/features/pages/actions', :locals => { :directory => @current_directory }
 
-= render :partial => 'admin/features/table', :locals => { :features => @current_directory.pages }
+= render :partial => 'admin/features/table', :locals => { :features => @current_directory ? @current_directory.pages : Page.roots }
 
 %p
   = link_to dashboard_directory_path(@current_directory) do

@@ -2,10 +2,12 @@
 
 # Define top-level constant, namespaces and helpers.
 @Appleseed = {
-  Layouts: {}
+  Layouts: {
+    Common: {}
+  }
 
   resolveNamespace: (string) ->
-    module = Drone
+    module = Appleseed
     module = module[segment] for segment in string.split('.')
     module
 }
