@@ -56,6 +56,10 @@ class ResourcesDelegate
     flash[key] = message
   end # method set_flash_message
 
+  def update_resource params
+    resource.update params
+  end # method update_resource
+
   def update_resource_params params
     resource_params params
   end # method update_resource_params
@@ -118,7 +122,7 @@ class ResourcesDelegate
     params = ActionController::Parameters.new(request.params)
     assign :resource, resource
 
-    if resource.update update_resource_params(params)
+    if update_resource update_resource_params(params)
       set_flash_message :success, flash_message(:update, :success)
 
       controller.redirect_to redirect_path(:update, :success)

@@ -18,4 +18,14 @@ RSpec.describe TextContentBuilder, :type => :decorator do
 
     it { expect(instance.content_params params).to be == attributes }
   end # describe
+
+  describe '#update_content' do
+    let(:params) { ActionController::Parameters.new(:text_content => 'This content is deceased! It is an ex-content!') }
+
+    it 'updates the content' do
+      instance.update_content params
+
+      expect(instance.content.text_content).to be == params[:text_content]
+    end # it
+  end # describe
 end # describe

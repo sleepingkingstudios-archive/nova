@@ -189,6 +189,46 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # context
   end # describe
 
+  describe '#update_resource' do
+    let(:object) { create(:feature) }
+
+    it { expect(instance).to respond_to(:update_resource).with(1).argument }
+
+    context 'with invalid params' do
+      let(:attributes) { { :title => nil } }
+
+      it 'returns false' do
+        expect(instance.update_resource attributes).to be false
+      end # it
+
+      it 'does not update the resource' do
+        instance.update_resource attributes
+        instance.resource.reload
+
+        attributes.each do |attribute, value|
+          expect(instance.resource.send attribute).not_to be == value
+        end # each
+      end # it
+    end # context
+
+    context 'with valid params' do
+      let(:attributes) { attributes_for(:feature) }
+
+      it 'returns true' do
+        expect(instance.update_resource attributes).to be true
+      end # it
+
+      it 'updates the resource' do
+        instance.update_resource attributes
+        instance.resource.reload
+
+        attributes.each do |attribute, value|
+          expect(instance.resource.send attribute).to be == value
+        end # each
+      end # it
+    end # context
+  end # describe
+
   describe '#update_resource_params' do
     let(:params) { ActionController::Parameters.new(:feature => { :evil => 'malicious' }) }
 
