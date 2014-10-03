@@ -23,5 +23,11 @@ RSpec.describe TextContent, :type => :model do
     context 'with a container', :container => :one do
       it { expect(instance).to be_valid }
     end # context
+
+    describe 'text_content must be present' do
+      let(:attributes) { super().merge :text_content => nil }
+
+      it { expect(instance).to have_errors.on(:text_content).with_message("can't be blank") }
+    end # describe
   end # describe
 end # describe

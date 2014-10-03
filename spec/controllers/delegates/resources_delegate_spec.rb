@@ -7,9 +7,6 @@ require 'delegates/resources_delegate'
 RSpec.describe ResourcesDelegate, :type => :decorator do
   include Spec::Contexts::Delegates::DelegateContexts
 
-  let(:object)   { Feature.new }
-  let(:instance) { described_class.new object }
-
   shared_context 'with an array of objects', :object => :array do
     let(:object) { Array.new(3).map { Object.new } }
   end # shared_context
@@ -17,6 +14,17 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   shared_context 'with a class object', :object => :class do
     let(:object) { String }
   end # shared_context
+
+  shared_examples 'sets the request' do
+    it 'sets the request' do
+      perform_action
+
+      expect(instance.request).to be == request
+    end # it
+  end # shared_examples
+
+  let(:object)   { Feature.new }
+  let(:instance) { described_class.new object }
 
   ### Class Methods ###
 
@@ -86,6 +94,10 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       expect(instance.resource).to be nil
       expect(instance.resources).to be == documents
     end # it
+  end # describe
+
+  describe '#request' do
+    it { expect(instance).to have_property(:request) }
   end # describe
 
   describe '#resource' do
@@ -177,6 +189,46 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # context
   end # describe
 
+  describe '#update_resource' do
+    let(:object) { create(:feature) }
+
+    it { expect(instance).to respond_to(:update_resource).with(1).argument }
+
+    context 'with invalid params' do
+      let(:attributes) { { :title => nil } }
+
+      it 'returns false' do
+        expect(instance.update_resource attributes).to be false
+      end # it
+
+      it 'does not update the resource' do
+        instance.update_resource attributes
+        instance.resource.reload
+
+        attributes.each do |attribute, value|
+          expect(instance.resource.send attribute).not_to be == value
+        end # each
+      end # it
+    end # context
+
+    context 'with valid params' do
+      let(:attributes) { attributes_for(:feature) }
+
+      it 'returns true' do
+        expect(instance.update_resource attributes).to be true
+      end # it
+
+      it 'updates the resource' do
+        instance.update_resource attributes
+        instance.resource.reload
+
+        attributes.each do |attribute, value|
+          expect(instance.resource.send attribute).to be == value
+        end # each
+      end # it
+    end # context
+  end # describe
+
   describe '#update_resource_params' do
     let(:params) { ActionController::Parameters.new(:feature => { :evil => 'malicious' }) }
 
@@ -192,6 +244,10 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     let(:object)     { Feature }
     let(:request)    { double('request') }
 
+    def perform_action
+      instance.index request
+    end # method perform_action
+
     before(:each) do
       allow(object).to receive(:all).and_return(documents)
     end # before each
@@ -199,7 +255,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it { expect(instance).to respond_to(:index).with(1).arguments }
 
     it 'assigns resources' do
-      instance.index request
+      perform_action
 
       expect(assigns.fetch(:resources)).to be == documents
     end # it
@@ -207,18 +263,24 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it 'renders the index template' do
       expect(controller).to receive(:render).with(instance.index_template_path)
 
-      instance.index request
+      perform_action
     end # it
+
+    expect_behavior 'sets the request'
   end # describe
 
   describe '#new', :controller => true do
     let(:object)  { Feature }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
+    def perform_action
+      instance.new request
+    end # method perform_action
+
     it { expect(instance).to respond_to(:new).with(1).arguments }
 
     it 'assigns resource' do
-      instance.new request
+      perform_action
 
       expect(assigns.fetch(:resource)).to be_a Feature
     end # it
@@ -226,14 +288,20 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it 'renders the new template' do
       expect(controller).to receive(:render).with(instance.new_template_path)
 
-      instance.new request
+      perform_action
     end # it
+
+    expect_behavior 'sets the request'
   end # describe
 
   describe '#create', :controller => true do
     let(:object)     { Feature }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
+
+    def perform_action
+      instance.create request
+    end # method perform_action
 
     before(:each) do
       allow(instance).to receive(:build_resource_params) do |params|
@@ -244,7 +312,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it { expect(instance).to respond_to(:create).with(1).arguments }
 
     it 'assigns resource with attributes' do
-      instance.create request
+      perform_action
 
       resource = assigns.fetch(:resource)
       expect(resource).to be_a Feature
@@ -253,19 +321,21 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       expect(resource.slug).to  be == attributes.fetch(:slug)
     end # it
 
+    expect_behavior 'sets the request'
+
     describe 'with invalid params' do
       let(:attributes) { {} }
 
       it 'renders the new template' do
         expect(controller).to receive(:render).with(instance.new_template_path)
 
-        instance.create request
+        perform_action
 
         expect(flash_messages.now[:warning]).to be_blank
       end # it
 
       it 'does not create a resource' do
-        expect { instance.create request }.not_to change(Feature, :count)
+        expect { perform_action }.not_to change(Feature, :count)
       end # it
     end # describe
 
@@ -275,13 +345,13 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       it 'redirects to the index path' do
         expect(controller).to receive(:redirect_to).with(/\Afeatures\/[A-Za-z0-9]+\z/)
 
-        instance.create request
+        perform_action
 
         expect(flash_messages[:success]).to be == "Feature successfully created."
       end # it
 
       it 'creates a resource' do
-        expect { instance.create request }.to change(Feature, :count).by(1)
+        expect { perform_action }.to change(Feature, :count).by(1)
       end # it
     end # describe
   end # describe
@@ -290,36 +360,52 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     let(:object)  { build(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
+    def perform_action
+      instance.show request
+    end # method perform_action
+
     it { expect(instance).to respond_to(:show).with(1).argument }
 
     it 'renders the show template' do
       expect(controller).to receive(:render).with(instance.show_template_path)
 
-      instance.show request
+      perform_action
 
       expect(assigns[:resource]).to be == object
     end # it
+
+    expect_behavior 'sets the request'
   end # describe
 
   describe '#edit', :controller => true do
     let(:object)  { build(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
+    def perform_action
+      instance.edit request
+    end # method perform_action
+
     it { expect(instance).to respond_to(:edit).with(1).argument }
 
     it 'renders the new template' do
       expect(controller).to receive(:render).with(instance.edit_template_path)
 
-      instance.edit request
+      perform_action
 
       expect(assigns[:resource]).to be == object
     end # it
+
+    expect_behavior 'sets the request'
   end # describe
 
   describe '#update', :controller => true do
     let(:object)     { create(:feature) }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
+
+    def perform_action
+      instance.update request
+    end # method perform_action
 
     it { expect(instance).to respond_to(:update).with(1).argument }
 
@@ -330,7 +416,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # before each
 
     it 'updates the resource attributes' do
-      instance.update request
+      perform_action
 
       resource = assigns.fetch(:resource)
       expect(resource).to be == object
@@ -339,19 +425,21 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       expect(resource.slug).to  be == attributes.fetch(:slug)
     end # it
 
+    expect_behavior 'sets the request'
+
     describe 'with invalid params' do
       let(:attributes) { { :title => nil } }
 
       it 'renders the edit template' do
         expect(controller).to receive(:render).with(instance.edit_template_path)
 
-        instance.update request
+        perform_action
 
         expect(flash_messages.now[:warning]).to be_blank
       end # it
 
       it 'does not update the resource' do
-        expect { instance.create request }.not_to change { object.reload.title }
+        expect { perform_action }.not_to change { object.reload.title }
       end # it
     end # describe
 
@@ -361,13 +449,13 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
       it 'redirects to the index path' do
         expect(controller).to receive(:redirect_to).with(instance.send :_resource_path)
 
-        instance.update request
+        perform_action
 
         expect(flash_messages[:success]).to be == "Feature successfully updated."
       end # it
 
       it 'updates the resource' do
-        expect { instance.update request }.to change { object.reload.title }.to(attributes[:title])
+        expect { perform_action }.to change { object.reload.title }.to(attributes[:title])
       end # it
     end # describe
   end # describe
@@ -376,19 +464,25 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     let(:object)  { create(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
+    def perform_action
+      instance.destroy request
+    end # method perform_action
+
     it { expect(instance).to respond_to(:destroy).with(1).argument }
 
     it 'redirects to the index path' do
       expect(controller).to receive(:redirect_to).with(instance.send :_index_resources_path)
 
-      instance.destroy request
+      perform_action
 
       expect(flash_messages[:danger]).to be == "Feature successfully destroyed."
     end # it
 
     it 'destroys the resource' do
-      expect { instance.destroy request }.to change(Feature, :count).by(-1)
+      expect { perform_action }.to change(Feature, :count).by(-1)
     end # it
+
+    expect_behavior 'sets the request'
   end # describe
 
   ### Partial Methods ###

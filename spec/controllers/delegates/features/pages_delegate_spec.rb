@@ -32,6 +32,14 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # it
   end # shared_examples
 
+  shared_examples 'sets the request' do
+    it 'sets the request' do
+      perform_action
+
+      expect(instance.request).to be == request
+    end # it
+  end # shared_examples
+
   let(:object)   { build(:page) }
   let(:instance) { described_class.new object }
 
@@ -50,20 +58,47 @@ RSpec.describe PagesDelegate, :type => :decorator do
   ### Instance Methods ###
 
   describe '#build_resource' do
-    let(:params) { ActionController::Parameters.new({}) }
+    let(:params)  { ActionController::Parameters.new({}) }
+    let(:request) { double('request', :params => ActionController::Parameters.new(params)) }
+
+    def perform_action
+      instance.build_resource instance.build_resource_params(params)
+    end # method perform_action
+
+    before(:each) { instance.request = request }
 
     it { expect(instance).to respond_to(:build_resource).with(1).argument }
 
     it 'creates the specified resource' do
-      expect(instance.build_resource params).to be_a Page
+      expect(perform_action).to be_a Page
     end # expect
 
     it 'creates an embedded content' do
-      object = instance.build_resource params
+      object = perform_action
 
       expect(instance.resource).to be == object
       expect(instance.resource.content).to be_a Content
     end # it
+
+    context 'with an implicit content type' do
+      let(:params) { super().merge :page => { :content => { :_type => 'TextContent' } } }
+
+      it 'creates an embedded content' do
+        object = perform_action
+
+        expect(instance.resource.content).to be_a TextContent
+      end # it
+    end # context    
+
+    context 'with an explicit content type' do
+      let(:params) { super().merge :content_type => 'TextContent' }
+
+      it 'creates an embedded content' do
+        object = perform_action
+
+        expect(instance.resource.content).to be_a TextContent
+      end # it
+    end # context
   end # describe
 
   describe '#build_resource_params', :params => true do
@@ -110,6 +145,7 @@ RSpec.describe PagesDelegate, :type => :decorator do
   end # describe
 
   describe '#create', :controller => true do
+
     let(:object)     { Page }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
@@ -169,6 +205,86 @@ RSpec.describe PagesDelegate, :type => :decorator do
           expect(controller).to receive(:redirect_to).with("/#{segments.join '/'}/#{attributes[:title].parameterize}")
 
           instance.create request
+        end # it
+      end # describe
+    end # describe
+  end # describe
+
+  describe '#update', :controller => true do
+    let(:object)     { create(:page, :content => build(:text_content)) }
+    let(:attributes) { { :title => 'Page Title', :slug => 'page-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
+
+    def perform_action
+      instance.update request
+    end # method perform_action
+
+    it 'updates the resource attributes' do
+      perform_action
+
+      resource = assigns.fetch(:resource)
+      expect(resource).to be == object
+
+      expect(resource.title).to be == attributes.fetch(:title)
+      expect(resource.slug).to  be == attributes.fetch(:slug)
+    end # it
+
+    expect_behavior 'sets the request'
+
+    describe 'with invalid params' do
+      let(:attributes) { { :title => nil } }
+
+      it 'renders the edit template' do
+        expect(controller).to receive(:render).with(instance.edit_template_path)
+
+        perform_action
+
+        expect(flash_messages.now[:warning]).to be_blank
+      end # it
+
+      it 'does not update the resource' do
+        expect { perform_action }.not_to change { object.reload.title }
+      end # it
+
+      describe 'with content params' do
+        let(:attributes) { super().merge :content => { :text_content => 'This content is deceased! It is an ex-content!' } }
+
+        it 'updates the content attributes' do
+          perform_action
+
+          resource = assigns.fetch(:resource)
+          content  = resource.content
+
+          expect(content.text_content).to be == attributes.fetch(:content).fetch(:text_content)
+        end # it
+      end # describe
+    end # describe
+
+    describe 'with valid params' do
+      let(:attributes) { { :title => 'Page Title', :slug => object.slug } }
+
+      it 'redirects to the index path' do
+        expect(controller).to receive(:redirect_to).with(instance.send :_resource_path)
+
+        perform_action
+
+        expect(flash_messages[:success]).to be == "Page successfully updated."
+      end # it
+
+      it 'updates the resource' do
+        expect { perform_action }.to change { object.reload.title }.to(attributes[:title])
+      end # it
+
+      describe 'with content params' do
+        let(:attributes) { super().merge :content => { :text_content => 'This content is deceased! It is an ex-content!' } }
+
+        it 'updates the content attributes' do
+          perform_action
+
+          resource = assigns.fetch(:resource)
+          content  = resource.content
+
+          expect(content.text_content).to be == attributes.fetch(:content).fetch(:text_content)
         end # it
       end # describe
     end # describe

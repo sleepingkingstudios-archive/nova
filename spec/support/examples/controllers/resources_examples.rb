@@ -25,11 +25,11 @@ module Spec
           end # it
         end # shared_examples
 
-        shared_examples 'assigns new content' do
+        shared_examples 'assigns new content' do |content_type = Content|
           it 'assigns the content to @resource.content' do
             perform_action
 
-            expect(assigns(:resource).content).to be_a Content
+            expect(assigns(:resource).content).to be_a content_type
           end # it
         end # shared_examples
 

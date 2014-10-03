@@ -3,8 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe ContentBuilding, :type => :controller_concern do
-  shared_examples 'with resource content', :content => true do
+  shared_examples 'with resource content' do
     let(:content) { build(:content) }
+
+    before(:each) { resource.content = content }
+  end # shared_examples
+
+  shared_examples 'with text content' do
+    let(:content) { build(:text_content) }
 
     before(:each) { resource.content = content }
   end # shared_examples
@@ -41,7 +47,11 @@ RSpec.describe ContentBuilding, :type => :controller_concern do
   describe '#content' do
     it { expect(instance).to have_reader(:content).with(nil) }
 
-    context 'with resource content', :content => true do
+    context 'with resource content' do
+      let(:content) { build(:content) }
+
+      before(:each) { resource.content = content }
+
       it { expect(instance.content).to be == content }
     end # context
   end # describe
@@ -63,5 +73,19 @@ RSpec.describe ContentBuilding, :type => :controller_concern do
     it { expect(instance).to respond_to(:content_params).with(1).arguments }
 
     it { expect(instance.content_params params).to be == content_params }
+  end # describe
+
+  describe '#update_content' do
+    include_context 'with text content'
+
+    it { expect(instance).to respond_to(:update_content).with(1).argument }
+
+    describe 'with the same content type' do
+      let(:params) { { :_type => 'text', :text_content => '"Who\'s on first, What\'s on second, I Don\'t Know\'s on third..."' } }
+
+      it 'updates the content' do
+        expect { instance.update_content params }.to change { instance.content.text_content }.to(params[:text_content])
+      end # it
+    end # describe
   end # describe
 end # describe

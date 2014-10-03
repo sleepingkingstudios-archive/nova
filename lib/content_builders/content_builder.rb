@@ -24,4 +24,12 @@ class ContentBuilder
   def content_params params
     params.permit()
   end # method content_params
+
+  def update_content params
+    @content.update update_content_params(params)
+  end # method update_content
+
+  def update_content_params params
+    content_params params
+  end # method update_content_params
 end # class

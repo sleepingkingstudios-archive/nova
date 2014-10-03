@@ -4,6 +4,8 @@
 
 - presenter = present(@resource)
 
+- content_presenter = present(@resource.content)
+
 %h2
   = presenter.label
   %small Index
@@ -22,6 +24,8 @@
     = link_to resource_path(@resource), :class => 'text-danger', :method => :delete do
       = icon :trash, :scale => :large
       Delete Page
+
+- content_presenter.render_content(self)
 
 - if presenter.index?
   - unless directory_presenter.root?

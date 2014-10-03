@@ -20,4 +20,9 @@ module ContentBuilding
   def content_params params
     params.fetch(:resource, {}).fetch(:content, {})
   end # method content_params
+
+  def update_content params
+    builder = decorate(self.content, :builder, :default => :ContentBuilder)
+    builder.update_content(ActionController::Parameters.new params)
+  end # method update_content
 end # module

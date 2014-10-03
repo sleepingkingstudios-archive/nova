@@ -57,4 +57,16 @@ RSpec.describe ContentBuilder, :type => :decorator do
 
     it { expect(instance.content_params params).to be == {} }
   end # describe
+
+  describe '#update_content' do
+    it { expect(instance).to respond_to(:update_content).with(1).argument }
+  end # describe
+
+  describe '#update_content_params' do
+    let(:params) { ActionController::Parameters.new(:evil => 'malicious') }
+
+    it { expect(instance).to respond_to(:update_content_params).with(1).argument }
+
+    it { expect(instance.update_content_params params).to be == {} }
+  end # describe
 end # describe
