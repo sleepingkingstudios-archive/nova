@@ -11,6 +11,35 @@ RSpec.describe Content, :type => :model do
     let(:attributes) { super().merge :container => container }
   end # shared_context
 
+  ### Class Methods ###
+
+  describe '#content_type' do
+    let(:name)  { :example }
+    let(:klass) { Class.new }
+
+    before(:each) do
+      Object.const_set :ExampleContent, klass
+    end # before each
+
+    after(:each) do
+      Object.send :remove_const, :ExampleContent if Object.const_defined?(:ExampleContent)
+    end # after each
+
+    it { expect(described_class).to respond_to(:content_type).with(1..2).arguments }
+
+    it 'stores the name and type' do
+      described_class.content_type name
+
+      expect(described_class.content_types.fetch(name)).to be == klass
+    end # it
+  end # describe
+
+  describe '#content_types' do
+    it { expect(described_class).to have_reader(:content_types) }
+
+    it { expect(described_class.content_types).to be_a Hash }
+  end # describe
+
   ### Relations ###
 
   describe '#container' do
