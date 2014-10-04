@@ -1,4 +1,4 @@
-# lib/presenters/features/text_content_presenter.rb
+# lib/presenters/features/contents/text_content_presenter.rb
 
 require 'presenters/features/content_presenter'
 

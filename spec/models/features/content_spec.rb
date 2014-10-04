@@ -3,13 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Content, :type => :model do
+  include Spec::Contexts::Models::ContentContexts
+
   let(:attributes) { attributes_for(:content) }
   let(:instance)   { described_class.new attributes }
-
-  shared_context 'with a container', :container => :one do
-    let(:container)  { build :page }
-    let(:attributes) { super().merge :container => container }
-  end # shared_context
 
   ### Class Methods ###
 
