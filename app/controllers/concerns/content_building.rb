@@ -21,6 +21,17 @@ module ContentBuilding
     params.fetch(:resource, {}).fetch(:content, {})
   end # method content_params
 
+  def content_type params
+    case
+    when type = params.fetch(:content_type, nil)
+      type
+    when type = content_params(params).fetch(:_type, nil)
+      type
+    when resource
+      resource.class.default_content_type
+    end.to_s.camelize.sub(/Content\z/, '') << "Content"
+  end # method content_type
+
   def update_content params
     builder = decorate(self.content, :builder, :default => :ContentBuilder)
     builder.update_content(ActionController::Parameters.new params)

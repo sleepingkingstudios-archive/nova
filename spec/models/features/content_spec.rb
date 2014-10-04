@@ -20,6 +20,8 @@ RSpec.describe Content, :type => :model do
 
     after(:each) do
       Object.send :remove_const, :ExampleContent if Object.const_defined?(:ExampleContent)
+
+      Content.instance_variable_get(:@content_types).delete(name)
     end # after each
 
     it { expect(described_class).to respond_to(:content_type).with(1..2).arguments }
@@ -35,6 +37,14 @@ RSpec.describe Content, :type => :model do
     it { expect(described_class).to have_reader(:content_types) }
 
     it { expect(described_class.content_types).to be_a Hash }
+
+    it 'is immutable' do
+      expect { described_class.content_types[:anomalous] = Class.new }.not_to change(described_class, :content_types)
+    end # it
+  end # describe
+
+  describe '#content_type_name' do
+    it { expect(described_class).to have_reader(:content_type_name).with('Content') }
   end # describe
 
   ### Relations ###

@@ -11,12 +11,16 @@ class Content
       class_name = options.key?(:class) ? options[:class].to_s : "#{type_key.to_s.camelize}Content"
       type_class = class_name.constantize
 
-      content_types[type_key] = type_class
-    end # method content_type
+      (@content_types ||= {})[type_key] = type_class
+    end # class method content_type
 
     def content_types
-      @content_types ||= {}
-    end # method content_types
+      (@content_types ||= {}).dup
+    end # class method content_types
+
+    def content_type_name
+      (type_name = name.sub(/Content\z/, '')).blank? ? 'Content' : type_name
+    end # class method content_type_name
   end # class << self
 
   ### Relations ###

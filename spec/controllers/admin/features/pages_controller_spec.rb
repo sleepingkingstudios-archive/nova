@@ -117,7 +117,7 @@ RSpec.describe Admin::Features::PagesController do
       end # describe
 
       describe 'with valid params' do
-        let(:attributes) { attributes_for(:page) }
+        let(:attributes) { attributes_for(:page).merge :content => attributes_for(:text_content).merge(:_type => 'text_content') }
 
         it 'redirects to the page' do
           perform_action
@@ -154,7 +154,7 @@ RSpec.describe Admin::Features::PagesController do
       end # describe
 
       describe 'with valid params' do
-        let(:attributes) { attributes_for(:page) }
+        let(:attributes) { attributes_for(:page).merge :content => attributes_for(:text_content).merge(:_type => 'text_content') }
 
         it 'redirects to the page' do
           perform_action

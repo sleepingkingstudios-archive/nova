@@ -7,9 +7,9 @@ class ContentPresenter < Presenter
 
   class << self
     def select_options_for_content_type
-      Content.content_types.map do |key, value|
-        [key.to_s.split('_').map(&:capitalize).join(' '), value.to_s]
-      end # map
+      Content.content_types.map do |_, value|
+        [value.content_type_name, value.to_s]
+      end.sort { |(u, _), (v, _)| u <=> v }
     end # class method select_options_for_content_type
   end # class << self
 

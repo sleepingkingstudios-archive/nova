@@ -10,6 +10,12 @@ RSpec.describe MarkdownContent, :type => :model do
 
   it { expect(Content.content_types.fetch(:markdown)).to be == described_class }
 
+  ### Class Methods ###
+
+  describe '#content_type_name' do
+    it { expect(described_class).to have_reader(:content_type_name).with('Markdown') }
+  end # describe
+
   ### Attributes ###
 
   describe '#text_content' do

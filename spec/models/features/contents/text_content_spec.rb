@@ -10,6 +10,12 @@ RSpec.describe TextContent, :type => :model do
 
   it { expect(Content.content_types.fetch(:text)).to be == described_class }
 
+  ### Class Methods ###
+
+  describe '#content_type_name' do
+    it { expect(described_class).to have_reader(:content_type_name).with('Plain Text') }
+  end # describe
+
   ### Attributes ###
 
   describe '#text_content' do

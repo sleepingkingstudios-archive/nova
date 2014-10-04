@@ -77,26 +77,26 @@ RSpec.describe PagesDelegate, :type => :decorator do
       object = perform_action
 
       expect(instance.resource).to be == object
-      expect(instance.resource.content).to be_a Content
+      expect(instance.resource.content).to be_a TextContent
     end # it
 
     context 'with an implicit content type' do
-      let(:params) { super().merge :page => { :content => { :_type => 'TextContent' } } }
+      let(:params) { super().merge :page => { :content => { :_type => 'MarkdownContent' } } }
 
       it 'creates an embedded content' do
         object = perform_action
 
-        expect(instance.resource.content).to be_a TextContent
+        expect(instance.resource.content).to be_a MarkdownContent
       end # it
     end # context    
 
     context 'with an explicit content type' do
-      let(:params) { super().merge :content_type => 'TextContent' }
+      let(:params) { super().merge :content_type => 'MarkdownContent' }
 
       it 'creates an embedded content' do
         object = perform_action
 
-        expect(instance.resource.content).to be_a TextContent
+        expect(instance.resource.content).to be_a MarkdownContent
       end # it
     end # context
   end # describe
@@ -145,7 +145,6 @@ RSpec.describe PagesDelegate, :type => :decorator do
   end # describe
 
   describe '#create', :controller => true do
-
     let(:object)     { Page }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
@@ -177,8 +176,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # describe
 
     describe 'with valid params' do
-      let(:attributes)   { attributes_for :page }
-      let(:created_page) { Page.where(attributes).first }
+      let(:page_attributes) { attributes_for(:page) }
+      let(:attributes)      { page_attributes.merge :content => attributes_for(:text_content).merge(:_type => 'text_content') }
+      let(:created_page)    { Page.where(page_attributes).first }
 
       it 'creates a page' do
         expect { instance.create request }.to change(Page, :count).by(1)
