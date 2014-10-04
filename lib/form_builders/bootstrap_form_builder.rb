@@ -88,6 +88,11 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
   def text_area method, options = {}
     options[:class] = concat_class options.fetch(:class, ''), 'form-control'
 
+    # Requires the jquery.autosize library, and a JavaScript on-load hook.
+    if options.delete :autosize
+      options[:data] = options.fetch(:data, {}).merge :'jquery-autosize' => true
+    end # if
+
     super method, options
   end # method text_area
 

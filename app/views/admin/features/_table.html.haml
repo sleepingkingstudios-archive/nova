@@ -15,7 +15,7 @@
     - else
       - features.each do |feature|
         - presenter = present(feature)
-        %tr
+        %tr{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => "Are you sure you want to delete this #{presenter.type.downcase}?" } }
           %td= presenter.icon
           %td= presenter.title
           %td= presenter.slug
@@ -29,6 +29,6 @@
               = icon :edit, :fixed => true
               Edit
             &nbsp;
-            = link_to resource_path(feature), :class => 'text-danger', :method => :delete do
+            = link_to resource_path(feature), :class => 'text-danger delete-link', :method => :delete do
               = icon :trash, :fixed => true
               Delete

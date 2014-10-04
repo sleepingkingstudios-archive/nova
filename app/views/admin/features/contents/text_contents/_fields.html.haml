@@ -5,4 +5,4 @@
     = fields.hidden_field :_type, :value => content._type
     = fields.static_field content._type
   = fields.form_group :text_content, :label => 'Content' do
-    = fields.text_area :text_content
+    = fields.text_area :text_content, :autosize => true

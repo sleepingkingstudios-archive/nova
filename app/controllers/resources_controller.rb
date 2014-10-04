@@ -21,7 +21,7 @@ class ResourcesController < ApplicationController
   def handle_missing_resource exception = nil
     exception ||= $! # Last exception raised.
 
-    flash[:warning] = "Unable to locate directory or feature — #{exception.missing.last}"
+    flash[:warning] = "Unable to locate directory or feature — #{exception.missing}"
 
     redirect_to directory_path(@directories.last)
   end # method handle_missing_resource

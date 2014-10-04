@@ -2,11 +2,13 @@
 
 - presenter = DirectoryPresenter.new @current_directory
 
+= render :partial => 'admin/common/modals/confirm_delete'
+
 %h2
   = presenter.label
   %small Dashboard
 
-%p
+%p{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => "Are you sure you want to delete this directory?<br><br><strong>This will destroy all child directories and features in this directory.</strong>".html_safe } }
   = link_to directory_path(@current_directory), :class => 'text-info' do
     = icon :cube, :scale => :large
     Show Directory
@@ -16,7 +18,7 @@
       = icon :edit, :scale => :large
       Edit Directory
     &nbsp;
-    = link_to directory_path(@current_directory), :class => 'text-danger', :method => :delete do
+    = link_to directory_path(@current_directory), :class => 'text-danger delete-link', :method => :delete do
       = icon :trash, :scale => :large
       Delete Directory
 
