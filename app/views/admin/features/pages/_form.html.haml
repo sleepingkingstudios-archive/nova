@@ -21,6 +21,7 @@
   = form.form_group :slug do
     = form.text_field :slug
 
+  = render :partial => 'admin/features/contents/selector', :locals => { :form => form, :content => page.content }
   = render :partial => content_presenter.form_partial_path, :locals => { :form => form, :content => page.content }
 
   = form.form_group do

@@ -12,6 +12,16 @@ RSpec.describe ContentPresenter, :type => :decorator do
   let(:content)  { build(:content) }
   let(:instance) { described_class.new content }
 
+  describe '::select_options_for_content_type' do
+    let(:options) do
+      Content.content_types.map do |key, value|
+        [key.to_s.split('_').map(&:capitalize).join(' '), value.to_s]
+      end # map
+    end # let
+
+    it { expect(described_class).to have_reader(:select_options_for_content_type).with(options) }
+  end # describe
+
   describe '#content' do
     it { expect(instance).to have_reader(:content).with(content) }
   end # describe

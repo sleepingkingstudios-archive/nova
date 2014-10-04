@@ -1,0 +1,5 @@
+- # app/views/admin/features/contents/_selector.html.haml
+
+= form.fields_for :content, content do |fields|
+  = fields.form_group :content_type, :label => { :for => 'content_type', :text => 'Content Type' } do
+    = select_tag :content_type, options_for_select(ContentPresenter.select_options_for_content_type, content._type), :class => 'form-control'

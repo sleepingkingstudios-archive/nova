@@ -1,6 +1,4 @@
 - # app/views/admin/features/contents/_fields.html.haml
 
 = form.fields_for :content, content do |fields|
-  = fields.form_group :content_type, :label => 'Content Type' do
-    = fields.hidden_field :_type, :value => content._type
-    = fields.static_field content._type
+  = fields.hidden_field :_type, :value => content._type
