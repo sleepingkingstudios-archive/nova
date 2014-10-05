@@ -29,7 +29,7 @@ module ContentBuilding
       type
     when resource
       resource.class.default_content_type
-    end.to_s.camelize.sub(/Content\z/, '') << "Content"
+    end.to_s.camelize.sub(/Content(s?)\z/, '') << "Content"
   end # method content_type
 
   def update_content params

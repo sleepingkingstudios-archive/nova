@@ -12,7 +12,7 @@ class Admin::Features::ContentsController < Admin::AdminController
 
   # GET /admin/contents/:content_type/fields
   def fields
-    @content_type  = params.fetch(:content_type, '').to_s.camelize.sub(/Content\z/, '') << "Content"
+    @content_type  = params.fetch(:content_type, '').to_s.camelize.sub(/Content(s?)\z/, '') << "Content"
     @resource_type = params.fetch(:resource_type, 'resource').to_s.underscore
 
     render :layout => false

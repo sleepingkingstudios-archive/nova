@@ -15,7 +15,7 @@ RSpec.describe ContentPresenter, :type => :decorator do
   describe '::select_options_for_content_type' do
     let(:options) do
       Content.content_types.map do |_, value|
-        [value.content_type_name, value.to_s]
+        [value.content_type_name, value.to_s.underscore.pluralize]
       end.sort { |(u, _), (v, _)| u <=> v }
     end # let
 
