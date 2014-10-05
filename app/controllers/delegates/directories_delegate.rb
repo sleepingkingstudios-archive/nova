@@ -16,7 +16,12 @@ class DirectoriesDelegate < ResourcesDelegate
   end # method build_resource_params
 
   def resource_params params
-    params.fetch(:directory, {}).permit(:title, :slug)
+    params.fetch(:directory, {}).permit(:title, :slug).tap do |permitted|
+      if permitted.fetch(:slug, nil).blank?
+        permitted.delete :slug
+        permitted[:slug_lock] = false
+      end # if
+    end # tap
   end # method resource_params
 
   ### Actions ###

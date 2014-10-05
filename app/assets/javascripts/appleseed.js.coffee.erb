@@ -2,11 +2,24 @@
 
 # Define top-level constant, namespaces and helpers.
 @Appleseed = {
+  Helpers: {}
   Layouts: {
     Common: {}
+    Concerns: {}
+    Directories: {}
+    Features: {
+      Pages: {}
+    }
   }
 
-  resolveNamespace: (string) ->
+  extend: (target, sources...) =>
+    for source in sources
+      for key, value of source when key not in ['extended', 'included']
+        target[key] = value
+
+      source.extended?.apply(target)
+
+  resolveNamespace: (string) =>
     module = Appleseed
     module = module[segment] for segment in string.split('.')
     module
