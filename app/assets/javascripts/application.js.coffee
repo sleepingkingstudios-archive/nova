@@ -16,6 +16,7 @@
 #= require backbone.marionette
 
 #= require appleseed
+#= require helpers
 #= require layouts
 
 $ ->
