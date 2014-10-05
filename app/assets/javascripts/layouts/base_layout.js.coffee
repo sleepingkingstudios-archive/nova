@@ -1,8 +1,33 @@
 # app/assets/javascripts/layouts/base_layout.js.coffee
 
 class Appleseed.Layouts.BaseLayout extends Backbone.Marionette.LayoutView
+  @addInitializer: (fn) ->
+    if @_initializers?
+      @_initializers = @_initializers.slice(0)
+    else
+      @_initializers = []
+    
+    @_initializers.push(fn)
+
+  @extend: (sources...) ->
+    for source in sources
+      for key, value of source when key not in ['extended', 'included']
+        @[key] = value
+
+      source.extended?.apply(@)
+
+  @include: (sources...) ->
+    for source in sources
+      for key, value of source when key not in ['extended', 'included']
+        @::[key] = value
+
+      source.included?.apply(@)
+
   initialize: (options) ->
     super(options)
+
+    window.layout = @
+    fn.apply(@) for fn in @constructor._initializers if @constructor._initializers?
 
   get: (name, strict = true) ->
     sel = @selectors()[name]
@@ -43,3 +68,6 @@ class Appleseed.Layouts.BaseLayout extends Backbone.Marionette.LayoutView
 
   _getSuperclassProperty: (property) ->
     @constructor.__super__.constructor[property]
+
+Appleseed.Layouts.BaseLayout.addInitializer ->
+  console.log "#{@constructor.name}#initialize()"

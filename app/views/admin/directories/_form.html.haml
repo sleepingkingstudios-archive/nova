@@ -2,7 +2,7 @@
 
 - form_path   = directory.persisted? ? directory_path(directory) : create_directory_path(directory)
 - form_method = directory.persisted? ? :patch : :post
-= form_for directory, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method do |form|
+= form_for directory, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'backbone-layout' => 'Directories.FormLayout' } do |form|
   - unless directory.errors.blank?
     .panel.panel-warning
       .panel-heading Directory Errors
@@ -15,7 +15,7 @@
   = form.form_group :title do
     = form.text_field :title, :autofocus => true
   = form.form_group :slug do
-    = form.text_field :slug
+    = form.text_field :slug, :placeholder => directory.to_slug, :value => directory.slug_lock ? directory.slug : nil
   = form.form_group do
     = form.submit directory.persisted? ? 'Update Directory' : 'Create Directory'
     = form.button 'Cancel', directory.persisted? ? dashboard_directory_path(directory) : dashboard_directory_path(directory.parent)
