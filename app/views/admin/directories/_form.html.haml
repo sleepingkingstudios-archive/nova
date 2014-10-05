@@ -13,9 +13,9 @@
             %li= message
 
   = form.form_group :title do
-    = form.text_field :title, :autofocus => true, :class => 'title-field'
+    = form.text_field :title, :autofocus => true
   = form.form_group :slug do
-    = form.text_field :slug, :class => 'slug-field', :placeholder => directory.to_slug, :value => directory.slug_lock ? directory.slug : nil
+    = form.text_field :slug, :placeholder => directory.to_slug, :value => directory.slug_lock ? directory.slug : nil
   = form.form_group do
     = form.submit directory.persisted? ? 'Update Directory' : 'Create Directory'
     = form.button 'Cancel', directory.persisted? ? dashboard_directory_path(directory) : dashboard_directory_path(directory.parent)
