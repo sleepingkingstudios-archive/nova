@@ -24,6 +24,11 @@ class ContentPresenter < Presenter
   end # method render_content
 
   def type
-    content.try(:_type).try(:underscore)
+    case
+    when content.is_a?(Class)
+      content.name
+    else
+      content.try(:_type)
+    end.try(:underscore)
   end # type
 end # class

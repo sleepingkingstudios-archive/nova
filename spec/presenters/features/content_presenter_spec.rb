@@ -44,5 +44,11 @@ RSpec.describe ContentPresenter, :type => :decorator do
     context 'with a text content', :content => :text do
       it { expect(instance.type).to be == 'text_content' }
     end # context
+
+    context 'with a content class' do
+      let(:content) { MarkdownContent }
+
+      it { expect(instance.type).to be == 'markdown_content' }
+    end # context
   end # describe
 end # describe
