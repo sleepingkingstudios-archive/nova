@@ -10,6 +10,7 @@ class Appleseed.Layouts.Features.Pages.FormLayout extends Appleseed.Layouts.Base
       sel:      '#content'
       area:     '#content-area'
       error:    '#content-error-notice'
+      inputs:   'input, textarea, select'
       loading:  '#content-loading-notice'
       selector: 'select#content_type'
     }
@@ -31,6 +32,24 @@ class Appleseed.Layouts.Features.Pages.FormLayout extends Appleseed.Layouts.Base
 
   _setContent: (htmlContent) =>
     @get('content.area').html(htmlContent)
+
+  _deserializeContentData: (data) =>
+    console.log 'Pages.FormLayout#deserializeData()'
+    console.log data
+
+    $(input = $("##{id}"))?.val(value) for id, value of data
+
+  _serializeContentData: =>
+    console.log 'Pages.FormLayout#serializeData()'
+
+    data = {}
+    for input in @get('content.inputs')
+      $input = $(input)
+      continue if !$input.attr('id') || $input.attr('id').match(/content_+type/)
+
+      data[$input.attr('id')] = $input.val()
+
+    @_serializedContentData = data
 
   _hideErrorNotice: =>
     @get('content.error').addClass('hidden')
@@ -64,6 +83,7 @@ class Appleseed.Layouts.Features.Pages.FormLayout extends Appleseed.Layouts.Base
     contentType = @get('content.selector').val()
     console.log contentType
 
+    @_serializeContentData()
     @_clearContent()
     @_hideErrorNotice()
     @_showLoadingNotice()
@@ -75,6 +95,7 @@ class Appleseed.Layouts.Features.Pages.FormLayout extends Appleseed.Layouts.Base
 
     @_hideLoadingNotice()
     @_setContent(htmlContent)
+    @_deserializeContentData(@_serializedContentData) if @_serializedContentData?
 
   _requestContentFieldsFailure: (request, status, message) =>
     console.log 'Pages.FormLayout#requestContentFieldsFailure()'
