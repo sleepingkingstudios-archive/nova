@@ -1,19 +1,19 @@
-# spec/models/features/contents/text_content_spec.rb
+# spec/models/features/contents/markdown_content_spec.rb
 
 require 'rails_helper'
 
-RSpec.describe TextContent, :type => :model do
+RSpec.describe MarkdownContent, :type => :model do
   include Spec::Contexts::Models::ContentContexts
 
-  let(:attributes) { attributes_for(:text_content) }
+  let(:attributes) { attributes_for(:markdown_content) }
   let(:instance)   { described_class.new attributes }
 
-  it { expect(Content.content_types.fetch(:text)).to be == described_class }
+  it { expect(Content.content_types.fetch(:markdown)).to be == described_class }
 
   ### Class Methods ###
 
   describe '#content_type_name' do
-    it { expect(described_class).to have_reader(:content_type_name).with('Plain Text') }
+    it { expect(described_class).to have_reader(:content_type_name).with('Markdown') }
   end # describe
 
   ### Attributes ###

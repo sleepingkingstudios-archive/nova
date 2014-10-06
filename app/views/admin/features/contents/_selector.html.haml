@@ -1,0 +1,21 @@
+- # app/views/admin/features/contents/_selector.html.haml
+
+- content_presenter = present content
+
+#content
+  = form.fields_for :content, content do |fields|
+    = fields.form_group :content_type, :label => { :for => 'content_type', :text => 'Content Type' } do
+      = select_tag :content_type, options_for_select(ContentPresenter.select_options_for_content_type, content._type.underscore.pluralize), :class => 'form-control'
+
+  = form.form_group :content, :id => 'content-error-notice', :class => 'hidden' do
+    = form.static_field :class => 'text-danger' do
+      = icon :bug
+      %span.error-text Unable To Load Content Fields
+
+  = form.form_group :content, :id => 'content-loading-notice', :class => 'hidden' do
+    = form.static_field do
+      = icon :cog, :spin => true
+      %span.text-muted Loading Content Fields
+
+  #content-area
+    = render :partial => content_presenter.form_partial_path, :locals => { :form => form, :content => content }

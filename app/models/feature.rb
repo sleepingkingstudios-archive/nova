@@ -11,6 +11,10 @@ class Feature
   ### Class Methods ###
 
   class << self
+    def default_content_type
+      :text
+    end # method default_content_type
+
     def reserved_slugs
       Directory.reserved_slugs
     end # class method reserved_slugs

@@ -25,16 +25,18 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
   end # method email_field
 
   def form_group method = nil, options = {}, &block
-    classes = concat_class 'form-group', options.fetch(:class, '')
+    options[:class] = concat_class 'form-group', options.fetch(:class, '')
 
     if !method.blank? && has_errors?
       status  = object.errors.messages.key?(method) ? 'has-error' : 'has-success'
-      classes = concat_class classes, status, 'has-feedback'
+      options[:class] = concat_class options[:class], status, 'has-feedback'
     end # if
 
-    content_tag 'div', :class => classes do
-      if options.fetch(:label, false)
-        @template.concat build_label(method, options.fetch(:label))
+    label_options = options.delete(:label)
+
+    content_tag 'div', options do
+      if label_options
+        @template.concat build_label(method, label_options)
       end # if
 
       build_input method, &block
@@ -71,10 +73,11 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
     super method, choices, options, html_options, &block
   end # method select
 
-  def static_field text, options = {}
+  def static_field text_or_options = {}, options = {}, &block
+    options = block_given? ? text_or_options : options
     options[:class] = concat_class options.fetch(:class, ''), 'form-control-static'
 
-    content_tag :p, text, options
+    block_given? ? content_tag(:p, options, &block) : content_tag(:p, text, options)
   end # method static_field
 
   def submit value = nil, options = {}

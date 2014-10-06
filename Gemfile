@@ -24,12 +24,10 @@ gem 'jquery-rails',         '~> 3.1.1'
 gem 'uglifier',             '>= 1.3.0' # Compressor for JavaScript assets.
 
 ### Content ###
+gem 'github-markdown', '>= 0.6.7'
 
 ### Support ###
 gem 'jbuilder', '~> 2.0' # Build JSON APIs. Read more: https://github.com/rails/jbuilder
-
-### App Preloader ###
-gem 'spring', :group => :development
 
 ### Testing ###
 group :development, :test do
@@ -39,7 +37,6 @@ group :development, :test do
   gem 'rspec-rails',                 '~> 3.1'
   gem 'rspec-collection_matchers',   '~> 1.0.0'
   gem 'rspec-sleeping_king_studios', '>= 2.0.0.beta.0'
-  gem 'spring-commands-rspec',       '~> 1.0.2'
 
   gem 'factory_girl_rails', '~> 4.4.1'
   gem 'database_cleaner',   '~> 1.3.0'

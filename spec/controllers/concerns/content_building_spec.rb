@@ -75,13 +75,55 @@ RSpec.describe ContentBuilding, :type => :controller_concern do
     it { expect(instance.content_params params).to be == content_params }
   end # describe
 
+  describe '#content_type' do
+    it { expect(instance).to respond_to(:content_type).with(1).argument }
+
+    context 'with no params' do
+      let(:expected) do
+        "#{Page.default_content_type.to_s.sub(/_content\z/i, '').camelize}Content"
+      end # let
+      let(:params) { ActionController::Parameters.new({}) }
+
+      it { expect(instance.content_type params).to be == expected }
+    end # context
+
+    context 'with implicit content_type' do
+      let(:content_type)   { 'MarkdownContent' }
+      let(:content_params) { { :_type => content_type } }
+      let(:params)         { ActionController::Parameters.new(:resource => { :content => content_params }) }
+
+      it { expect(instance.content_type params).to be == content_type }
+    end # context
+
+    context 'with explicit content_type' do
+      let(:content_type) { 'MarkdownContent' }
+      let(:params)       { ActionController::Parameters.new(:content_type => content_type) }
+
+      it { expect(instance.content_type params).to be == content_type }
+    end # context
+  end # describe
+
   describe '#update_content' do
     include_context 'with text content'
 
     it { expect(instance).to respond_to(:update_content).with(1).argument }
 
     describe 'with the same content type' do
-      let(:params) { { :_type => 'text', :text_content => '"Who\'s on first, What\'s on second, I Don\'t Know\'s on third..."' } }
+      let(:params) { { :_type => 'TextContent', :text_content => '"Who\'s on first, What\'s on second, I Don\'t Know\'s on third..."' } }
+
+      it 'updates the content' do
+        expect { instance.update_content params }.to change { instance.content.text_content }.to(params[:text_content])
+      end # it
+    end # describe
+
+    describe 'with a different content type' do
+      let(:params) { { :_type => 'MarkdownContent', :text_content => "# This Is A <h1> Heading\n\nThis is a paragraph." } }
+
+      it 'updates the content type' do
+        instance.update_content params
+
+        expect(instance.content).to be_a MarkdownContent
+      end # it
 
       it 'updates the content' do
         expect { instance.update_content params }.to change { instance.content.text_content }.to(params[:text_content])

@@ -1,0 +1,7 @@
+- # app/views/admin/features/contents/fields.html.haml
+
+- presenter = present @content_type
+- content   = @content_type.constantize.new
+
+= fields_for @resource_type, nil, :builder => BootstrapHorizontalFormBuilder do |fields|
+  = render :partial => presenter.form_partial_path, :locals => { :content => content, :form => fields }

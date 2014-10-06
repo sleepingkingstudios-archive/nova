@@ -12,6 +12,16 @@ RSpec.describe ContentPresenter, :type => :decorator do
   let(:content)  { build(:content) }
   let(:instance) { described_class.new content }
 
+  describe '::select_options_for_content_type' do
+    let(:options) do
+      Content.content_types.map do |_, value|
+        [value.content_type_name, value.to_s.underscore.pluralize]
+      end.sort { |(u, _), (v, _)| u <=> v }
+    end # let
+
+    it { expect(described_class).to have_reader(:select_options_for_content_type).with(options) }
+  end # describe
+
   describe '#content' do
     it { expect(instance).to have_reader(:content).with(content) }
   end # describe
@@ -33,6 +43,12 @@ RSpec.describe ContentPresenter, :type => :decorator do
 
     context 'with a text content', :content => :text do
       it { expect(instance.type).to be == 'text_content' }
+    end # context
+
+    context 'with a content class' do
+      let(:content) { MarkdownContent }
+
+      it { expect(instance.type).to be == 'markdown_content' }
     end # context
   end # describe
 end # describe

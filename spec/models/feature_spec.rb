@@ -23,6 +23,10 @@ RSpec.describe Feature, :type => :model do
 
   ### Class Methods ###
 
+  describe '::default_content_type' do
+    it { expect(described_class).to have_reader(:default_content_type).with(:text) }
+  end # describe
+
   describe '::reserved_slugs' do
     it { expect(described_class).to have_reader(:reserved_slugs) }
 

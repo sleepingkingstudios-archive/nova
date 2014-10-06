@@ -12,6 +12,10 @@ Rails.application.routes.draw do
       :sign_up  => 'register'
     }
 
+  namespace :admin do
+    get 'contents/:content_type/fields', :to => 'features/contents#fields'
+  end # namespace
+
   scope :module => :admin do
     get 'dashboard',                    :to => 'directories#dashboard'
     get '*directories/dashboard',       :to => 'directories#dashboard'
