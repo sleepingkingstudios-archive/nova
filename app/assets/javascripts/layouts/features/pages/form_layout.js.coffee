@@ -24,6 +24,8 @@ class Appleseed.Layouts.Features.Pages.FormLayout extends Appleseed.Layouts.Base
 
   ### Private Methods ###
 
+  _resourceType: 'page'
+
   _clearContent: =>
     @get('content.area').html('')
 
@@ -47,7 +49,7 @@ class Appleseed.Layouts.Features.Pages.FormLayout extends Appleseed.Layouts.Base
   _requestContentFields: (contentType) =>
     console.log 'Pages.FormLayout#requestContentFields()'
 
-    fieldsUrl = "/admin/contents/#{contentType}/fields"
+    fieldsUrl = "/admin/contents/#{contentType}/fields?resource_type=#{@_resourceType}"
     console.log fieldsUrl
 
     request = $.get(fieldsUrl)
