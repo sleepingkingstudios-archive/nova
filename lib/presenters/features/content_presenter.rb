@@ -20,15 +20,15 @@ class ContentPresenter < Presenter
   end # method form_partial_path
 
   def render_content template
-
+    # No-op for default content; override this in subclasses.
   end # method render_content
 
   def type
     case
     when content.is_a?(Class)
-      content.name
+      content.name.underscore
     else
       content.try(:_type)
-    end.try(:underscore)
+    end.underscore
   end # type
 end # class

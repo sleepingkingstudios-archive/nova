@@ -1,8 +1,6 @@
 # app/models/features/contents/text_content.rb
 
 class TextContent < Content
-  Content.content_type :text
-
   ### Class Methods ###
 
   class << self
