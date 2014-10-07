@@ -7,7 +7,7 @@ class ResourcesController < ApplicationController
   before_action :lookup_resource, :only => %i(show)
   before_action :initialize_delegate
 
-  rescue_from Appleseed::ResourceNotFoundError, :with => :handle_missing_resource
+  rescue_from Appleseed::ResourcesNotFoundError, :with => :handle_missing_resource
 
   # GET /path/to/resource
   def show
@@ -21,7 +21,7 @@ class ResourcesController < ApplicationController
   def handle_missing_resource exception = nil
     exception ||= $! # Last exception raised.
 
-    flash[:warning] = "Unable to locate directory or feature — #{exception.missing}"
+    flash[:warning] = "Unable to locate directory or feature — #{exception.missing.join('/')} (#{exception.missing.count} total)"
 
     redirect_to directory_path(@directories.last)
   end # method handle_missing_resource

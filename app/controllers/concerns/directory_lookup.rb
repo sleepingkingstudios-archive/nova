@@ -1,6 +1,6 @@
 # app/controllers/concerns/directory_lookup.rb
 
-require 'errors/resource_not_found_error'
+require 'errors/resources_not_found_error'
 
 module DirectoryLookup
   private
@@ -46,7 +46,7 @@ module DirectoryLookup
     features = scope.where(:slug => exception.missing.last)
 
     # If the result is blank, flash a warning and redirect to the directory page.
-    raise Appleseed::ResourceNotFoundError.new(exception.search, exception.found, exception.missing.last) if features.blank?
+    raise Appleseed::ResourcesNotFoundError.new(exception.search, exception.found, exception.missing) if features.blank?
 
     @resource = features.last
   end # method lookup_resource
