@@ -11,8 +11,12 @@ class DirectoryRouter < Router
 
   private
 
+  def features
+    directory.try(:features) or Feature.roots
+  end # method features
+
   def route_to_feature
-    return unless feature = directory.features.where(:slug => missing.first).first
+    return unless feature = features.where(:slug => missing.first).first
 
     @missing = missing[1..-1]
     @found   = found + [feature]
