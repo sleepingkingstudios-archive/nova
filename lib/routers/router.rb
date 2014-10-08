@@ -16,6 +16,6 @@ class Router
   end # method route_to
 
   def route_to! search, found, missing
-    route_to(search, found, missing) or raise Appleseed::ResourcesNotFoundError.new(search, found, missing)
+    route_to(search, found, missing) or raise Appleseed::ResourcesNotFoundError.new(@search, @found, @missing)
   end # method route_to!
 end # class
