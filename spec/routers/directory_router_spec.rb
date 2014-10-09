@@ -32,6 +32,19 @@ RSpec.describe DirectoryRouter, :type => :decorator do
     let(:missing) { search[1..3] }
   end # shared_context
 
+  shared_examples 'delegates to a subfeature router' do
+    let(:subfeature)     { double('feature') }
+    let(:feature_router) { double('router', :route_to => subfeature) }
+
+    before(:each) do
+      allow(instance).to receive(:decorate).with(features.last, :Router).and_return(feature_router)
+    end # before each
+
+    it 'returns the subfeature' do
+      expect(perform_action).to be == subfeature
+    end # it
+  end # shared_examples
+
   describe '#directory' do
     it { expect(instance).to have_reader(:directory).with(directory) }
   end # describe
@@ -79,6 +92,8 @@ RSpec.describe DirectoryRouter, :type => :decorator do
           expect(instance.found).to be   == found + [feature]
           expect(instance.missing).to be == missing[1..-1]
         end # it
+
+        expect_behavior 'delegates to a subfeature router'
       end # context
     end # context
 
@@ -123,6 +138,8 @@ RSpec.describe DirectoryRouter, :type => :decorator do
             expect(instance.found).to be   == found + [feature]
             expect(instance.missing).to be == missing[1..-1]
           end # it
+
+          expect_behavior 'delegates to a subfeature router'
         end # context
       end # context
     end # context
@@ -179,6 +196,8 @@ RSpec.describe DirectoryRouter, :type => :decorator do
             expect(exception.missing).to be == missing[1..-1]
           end # raise_error
         end # it
+
+        expect_behavior 'delegates to a subfeature router'
       end # context
     end # context
 
@@ -231,6 +250,8 @@ RSpec.describe DirectoryRouter, :type => :decorator do
               expect(exception.missing).to be == missing[1..-1]
             end # raise_error
           end # it
+
+          expect_behavior 'delegates to a subfeature router'
         end # context
       end # context
     end # context

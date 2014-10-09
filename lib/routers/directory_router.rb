@@ -3,6 +3,8 @@
 require 'routers/router'
 
 class DirectoryRouter < Router
+  include DecoratorsHelper
+
   alias_method :directory, :object
 
   def route_to search, found, missing
@@ -22,5 +24,8 @@ class DirectoryRouter < Router
     @found   = found + [feature]
 
     return feature if missing.empty?
+
+    decorator = decorate feature, :Router
+    decorator.route_to(search, found, missing)
   end # method route_to_feature
 end # class
