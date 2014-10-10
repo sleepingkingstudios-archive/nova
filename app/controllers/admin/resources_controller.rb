@@ -2,7 +2,7 @@
 
 require 'form_builders/bootstrap_horizontal_form_builder'
 
-require 'errors/resource_not_found_error'
+require 'errors/resources_not_found_error'
 
 class Admin::ResourcesController < Admin::AdminController
   include Delegation
@@ -17,7 +17,7 @@ class Admin::ResourcesController < Admin::AdminController
 
   rescue_from Appleseed::AuthenticationError, :with => :handle_unauthorized_user
 
-  rescue_from Appleseed::ResourceNotFoundError, :with => :handle_missing_resource
+  rescue_from Appleseed::ResourcesNotFoundError, :with => :handle_missing_resource
 
   # GET /path/to/directory/resources
   def index
@@ -64,7 +64,7 @@ class Admin::ResourcesController < Admin::AdminController
   def handle_missing_resource exception = nil
     exception ||= $! # Last exception raised.
 
-    flash[:warning] = "Unable to locate directory or feature — #{exception.missing.last}"
+    flash[:warning] = flash[:warning] = "Unable to locate directory or feature — #{exception.missing.join('/')} (#{exception.missing.count} total)"
 
     redirect_to dashboard_directory_path(@directories.last)
   end # method handle_missing_resource
