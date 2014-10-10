@@ -1,8 +1,14 @@
 # app/controllers/concerns/directory_lookup.rb
 
-require 'errors/resource_not_found_error'
+require 'errors/resources_not_found_error'
+
+Dir[Rails.root.join 'lib', 'routers', '**', '*.rb'].each do |file|
+  require file
+end # each
 
 module DirectoryLookup
+  include DecoratorsHelper
+
   private
 
   def lookup_directories
@@ -40,14 +46,8 @@ module DirectoryLookup
     # previously.
     authenticate_user! if respond_to?(:authenticate_user!, true)
 
-    # Otherwise, we'll check the last directory found for a feature matching
-    # the one missing segment.
-    scope    = @directories.blank? ? Feature.roots : @directories.last.features
-    features = scope.where(:slug => exception.missing.last)
+    router = DirectoryRouter.new @directories.last
 
-    # If the result is blank, flash a warning and redirect to the directory page.
-    raise Appleseed::ResourceNotFoundError.new(exception.search, exception.found, exception.missing.last) if features.blank?
-
-    @resource = features.last
+    @resource = router.route_to!(exception.search, exception.found, exception.missing)
   end # method lookup_resource
 end # module
