@@ -1,4 +1,23 @@
 - # app/views/admin/features/blogs/index.html.haml
 
-%h1 Admin::Features::Blogs#show
-%p  Find me at app/views/admin/features/blogs/index.html.haml
+- presenter = DirectoryPresenter.new @current_directory
+
+= render :partial => 'admin/common/modals/confirm_delete'
+
+%h2
+  = presenter.label
+  %small Blogs
+
+= render :partial => 'admin/features/blogs/actions', :locals => { :directory => @current_directory }
+
+= render :partial => 'admin/features/table', :locals => { :features => @current_directory ? @current_directory.blogs : Blog.roots }
+
+%p
+  = link_to dashboard_directory_path(@current_directory) do
+    = icon(:arrow_circle_left)
+    Back to Dashboard
+%p
+  = link_to directory_path(@current_directory) do
+    = icon(:arrow_circle_left)
+    Back to
+    = presenter.label

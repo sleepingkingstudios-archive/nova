@@ -23,6 +23,16 @@ RSpec.describe ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
+    describe 'with a valid path to a blog', :path => :valid_feature do
+      let(:resource) { create(:blog, :directory => directories.last) }
+
+      expect_behavior 'renders template', :show
+
+      expect_behavior 'assigns directories'
+
+      expect_behavior 'assigns the resource'
+    end # describe
+
     describe 'with a valid path to a directory', :path => :valid_directory do
       let(:resource) { directories.last }
 

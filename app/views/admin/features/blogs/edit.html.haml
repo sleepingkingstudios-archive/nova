@@ -1,4 +1,7 @@
 - # app/views/admin/features/blogs/edit.html.haml
 
-%h1 Admin::Features::Blogs#edit
-%p  Find me at app/views/admin/features/blogs/edit.html.haml
+%h2
+  = @resource.title
+  %small Edit Page
+
+= render :partial => 'admin/features/blogs/form', :locals => { :directories => @directories, :blog => @resource }

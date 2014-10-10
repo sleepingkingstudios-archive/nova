@@ -1,0 +1,21 @@
+- # app/views/admin/features/blogs/_form.html.haml
+
+- form_path   = blog.persisted? ? blog_path(blog) : create_blog_path(directories.last)
+- form_method = blog.persisted? ? :patch : :post
+= form_for blog, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'backbone-layout' => 'Features.Blogs.FormLayout' } do |form|
+  - unless blog.errors.blank?
+    .panel.panel-warning
+      .panel-heading Blog Errors
+      .panel-body
+        %p The following error(s) prevent the Blog from being saved:
+        %ul
+          - blog.errors.full_messages.each do |message|
+            %li= message
+
+  = form.form_group :title do
+    = form.text_field :title, :autofocus => true
+  = form.form_group :slug do
+    = form.text_field :slug, :placeholder => blog.to_slug, :value => blog.slug_lock ? blog.slug : nil
+  = form.form_group do
+    = form.submit blog.persisted? ? 'Update Blog' : 'Create Blog'
+    = form.button 'Cancel', blog.persisted? ? blog_path(blog) : dashboard_directory_path(directories.last)
