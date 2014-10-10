@@ -19,10 +19,6 @@ class PagesDelegate < FeaturesDelegate
     resource
   end # method build_resource
 
-  def build_resource_params params
-    super(params).merge :directory => directories.try(:last)
-  end # method build_resource_params
-
   def content_params params
     params.fetch(:page, {}).fetch(:content, {})
   end # method content_params

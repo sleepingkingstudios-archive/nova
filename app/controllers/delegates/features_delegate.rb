@@ -10,6 +10,10 @@ class FeaturesDelegate < ResourcesDelegate
   end # method initialize
 
   ### Instance Methods ###
+  
+  def build_resource_params params
+    super(params).merge :directory => directories.try(:last)
+  end # method build_resource_params
 
   def resource_params params
     params.fetch(resource_name.singularize, {}).permit(:title, :slug).tap do |permitted|
