@@ -23,6 +23,16 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
+    describe 'with a valid path to a blog', :path => :valid_feature do
+      let(:resource) { create(:blog, :directory => directories.last) }
+
+      expect_behavior 'renders template', :edit
+
+      expect_behavior 'assigns directories'
+
+      expect_behavior 'assigns the resource'
+    end # describe
+
     describe 'with a valid path to a directory', :path => :valid_directory do
       let(:resource) { directories.last }
 
@@ -58,6 +68,42 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
     describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    describe 'with a valid path to a page', :path => :valid_feature do
+      let(:resource_name) { :blog }
+      let(:resource)      { create(:blog, :directory => directories.last) }
+
+      describe 'with invalid params' do
+        let(:attributes) { super().merge :title => nil }
+
+        expect_behavior 'renders template', :edit
+
+        expect_behavior 'assigns directories'
+
+        expect_behavior 'assigns the resource'
+
+        it 'does not update the resource' do
+          expect { perform_action }.not_to change { resource.reload.title }
+        end # it
+      end # describe
+
+      describe 'with valid params' do
+        let(:attributes) { attributes_for(:blog) }
+
+        it 'redirects to the blog' do
+          perform_action
+
+          expect(response.status).to be == 302
+          expect(response).to redirect_to(blog_path(assigns :resource))
+
+          expect(request.flash[:success]).not_to be_blank
+        end # it
+
+        it 'updates the resource' do
+          expect { perform_action }.to change { resource.reload.title }.to(attributes[:title])
+        end # it
+      end # describe
     end # describe
 
     describe 'with a valid path to a directory', :path => :valid_directory do
@@ -144,6 +190,25 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
     describe 'with an invalid path', :path => :invalid_directory do
       expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    describe 'with a valid path to a blog', :path => :valid_feature do
+      let!(:resource) { create(:blog, :directory => directories.last) }
+
+      it 'redirects to the parent directory' do
+        parent_directory = directories.last
+
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(dashboard_directory_path(parent_directory))
+
+        expect(request.flash[:danger]).not_to be_blank
+      end # it
+
+      it 'destroys the resource' do
+        expect { perform_action }.to change(Blog, :count).by(-1)
+      end # it
     end # describe
 
     describe 'with a valid path to a directory', :path => :valid_directory do
