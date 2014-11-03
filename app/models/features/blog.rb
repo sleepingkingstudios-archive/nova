@@ -2,7 +2,7 @@
 
 require 'services/features_enumerator'
 
-class Blog < Feature
+class Blog < DirectoryFeature
   FeaturesEnumerator.feature :blog
 
   ### Relations ###

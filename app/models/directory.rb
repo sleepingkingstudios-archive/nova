@@ -85,7 +85,7 @@ class Directory
   slugify :title, :lockable => true
 
   ### Relations ###
-  has_many :features, :dependent => :destroy
+  has_many :features, :class_name => "DirectoryFeature", :dependent => :destroy
 
   ### Validations ###
   validates :title, :presence => true

@@ -49,24 +49,9 @@ RSpec.describe FeaturesDelegate, :type => :decorator do
   ### Instance Methods ###
 
   describe '#build_resource_params', :params => true do
-    let(:directories) { [] }
     let(:sanitized)   { instance.build_resource_params params }
 
-    before(:each) do
-      instance.directories = directories
-    end # before each
-
     expect_behavior 'sanitizes feature attributes'
-
-    it 'assigns directory => nil' do
-      expect(sanitized[:directory]).to be nil
-    end # it
-
-    context 'with many directories', :path => :valid_directory do
-      it 'assigns directory => directories.last' do
-        expect(sanitized[:directory]).to be == directories.last
-      end # it
-    end # context
   end # describe
 
   describe '#resource_params', :params => true do
@@ -91,24 +76,5 @@ RSpec.describe FeaturesDelegate, :type => :decorator do
 
   describe '#edit_template_path' do
     it { expect(instance).to have_reader(:edit_template_path).with('admin/features/features/edit') }
-  end # describe
-
-  ### Routing Methods ###
-
-  describe '#_resource_path' do
-    context 'with a resource' do
-      let(:attributes) { {} }
-      let(:resource)   { build(:feature, attributes) }
-
-      before(:each) { allow(instance).to receive(:resource).and_return(resource) }
-
-      it { expect(instance.send :_resource_path).to be == "/#{resource.slug}" }
-
-      context 'with many directories', :path => :valid_directory do
-        let(:attributes) { super().merge :directory => directories.last }
-
-        it { expect(instance.send :_resource_path).to be == "/#{segments.join '/'}/#{resource.slug}" }
-      end # context
-    end # pending
   end # describe
 end # describe

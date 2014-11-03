@@ -107,7 +107,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
       let(:params)  { super().merge :directories => 'character-creation' }
 
       before(:each) do
-        allow(Feature).to receive(:roots).and_return(double('criteria', :where => [feature]))
+        allow(DirectoryFeature).to receive(:roots).and_return(double('criteria', :where => [feature]))
       end # before
 
       it 'assigns @resource' do

@@ -14,7 +14,7 @@ class FeaturePresenter < Presenter
 
   alias_method :feature, :object
 
-  delegate :directory, :slug, :title, :to => :feature
+  delegate :slug, :title, :to => :feature
 
   def icon options = {}
     super(icon_name, options)

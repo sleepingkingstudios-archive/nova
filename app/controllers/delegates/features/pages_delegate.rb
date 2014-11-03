@@ -1,8 +1,8 @@
 # app/controllers/delegates/features/pages_delegate.rb
 
-require 'delegates/features_delegate'
+require 'delegates/features/directory_features_delegate'
 
-class PagesDelegate < FeaturesDelegate
+class PagesDelegate < DirectoryFeaturesDelegate
   include ContentBuilding
 
   def initialize object = nil

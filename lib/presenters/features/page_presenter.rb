@@ -1,8 +1,8 @@
 # lib/presenters/features/page_presenter.rb
 
-require 'presenters/feature_presenter'
+require 'presenters/features/directory_feature_presenter'
 
-class PagePresenter < FeaturePresenter
+class PagePresenter < DirectoryFeaturePresenter
   alias_method :page, :feature
 
   def index?

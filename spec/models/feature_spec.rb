@@ -48,14 +48,6 @@ RSpec.describe Feature, :type => :model do
     end # it
   end # describe
 
-  describe '::roots' do
-    it { expect(described_class).to have_reader(:roots) }
-
-    it { expect(described_class.roots).to be_a Mongoid::Criteria }
-
-    it { expect(described_class.roots.selector).to be == { 'directory_id' => nil } }
-  end # describe
-
   ### Attributes ###
 
   describe '#title' do
@@ -78,18 +70,6 @@ RSpec.describe Feature, :type => :model do
 
   describe '#slug_lock' do
     it { expect(instance).to have_property :slug_lock }
-  end # describe
-
-  ### Relations ###
-
-  describe '#directory' do
-    it { expect(instance).to have_reader(:directory_id).with(nil) }
-
-    it { expect(instance).to have_reader(:directory).with(nil) }
-
-    context 'with a directory', :directories => :one do
-      it { expect(instance.directory_id).to be == directory.id }
-    end # context
   end # describe
 
   ### Validation ###
@@ -133,65 +113,6 @@ RSpec.describe Feature, :type => :model do
 
         it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
       end # context
-    end # describe
-
-    describe 'slug must be unique within parent_id scope' do
-      context 'with a sibling directory' do
-        before(:each) { create :directory, :slug => instance.slug }
-
-        it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
-      end # context
-
-      context 'with a sibling feature' do
-        before(:each) { create :feature, :slug => instance.slug }
-
-        it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
-      end # context
-
-      context 'with a parent directory', :directories => :one do
-        before(:each) { create :directory, :slug => instance.slug }
-
-        it { expect(instance).not_to have_errors.on(:slug) }
-
-        context 'with a sibling directory' do
-          before(:each) { create :directory, :parent => directory, :slug => instance.slug }
-
-          it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
-        end # context
-
-        context 'with a sibling feature' do
-          before(:each) { create :feature, :directory => directory, :slug => instance.slug }
-
-          it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
-        end # context
-      end # context
-    end # describe
-  end # describe
-
-  ### Instance Methods ###
-
-  describe '#to_partial_path' do
-    it { expect(instance).to respond_to(:to_partial_path).with(0).arguments }
-
-    it { expect(instance.to_partial_path).to be == instance.slug }
-
-    describe 'with a directory', :directories => :one do
-      let(:slugs) { [directory.slug, instance.slug] }
-
-      it { expect(instance.to_partial_path).to be == slugs.join('/') }
-
-      context 'with an empty slug' do
-        let(:attributes) { super().merge :slug => nil }
-        let(:slugs)      { super()[0...-1] }
-
-        it { expect(instance.to_partial_path).to be == slugs.join('/') }        
-      end # context
-    end # describe
-
-    describe 'with many ancestor directories', :directories => :many do
-      let(:slugs) { directories.map(&:slug).push(instance.slug) }
-
-      it { expect(instance.to_partial_path).to be == slugs.join('/') }
     end # describe
   end # describe
 end # describe

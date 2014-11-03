@@ -10,7 +10,7 @@ RSpec.describe RoutesHelper, :type => :helper do
     let(:directory) { build(:directory, :slug => slug) }
   end # shared_context
 
-  shared_context 'with a root feature', :feature => :root do |feature_type = :feature|
+  shared_context 'with a root feature', :feature => :root do |feature_type = :directory_feature|
     let(:slug)    { 'character-creation' }
     let(:feature) { build(feature_type, :slug => slug) }
   end # shared_context
@@ -26,7 +26,7 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # let
   end # shared_context
 
-  shared_context 'with a non-root feature', :feature => :leaf do |feature_type = :feature|
+  shared_context 'with a non-root feature', :feature => :leaf do |feature_type = :directory_feature|
     let(:slugs) { %w(weapons swords japanese tachi) }
     let(:directories) do
       [].tap do |ary|
@@ -129,7 +129,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.create_resource_path nil, resource).to be == "/#{resource.class.to_s.tableize}" }
       end # describe
@@ -149,7 +149,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.create_resource_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -169,7 +169,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.create_resource_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -339,7 +339,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.index_resources_path nil, resource).to be == "/#{resource.class.to_s.tableize}" }
       end # describe
@@ -359,7 +359,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.index_resources_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -379,7 +379,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.index_resources_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -451,7 +451,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.new_resource_path nil, resource).to be == "/#{resource.class.to_s.tableize}/new" }
       end # describe
@@ -471,7 +471,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.new_resource_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}/new" }
       end # describe
@@ -491,7 +491,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.new_resource_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}/new" }
       end # describe
@@ -539,7 +539,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.resource_path feature).to be == "/#{slugs.join '/'}" }
 
       context 'with empty slug' do
-        let(:feature) { build(:feature, :directory => directories.last, :slug => nil) }
+        let(:feature) { build(:directory_feature, :directory => directories.last, :slug => nil) }
 
         it { expect(instance.resource_path feature).to be == "/#{slugs[0...-1].join '/'}" }
       end # context

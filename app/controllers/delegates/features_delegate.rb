@@ -10,10 +10,6 @@ class FeaturesDelegate < ResourcesDelegate
   end # method initialize
 
   ### Instance Methods ###
-  
-  def build_resource_params params
-    super(params).merge :directory => directories.try(:last)
-  end # method build_resource_params
 
   def resource_params params
     params.fetch(resource_name.singularize, {}).permit(:title, :slug).tap do |permitted|
@@ -41,21 +37,4 @@ class FeaturesDelegate < ResourcesDelegate
   def edit_template_path
     "admin/features/#{resource_name}/edit"
   end # method edit_template_path
-
-  private
-
-  def redirect_path action, status = nil
-    case "#{action}#{status ? "_#{status}" : ''}"
-    when 'destroy_success'
-      dashboard_directory_path(directories.last)
-    else
-      super
-    end # case
-  end # method redirect_path
-
-  ### Routing Methods ###
-
-  def _resource_path
-    resource_path(resource)
-  end # method _resource_path
 end # class

@@ -432,7 +432,7 @@ RSpec.describe Directory, :type => :model do
         end # context
 
         context 'with a sibling feature' do
-          before(:each) { create :feature, :directory => parent, :slug => instance.slug }
+          before(:each) { create :directory_feature, :directory => parent, :slug => instance.slug }
 
           it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
         end # context

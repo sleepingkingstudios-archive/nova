@@ -44,7 +44,7 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
       end # let
       let(:directory) { nil }
 
-      before(:each) { allow(Feature).to receive(:roots).and_return(roots) }
+      before(:each) { allow(DirectoryFeature).to receive(:roots).and_return(roots) }
 
       it { expect(instance.features).to be == roots }
     end # context
@@ -107,7 +107,7 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
         it { expect(instance.parent).to be == parent }
       end # context
-    end # context 
+    end # context
   end # describe
 
   describe '#parent_link' do
