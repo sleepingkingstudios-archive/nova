@@ -10,14 +10,16 @@ module FeaturesEnumerator
   end # each
 
   def feature name, options = {}
-    model_name  = name.to_s.singularize
-    scope_name  = model_name.pluralize
-    class_name  = options.key?(:class) ? options[:class].to_s : model_name.camelize
+    model_name = name.to_s.singularize
+    scope_name = model_name.pluralize
+
+    options[:class]  = options.key?(:class)  ? options[:class].to_s : model_name.camelize
+    options[:parent] ||= :directory
 
     # Append to the feature_names collection.
     FeaturesEnumerator.instance_variable_set(:@features,
       FeaturesEnumerator.instance_variable_get(:@features) || {}
-    )[scope_name] = class_name
+    )[scope_name] = options
 
     Directory.feature name, options
   end # method feature

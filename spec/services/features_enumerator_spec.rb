@@ -26,6 +26,11 @@ RSpec.describe FeaturesEnumerator, :type => :service do
       let(:model_name)  { :example_feature }
       let(:model_class) { "ExampleFeature" }
       let(:scope_name)  { model_name.to_s.pluralize }
+      let(:options) do
+        { :class  => model_class,
+          :parent => :directory
+        } # end hash
+      end # let
 
       around(:each) do |example|
         Object.const_set(:ExampleFeature, Spec::Models::ExampleFeature)
@@ -35,14 +40,14 @@ RSpec.describe FeaturesEnumerator, :type => :service do
         Object.send :remove_const, :ExampleFeature
       end # around
 
-      it 'appends the plural name and class to ::features' do
+      it 'appends the plural name and options to ::features' do
         expect {
           instance.feature(model_name)
-        }.to change(instance, :features).to include(scope_name => model_class)
+        }.to change(instance, :features).to include(scope_name => options)
       end # it
 
       it 'registers the feature with Directory' do
-        expect(Directory).to receive(:feature).with(model_name, {})
+        expect(Directory).to receive(:feature).with(model_name, options)
 
         instance.feature model_name
       end # it
@@ -52,17 +57,45 @@ RSpec.describe FeaturesEnumerator, :type => :service do
       let(:model_name)  { :example_feature }
       let(:model_class) { "Spec::Models::#{model_name.to_s.camelize}" }
       let(:scope_name)  { model_name.to_s.pluralize }
+      let(:options) do
+        { :class  => model_class,
+          :parent => :directory
+        } # end hash
+      end # let
 
-      it 'appends the plural name and class to ::features' do
+      it 'appends the plural name and options to ::features' do
         expect {
           instance.feature(model_name, :class => model_class)
-        }.to change(instance, :features).to include(scope_name => model_class)
+        }.to change(instance, :features).to include(scope_name => options)
       end # it
 
       it 'registers the feature with Directory' do
-        expect(Directory).to receive(:feature).with(model_name, :class => model_class)
+        expect(Directory).to receive(:feature).with(model_name, options)
 
-        instance.feature(model_name, :class => model_class)
+        instance.feature(model_name, options)
+      end # it
+    end # describe
+
+    describe 'with a model name and options' do
+      let(:model_name)  { :example_feature }
+      let(:model_class) { "Spec::Models::#{model_name.to_s.camelize}" }
+      let(:scope_name)  { model_name.to_s.pluralize }
+      let(:options) do
+        { :class  => model_class,
+          :parent => :blog
+        } # end hash
+      end # let
+
+      it 'appends the plural name and options to ::features' do
+        expect {
+          instance.feature(model_name, :class => model_class, :parent => :blog)
+        }.to change(instance, :features).to include(scope_name => options)
+      end # it
+
+      it 'registers the feature with Directory' do
+        expect(Directory).to receive(:feature).with(model_name, options)
+
+        instance.feature(model_name, options)
       end # it
     end # describe
   end # describe
