@@ -27,6 +27,13 @@ class Content
     end # class method inherited
   end # class << self
 
+  def initialize attributes = {}
+    super
+
+    # Force setting of class name for embedded documents.
+    self[:_type] = self.class.name
+  end # constructor
+
   ### Relations ###
   embedded_in :container, :polymorphic => true
 
