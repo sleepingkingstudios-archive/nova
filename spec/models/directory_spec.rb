@@ -79,14 +79,6 @@ RSpec.describe Directory, :type => :model do
 
       before(:each) { Directory.feature model_name, :class => model_class }
 
-      it 'appends the plural name and class to ::features' do
-        expect(described_class.features).to include({ scope_name => model_class })
-      end # it
-
-      it 'appends the plural name to ::reserved_slugs' do
-        expect(described_class.reserved_slugs).to include scope_name
-      end # it
-
       describe "##{model_name.to_s.pluralize}" do
         let(:criteria) { instance.send(scope_name) }
 
@@ -181,14 +173,6 @@ RSpec.describe Directory, :type => :model do
     end # describe
   end # describe
 
-  describe '::features' do
-    it { expect(described_class).to have_reader(:features) }
-
-    it 'is immutable' do
-      expect { described_class.features['autodefenestrate'] = Class.new }.not_to change(described_class, :features)
-    end # it
-  end # describe
-
   describe '::find_by_ancestry' do
     it { expect(described_class).to respond_to(:find_by_ancestry).with(1).arguments }
 
@@ -265,6 +249,8 @@ RSpec.describe Directory, :type => :model do
   end # describe
 
   describe '::reserved_slugs' do
+    let(:features) { { :foo => nil, :bar => nil } }
+
     it { expect(described_class).to have_reader(:reserved_slugs) }
 
     it { expect(described_class.reserved_slugs).to include 'admin' }
@@ -282,6 +268,12 @@ RSpec.describe Directory, :type => :model do
         directories
         features
       ) # end array
+    end # it
+
+    it 'contains feature names from FeaturesEnumerator' do
+      allow(FeaturesEnumerator).to receive(:features).and_return(features)
+
+      expect(described_class.reserved_slugs).to include *features.keys
     end # it
   end # describe
 
@@ -488,7 +480,7 @@ RSpec.describe Directory, :type => :model do
         let(:attributes) { super().merge :slug => nil }
         let(:slugs)      { super()[0...-1] }
 
-        it { expect(instance.to_partial_path).to be == slugs.join('/') }        
+        it { expect(instance.to_partial_path).to be == slugs.join('/') }
       end # context
     end # describe
 

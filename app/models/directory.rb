@@ -3,6 +3,7 @@
 require 'mongoid/sleeping_king_studios/has_tree'
 require 'mongoid/sleeping_king_studios/sluggable'
 
+require 'services/features_enumerator'
 require 'validators/unique_within_siblings_validator'
 
 class Directory
@@ -41,6 +42,11 @@ class Directory
       end # define_method
     end # method feature
 
+    # When reloading Directory, re-register features from the FeaturesEnumerator.
+    FeaturesEnumerator.each do |feature_name, class_name|
+      Directory.feature(feature_name, :class => class_name)
+    end # each
+
     def features
       (@features ||= {}).dup
     end # method feature
@@ -67,10 +73,8 @@ class Directory
     end # class method join
 
     def reserved_slugs
-      %w(admin).concat(RESERVED_ACTIONS).concat(%w(directories features)).concat(features.keys)
+      %w(admin).concat(RESERVED_ACTIONS).concat(%w(directories features)).concat(FeaturesEnumerator.features.keys)
     end # class method reserved_slugs
-
-    private
   end # class << self
 
   ### Attributes ###

@@ -5,6 +5,13 @@ require 'presenters/presenter'
 class FeaturePresenter < Presenter
   include IconsHelper
 
+  def initialize object
+    # Ensure we have an instance of the class, not just the class object.
+    feature = object.is_a?(Class) ? object.new : object
+
+    super feature
+  end # constructor
+
   alias_method :feature, :object
 
   delegate :slug, :title, :to => :feature

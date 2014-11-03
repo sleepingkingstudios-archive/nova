@@ -41,8 +41,8 @@
 
 %h3 Features
 %p
-  - Directory.features.each.with_index do |(name, klass), index|
-    - feature_presenter = present(klass.new)
+  - FeaturesEnumerator.features.each.with_index do |(name, class_name), index|
+    - feature_presenter = present(class_name)
     - if 0 != index
       &nbsp;
     = link_to new_resource_path(@directories.last, name), :class => 'text-primary' do
