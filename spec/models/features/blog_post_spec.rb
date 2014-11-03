@@ -3,6 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe BlogPost, :type => :model do
+  shared_context 'with a blog' do
+    let(:blog)       { create(:blog) }
+    let(:attributes) { super().merge :blog => blog }
+  end # shared_context
+
+  shared_context 'with generic content' do
+    let(:content)    { build :content }
+    let(:attributes) { super().merge :content => content }
+  end # shared_context
+
   let(:attributes) { attributes_for(:blog_post) }
   let(:instance)   { described_class.new attributes }
 
@@ -57,8 +67,60 @@ RSpec.describe BlogPost, :type => :model do
     it { expect(instance).to have_property :slug_lock }
   end # describe
 
+  ### Relations ###
+
+  describe '#blog' do
+    it { expect(instance).to have_reader(:blog_id).with(nil) }
+
+    it { expect(instance).to have_reader(:blog).with(nil) }
+
+    context 'with a blog' do
+      include_context 'with a blog'
+
+      it 'sets the blog' do
+        expect(instance.blog).to be == blog
+      end # it
+
+      it 'sets the blog id' do
+        expect(instance.blog_id).to be == blog.id
+      end # it
+    end # context
+  end # describe
+
+  describe '#content' do
+    it { expect(instance).to have_reader(:content).with(nil) }
+
+    context 'with generic content' do
+      include_context 'with generic content'
+
+      it { expect(instance.content).to be == content }
+    end # context
+  end # describe
+
+  ### Validation ###
+
   describe '#validation' do
-    it { expect(instance).to be_valid }
+    context 'with a blog' do
+      include_context 'with a blog'
+
+      context 'with generic content' do
+        include_context 'with generic content'
+
+        it { expect(instance).to be_valid }
+      end # context
+    end # context
+
+    describe 'blog must be present' do
+      let(:attributes) { super().merge :blog => nil }
+
+      it { expect(instance).to have_errors.on(:blog).with_message("can't be blank") }
+    end # describe
+
+    describe 'content must be present' do
+      let(:attributes) { super().merge :content => nil }
+
+      it { expect(instance).to have_errors.on(:content).with_message("can't be blank") }
+    end # describe
 
     describe 'title must be present' do
       let(:attributes) { super().merge :title => nil }
@@ -95,6 +157,24 @@ RSpec.describe BlogPost, :type => :model do
         let(:attributes) { super().merge :slug => 'directories' }
 
         it { expect(instance).to have_errors.on(:slug).with_message("is reserved") }
+      end # context
+    end # describe
+
+    describe 'slug must be unique within blog scope' do
+      context 'with a blog' do
+        include_context 'with a blog'
+
+        context 'with a sibling post' do
+          before(:each) { create(:blog_post, :blog => blog, :content => build(:content), :slug => instance.slug) }
+
+          it { expect(instance).to have_errors.on(:slug).with_message('is already taken') }
+        end # context
+
+        context 'with an unrelated post' do
+          before(:each) { create(:blog_post, :blog => create(:blog), :content => build(:content), :slug => instance.slug) }
+
+          it { expect(instance).not_to have_errors.on(:slug) }
+        end # context
       end # context
     end # describe
   end # describe

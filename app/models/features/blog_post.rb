@@ -24,7 +24,16 @@ class BlogPost
   ### Concerns ###
   slugify :title, :lockable => true
 
+  ### Relations ###
+  belongs_to :blog, :inverse_of => :posts
+
+  embeds_one :content, :as => :container
+
   ### Validations ###
-  validates :title, :presence => true
-  validates :slug,  :exclusion => { :in => ->(document) { document.class.reserved_slugs } }
+  validates :blog,    :presence => true
+  validates :content, :presence => true
+  validates :title,   :presence => true
+  validates :slug,
+    :exclusion  => { :in => ->(document) { document.class.reserved_slugs } },
+    :uniqueness => { :scope => :blog }
 end # class
