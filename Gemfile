@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.4'
+gem 'rails', '4.1.7'
 
 ### App Server ###
-gem 'unicorn'
+gem 'thin'
 
 ### Datastore ###
 gem 'mongoid',                       '~> 4.0.0'
@@ -36,7 +36,7 @@ group :development, :test do
   gem 'rspec',                       '~> 3.1'
   gem 'rspec-rails',                 '~> 3.1'
   gem 'rspec-collection_matchers',   '~> 1.0.0'
-  gem 'rspec-sleeping_king_studios', '>= 2.0.0.beta.0'
+  gem 'rspec-sleeping_king_studios', '>= 2.0.0.beta.2'
 
   gem 'factory_girl_rails', '~> 4.4.1'
   gem 'database_cleaner',   '~> 1.3.0'
@@ -49,4 +49,4 @@ group :production do
   gem 'rails_12factor', '~> 0.0.2' # Required for Heroku deployment.
 end # group
 
-ruby "2.1.2"
+ruby "2.1.4"

@@ -1,6 +1,24 @@
 # config/routes.rb
 
 Rails.application.routes.draw do
+  def features *names
+    names.each do |name|
+      scope_name = name.to_s.underscore.pluralize
+
+      # Generate #index routes.
+      get "#{scope_name}",              :to => "features/#{scope_name}#index"
+      get "*directories/#{scope_name}", :to => "features/#{scope_name}#index"
+
+      # Generate #new routes.
+      get "#{scope_name}/new",              :to => "features/#{scope_name}#new"
+      get "*directories/#{scope_name}/new", :to => "features/#{scope_name}#new"
+
+      # Generate #create routes.
+      post "#{scope_name}",              :to => "features/#{scope_name}#create"
+      post "*directories/#{scope_name}", :to => "features/#{scope_name}#create"
+    end # each
+  end # method features
+
   devise_for :users, :path => 'admin/users',
     :controllers => {
       :registrations => 'admin/registrations',
@@ -29,21 +47,14 @@ Rails.application.routes.draw do
     post 'directories',                 :to => 'directories#create'
     post '*directories/directories',    :to => 'directories#create'
 
-    get 'pages',                        :to => 'features/pages#index'
-    get '*directories/pages',           :to => 'features/pages#index'
-
-    get 'pages/new',                    :to => 'features/pages#new'
-    get '*directories/pages/new',       :to => 'features/pages#new'
-
-    post 'pages',                       :to => 'features/pages#create'
-    post '*directories/pages',          :to => 'features/pages#create'
-
     get '*directories/edit',            :to => 'resources#edit'
 
     patch '*directories',               :to => 'resources#update'
     put '*directories',                 :to => 'resources#update'
 
     delete '*directories',              :to => 'resources#destroy'
+
+    features :blogs, :pages
   end # namespace
 
   get '*directories', :to => 'resources#show', :constraints => lambda { |request| Page.reserved_slugs.none? { |slug| request.path =~ /\A\/?#{slug}/ } }

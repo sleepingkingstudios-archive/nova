@@ -48,6 +48,27 @@ RSpec.describe FeaturesDelegate, :type => :decorator do
 
   ### Instance Methods ###
 
+  describe '#build_resource_params', :params => true do
+    let(:directories) { [] }
+    let(:sanitized)   { instance.build_resource_params params }
+
+    before(:each) do
+      instance.directories = directories
+    end # before each
+
+    expect_behavior 'sanitizes feature attributes'
+
+    it 'assigns directory => nil' do
+      expect(sanitized[:directory]).to be nil
+    end # it
+
+    context 'with many directories', :path => :valid_directory do
+      it 'assigns directory => directories.last' do
+        expect(sanitized[:directory]).to be == directories.last
+      end # it
+    end # context
+  end # describe
+
   describe '#resource_params', :params => true do
     let(:sanitized) { instance.resource_params params }
 

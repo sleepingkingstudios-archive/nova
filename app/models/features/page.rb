@@ -1,7 +1,9 @@
 # app/models/features/page.rb
 
+require 'services/features_enumerator'
+
 class Page < Feature
-  Directory.feature :page
+  FeaturesEnumerator.feature :page
 
   ### Class Methods ###
 

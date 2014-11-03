@@ -5,8 +5,26 @@ require 'rails_helper'
 require 'presenters/feature_presenter'
 
 RSpec.describe FeaturePresenter, :type => :decorator do
-  let(:feature)  { build(:feature) }
-  let(:instance) { described_class.new feature }
+  let(:attributes) { {} }
+  let(:feature)    { build(:feature, attributes) }
+  let(:instance)   { described_class.new feature }
+
+  describe '#directory' do
+    it { expect(instance).to have_reader(:directory) }
+
+    context 'without a directory' do
+      let(:attributes) { super().merge :directory => nil }
+
+      it { expect(instance.directory).to be nil }
+    end # context
+
+    context 'with a directory' do
+      let(:directory)  { create(:directory) }
+      let(:attributes) { super().merge :directory => directory }
+
+      it { expect(instance.directory).to be == directory }
+    end # context
+  end # describe
 
   describe '#feature' do
     it { expect(instance).to have_reader(:feature).with(feature) }
@@ -22,7 +40,7 @@ RSpec.describe FeaturePresenter, :type => :decorator do
     describe 'with options' do
       let(:expected) { %{<span class="fa fa-cube fa-2x"></span>} }
 
-      it { expect(instance.icon :scale => 2).to be == expected }      
+      it { expect(instance.icon :scale => 2).to be == expected }
     end # describe
   end # describe
 

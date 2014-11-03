@@ -1,0 +1,9 @@
+- # app/views/admin/features/blogs/new.html.haml
+
+- presenter = DirectoryPresenter.new @current_directory
+
+%h2
+  = presenter.label
+  %small Create Blog
+
+= render :partial => 'admin/features/blogs/form', :locals => { :directories => @directories, :blog => @resource }

@@ -1,5 +1,7 @@
 # app/controllers/admin/directories_controller.rb
 
+require 'services/features_enumerator'
+
 class Admin::DirectoriesController < Admin::ResourcesController
   # When creating a filter, Rails removes other filters with the same name,
   # even if they have different filtering options. As a workaround, we're

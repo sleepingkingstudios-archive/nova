@@ -5,6 +5,12 @@
 %h2
   = presenter.label
 
+- if user_signed_in?
+  %p
+    = link_to dashboard_directory_path(@directories.last), :class => 'text-info' do
+      = icon :cubes, :scale => :large
+      Dashboard
+
 %p
   This directory does not currently have an
   %code /index

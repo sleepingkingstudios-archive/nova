@@ -5,8 +5,6 @@ require 'presenters/feature_presenter'
 class PagePresenter < FeaturePresenter
   alias_method :page, :feature
 
-  delegate :directory, :to => :page
-
   def index?
     slug == 'index'
   end # method index?
