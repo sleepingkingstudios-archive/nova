@@ -16,4 +16,12 @@ class BlogPost < Feature
   validates :blog,    :presence => true
   validates :content, :presence => true
   validates :slug,    :uniqueness => { :scope => :blog }
+
+  ### Instance Methods ###
+
+  def to_partial_path
+    return '/' if blog.blank?
+
+    Directory.join(*[blog.to_partial_path, slug].reject { |slug| slug.blank? })
+  end # method to_partial_path
 end # class

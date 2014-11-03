@@ -63,7 +63,7 @@ module RoutesHelper
   end # method new_resource_path
 
   def resource_path resource
-    "/#{resource.try(:to_partial_path)}"    
+    "/#{resource.try(:to_partial_path)}"
   end # method resource_path
 
   ### Blog Helpers ###
@@ -87,6 +87,28 @@ module RoutesHelper
   def new_blog_path directory
     new_resource_path directory, 'blogs'
   end # method new_blog_path
+
+  ### Blog Post Helpers ###
+
+  def blog_post_path resource
+    resource_path resource
+  end # method blog_post_path
+
+  def create_blog_post_path blog
+    create_resource_path blog, 'posts'
+  end # method create_blog_post_path
+
+  def edit_blog_post_path resource
+    edit_resource_path resource
+  end # method edit_blog_post_path
+
+  def index_blog_posts_path blog
+    index_resources_path blog, 'posts'
+  end # method index_blog_posts_path
+
+  def new_blog_post_path blog
+    new_resource_path blog, 'posts'
+  end # method new_blog_post_path
 
   ### Page Helpers ###
 

@@ -4,8 +4,19 @@ require 'rails_helper'
 
 RSpec.describe BlogPost, :type => :model do
   shared_context 'with a blog' do
-    let(:blog)       { create(:blog) }
+    let(:blog_attrs) { {} }
+    let(:blog)       { create(:blog, blog_attrs) }
     let(:attributes) { super().merge :blog => blog }
+  end # shared_context
+
+  shared_context 'with many directories' do
+    let(:directories) do
+      [].tap do |ary|
+        3.times { |index| ary << create(:directory, :parent => ary[index - 1]) }
+      end # tap
+    end # let
+    let(:directory)  { directories.last }
+    let(:blog_attrs) { super().merge :directory => directory }
   end # shared_context
 
   shared_context 'with generic content' do
@@ -176,6 +187,44 @@ RSpec.describe BlogPost, :type => :model do
           it { expect(instance).not_to have_errors.on(:slug) }
         end # context
       end # context
+    end # describe
+  end # describe
+
+  ### Instance Methods ###
+
+  describe '#to_partial_path' do
+    it { expect(instance).to respond_to(:to_partial_path).with(0).arguments }
+
+    it { expect(instance.to_partial_path).to be == '/' }
+
+    describe 'with a blog' do
+      include_context 'with a blog'
+
+      let(:slugs) { [blog.slug, instance.slug] }
+
+      it { expect(instance.to_partial_path).to be == slugs.join('/') }
+
+      context 'with an empty slug' do
+        let(:attributes) { super().merge :slug => nil }
+        let(:slugs)      { super()[0...-1] }
+
+        it { expect(instance.to_partial_path).to be == slugs.join('/') }
+      end # context
+
+      describe 'with many directories' do
+        include_context 'with many directories'
+
+        let(:slugs) { [*directories.map(&:slug), blog.slug, instance.slug] }
+
+        it { expect(instance.to_partial_path).to be == slugs.join('/') }
+
+        context 'with an empty slug' do
+          let(:attributes) { super().merge :slug => nil }
+          let(:slugs)      { super()[0...-1] }
+
+          it { expect(instance.to_partial_path).to be == slugs.join('/') }
+        end # context
+      end # describe
     end # describe
   end # describe
 end # describe

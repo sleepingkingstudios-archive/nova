@@ -1,4 +1,4 @@
-# spec/routing/admin/directories_routing_spec.rb
+# spec/routing/admin/resources_routing_spec.rb
 
 require 'rails_helper'
 
