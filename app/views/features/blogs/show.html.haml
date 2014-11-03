@@ -13,6 +13,10 @@
 - if user_signed_in?
   %div{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this blog?' } }
     %p
+      = link_to dashboard_directory_path(@directories.last), :class => 'text-info' do
+        = icon :cubes, :scale => :large
+        Dashboard
+      &nbsp;
       = link_to edit_resource_path(@resource), :class => 'text-warning' do
         = icon :edit, :scale => :large
         Edit Blog
