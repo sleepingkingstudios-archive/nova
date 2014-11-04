@@ -1,7 +1,7 @@
 # app/controllers/admin/features/blog_posts_controller.rb
 
 class Admin::Features::BlogPostsController < Admin::FeaturesController
-  before_action :lookup_blog, :only => %i(index)
+  before_action :lookup_blog, :only => %i(index new)
 
   private
 

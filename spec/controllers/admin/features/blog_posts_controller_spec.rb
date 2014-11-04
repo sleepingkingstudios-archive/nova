@@ -23,6 +23,8 @@ RSpec.describe Admin::Features::BlogPostsController do
   describe '#index' do
     expect_behavior 'requires authentication'
 
+    expect_behavior 'requires authentication for root directory'
+
     def perform_action
       get :index, :blog => blog.slug, :directories => path
     end # method perform_action
@@ -62,6 +64,72 @@ RSpec.describe Admin::Features::BlogPostsController do
         expect_behavior 'renders template', :index
 
         expect_behavior 'assigns blog'
+      end # describe
+    end # describe
+  end # describe
+
+  describe '#new' do
+    expect_behavior 'requires authentication'
+
+    expect_behavior 'requires authentication for root directory'
+
+    def perform_action
+      get :new, params
+    end # method perform_action
+
+    let(:params) { { :blog => blog.slug, :directories => path } }
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an empty path', :path => :empty do
+      expect_behavior 'assigns directories'
+
+      describe 'with an invalid blog' do
+        expect_behavior 'redirects to the last found directory dashboard'
+      end # describe
+
+      describe 'with a valid blog' do
+        let(:blog) { create(:blog, :directory => directories.last) }
+
+        expect_behavior 'renders template', :new
+
+        expect_behavior 'assigns new resource', BlogPost
+
+        expect_behavior 'assigns new content'
+
+        describe 'with content_type => text' do
+          let(:params) { super().merge :content_type => 'TextContent' }
+
+          expect_behavior 'assigns new content', TextContent
+        end # describe
+      end # describe
+    end # describe
+
+    describe 'with an invalid path', :path => :invalid_directory do
+      expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    describe 'with a valid path', :path => :valid_directory do
+      expect_behavior 'assigns directories'
+
+      describe 'with an invalid blog' do
+        expect_behavior 'redirects to the last found directory dashboard'
+      end # describe
+
+      describe 'with a valid blog' do
+        let(:blog) { create(:blog, :directory => directories.last) }
+
+        expect_behavior 'renders template', :new
+
+        expect_behavior 'assigns new resource', BlogPost
+
+        expect_behavior 'assigns new content'
+
+        describe 'with content_type => text' do
+          let(:params) { super().merge :content_type => 'TextContent' }
+
+          expect_behavior 'assigns new content', TextContent
+        end # describe
       end # describe
     end # describe
   end # describe
