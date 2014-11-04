@@ -1,4 +1,4 @@
-# subl app/controllers/delegates/features/directory_features_delegate.rb
+# app/controllers/delegates/features/directory_features_delegate.rb
 
 require 'delegates/features_delegate'
 

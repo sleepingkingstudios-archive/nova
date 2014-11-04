@@ -1,17 +1,22 @@
-# spec/controllers/delegates/features/pages_delegate_spec.rb
+# spec/controllers/delegates/features/blog_posts_delegate_spec.rb
 
 require 'rails_helper'
 
-require 'delegates/features/pages_delegate'
+require 'delegates/features/blog_posts_delegate'
 
-RSpec.describe PagesDelegate, :type => :decorator do
+RSpec.describe BlogPostsDelegate, :type => :decorator do
   include Spec::Contexts::Controllers::ResourcesContexts
   include Spec::Contexts::Delegates::DelegateContexts
 
-  shared_context 'with request params', :params => true do
+  shared_context 'with a blog' do
+    let(:blog)       { create(:blog) }
+    let(:attributes) { super().merge :blog => blog }
+  end # shared_context
+
+  shared_context 'with request params' do
     let(:params) do
       ActionController::Parameters.new(
-        :page => {
+        :post => {
           :title => 'Some Title',
           :slug  => 'Some Slug',
           :evil  => 'malicious'
@@ -20,10 +25,10 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # let
   end # shared_context
 
-  shared_examples 'sanitizes page attributes' do
-    it 'whitelists page attributes' do
+  shared_examples 'sanitizes feature attributes' do
+    it 'whitelists feature attributes' do
       %w(title slug).each do |attribute|
-        expect(sanitized[attribute]).to be == params.fetch(:page).fetch(attribute)
+        expect(sanitized[attribute]).to be == params.fetch(:post).fetch(attribute)
       end # each
     end # it
 
@@ -40,8 +45,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # it
   end # shared_examples
 
-  let(:object)   { build(:page) }
-  let(:instance) { described_class.new object }
+  let(:attributes) { {} }
+  let(:object)     { build(:blog_post, attributes) }
+  let(:instance)   { described_class.new object }
 
   describe '::new' do
     it { expect(described_class).to construct.with(0..1).arguments }
@@ -50,14 +56,26 @@ RSpec.describe PagesDelegate, :type => :decorator do
       let(:instance) { described_class.new }
 
       it 'sets the resource class' do
-        expect(instance.resource_class).to be Page
+        expect(instance.resource_class).to be BlogPost
       end # it
     end # it
   end # describe
 
   ### Instance Methods ###
 
+  describe '#blog' do
+    it { expect(instance).to have_property(:blog).with(nil) }
+
+    context 'with a blog' do
+      include_context 'with a blog'
+
+      it { expect(instance.blog).to be == blog }
+    end # context
+  end # describe
+
   describe '#build_resource' do
+    include_context 'with a blog'
+
     let(:params)  { ActionController::Parameters.new({}) }
     let(:request) { double('request', :params => ActionController::Parameters.new(params)) }
 
@@ -70,7 +88,11 @@ RSpec.describe PagesDelegate, :type => :decorator do
     it { expect(instance).to respond_to(:build_resource).with(1).argument }
 
     it 'creates the specified resource' do
-      expect(perform_action).to be_a Page
+      expect(perform_action).to be_a BlogPost
+    end # it
+
+    it "sets the resource's blog to the blog" do
+      expect(perform_action.blog).to be == blog
     end # it
 
     it 'creates an embedded content' do
@@ -81,7 +103,7 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # it
 
     context 'with an implicit content type' do
-      let(:params) { super().merge :page => { :content => { :_type => 'MarkdownContent' } } }
+      let(:params) { super().merge :post => { :content => { :_type => 'MarkdownContent' } } }
 
       it 'creates an embedded content' do
         object = perform_action
@@ -101,7 +123,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # context
   end # describe
 
-  describe '#build_resource_params', :params => true do
+  describe '#build_resource_params' do
+    include_context 'with request params'
+
     let(:directories) { [] }
     let(:sanitized)   { instance.build_resource_params params }
 
@@ -109,51 +133,53 @@ RSpec.describe PagesDelegate, :type => :decorator do
       instance.directories = directories
     end # before each
 
-    expect_behavior 'sanitizes page attributes'
+    expect_behavior 'sanitizes feature attributes'
 
-    it 'assigns directory => nil' do
-      expect(sanitized[:directory]).to be nil
-    end # it
+    context 'with a blog' do
+      include_context 'with a blog'
 
-    context 'with many directories', :path => :valid_directory do
-      it 'assigns directory => directories.last' do
-        expect(sanitized[:directory]).to be == directories.last
+      it 'assigns blog => blog' do
+        expect(sanitized[:blog]).to be == blog
       end # it
     end # context
   end # describe
 
-  describe '#content_params' do
-    let(:content_params) { { 'text_content' => 'It was a dark and stormy night...' } }
-    let(:params)         { { :page => { :content => content_params } } }
-
-    it { expect(instance).to respond_to(:content_params).with(1).arguments }
-
-    it { expect(instance.content_params params).to be == content_params }
+  describe '#resource_name' do
+    it { expect(instance.resource_name).to be == 'posts' }
   end # describe
 
   ### Actions ###
 
   describe '#new', :controller => true do
+    let(:blog)    { create(:blog) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    before(:each) { instance.blog = blog }
 
     it 'assigns @resource' do
       instance.new request
 
-      expect(assigns.fetch(:resource)).to be_a Page
+      expect(assigns.fetch(:resource)).to be_a BlogPost
+      expect(assigns.fetch(:resource).blog).to be == blog
       expect(assigns.fetch(:resource).content).to be_a Content
     end # it
   end # describe
 
   describe '#create', :controller => true do
-    let(:object)     { Page }
-    let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
-    let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
+    let(:blog)       { create(:blog) }
+    let(:object)     { BlogPost }
+    let(:attributes) { { :title => 'Blog Post Title', :slug => 'blog-post-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:post => attributes)) }
+
+    before(:each) { instance.blog = blog }
 
     it 'assigns resource with attributes and content' do
       instance.create request
 
       resource = assigns.fetch(:resource)
-      expect(resource).to be_a Page
+      expect(resource).to be_a BlogPost
+
+      expect(resource.blog).to  be == blog
 
       expect(resource.title).to be == attributes.fetch(:title)
       expect(resource.slug).to  be == attributes.fetch(:slug)
@@ -170,52 +196,35 @@ RSpec.describe PagesDelegate, :type => :decorator do
         instance.create request
       end # it
 
-      it 'does not create a page' do
-        expect { instance.create request }.not_to change(Page, :count)
+      it 'does not create a blog post' do
+        expect { instance.create request }.not_to change(BlogPost, :count)
       end # it
     end # describe
 
     describe 'with valid params' do
-      let(:page_attributes) { attributes_for(:page) }
-      let(:attributes)      { page_attributes.merge :content => attributes_for(:text_content).merge(:_type => 'text_content') }
-      let(:created_page)    { Page.where(page_attributes).first }
+      let(:post_attributes) { attributes_for(:blog_post) }
+      let(:attributes)      { post_attributes.merge :content => attributes_for(:text_content).merge(:_type => 'text_content') }
+      let(:created_post)    { BlogPost.where(post_attributes).first }
 
-      it 'creates a page' do
-        expect { instance.create request }.to change(Page, :count).by(1)
+      it 'creates a blog post' do
+        expect { instance.create request }.to change(BlogPost, :count).by(1)
       end # it
 
-      it 'redirects to the page' do
-        expect(controller).to receive(:redirect_to).with("/#{attributes[:title].parameterize}")
+      it 'redirects to the blog post' do
+        expect(controller).to receive(:redirect_to).with("/#{blog.to_partial_path}/#{attributes[:title].parameterize}")
 
         instance.create request
 
-        expect(flash_messages[:success]).to be == "Page successfully created."
+        expect(flash_messages[:success]).to be == "Post successfully created."
       end # it
-
-      describe 'with a directory', :path => :valid_directory do
-        before(:each) do
-          instance.directories = directories
-        end # before each
-
-        it 'sets the page directory' do
-          instance.create request
-
-          expect(created_page.directory).to be == directories.last
-        end # it
-
-        it 'redirects to the page' do
-          expect(controller).to receive(:redirect_to).with("/#{segments.join '/'}/#{attributes[:title].parameterize}")
-
-          instance.create request
-        end # it
-      end # describe
     end # describe
   end # describe
 
   describe '#update', :controller => true do
-    let(:object)     { create(:page, :content => build(:text_content)) }
-    let(:attributes) { { :title => 'Page Title', :slug => 'page-slug', :evil => 'malicious' } }
-    let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
+    let(:blog)       { create(:blog) }
+    let(:object)     { create(:blog_post, :blog => blog, :content => build(:text_content)) }
+    let(:attributes) { { :title => 'Blog Post Title', :slug => 'blog-post-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:post => attributes)) }
 
     def perform_action
       instance.update request
@@ -226,6 +235,8 @@ RSpec.describe PagesDelegate, :type => :decorator do
 
       resource = assigns.fetch(:resource)
       expect(resource).to be == object
+
+      expect(resource.blog).to  be == blog
 
       expect(resource.title).to be == attributes.fetch(:title)
       expect(resource.slug).to  be == attributes.fetch(:slug)
@@ -270,7 +281,7 @@ RSpec.describe PagesDelegate, :type => :decorator do
 
         perform_action
 
-        expect(flash_messages[:success]).to be == "Page successfully updated."
+        expect(flash_messages[:success]).to be == "Post successfully updated."
       end # it
 
       it 'updates the resource' do
