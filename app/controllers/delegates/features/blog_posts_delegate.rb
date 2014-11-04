@@ -41,6 +41,24 @@ class BlogPostsDelegate < FeaturesDelegate
     super
   end # method update_resource
 
+  ### Partial Methods ###
+
+  def index_template_path
+    'admin/features/blog_posts/index'
+  end # method index_template_path
+
+  def new_template_path
+    'admin/features/blog_posts/new'
+  end # method new_template_path
+
+  def show_template_path
+    'features/blog_posts/show'
+  end # method show_template_path
+
+  def edit_template_path
+    'admin/features/blog_posts/edit'
+  end # method edit_template_path
+
   private
 
   def flash_message action, status = nil
