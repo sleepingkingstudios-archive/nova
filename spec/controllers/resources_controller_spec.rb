@@ -33,6 +33,14 @@ RSpec.describe ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
+    describe 'with a valid path to a blog post', :path => :valid_feature do
+      let(:blog)     { create(:blog, :directory => directories.last) }
+      let(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
+      let(:path)     { segments.push(blog.slug, resource.slug).join('/') }
+
+      expect_behavior 'renders template', :show
+    end # describe
+
     describe 'with a valid path to a directory', :path => :valid_directory do
       let(:resource) { directories.last }
 
