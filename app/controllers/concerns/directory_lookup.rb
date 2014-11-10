@@ -35,10 +35,6 @@ module DirectoryLookup
 
     @resource = @directories.last
   rescue Directory::NotFoundError => exception
-    # If we're missing more than one path segment, there's at least one
-    # directory missing.
-    raise if exception.missing.count > 1
-
     @directories = exception.found
 
     # Force authentication here, because failed authentication handling

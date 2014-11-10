@@ -159,7 +159,7 @@ RSpec.describe DirectoryRouter, :type => :decorator do
             expect(exception.missing).to be == missing
           end # raise_error
         end # it
-      end
+      end # shared examples
 
       context 'with one missing routing parameter' do
         include_context 'with one missing routing parameter'

@@ -118,6 +118,34 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
       end # it
     end # describe
 
+    describe 'with one root blog' do
+      let(:blog)   { build(:blog, :slug => 'potent-potables') }
+      let(:params) { super().merge :directories => blog.slug }
+
+      before(:each) do
+        allow(DirectoryFeature).to receive(:roots).and_return(double('criteria', :where => [blog]))
+      end # before
+
+      it 'assigns blog to @resource' do
+        instance.lookup_resource
+
+        expect(assigns.fetch :directories).to be == directories
+        expect(assigns.fetch :resource).to be == blog
+      end # it
+
+      describe 'with a blog post' do
+        let!(:post)  { create(:blog_post, :blog => blog, :slug => 'scotchy-scotchy-scotch', :content => build(:content)) }
+        let(:params) { super().tap { |hsh| hsh[:directories] << '/' << post.slug } }
+
+        it 'assigns blog post to @resource' do
+          instance.lookup_resource
+
+          expect(assigns.fetch :directories).to be == directories
+          expect(assigns.fetch :resource).to be == post
+        end # it
+      end # describe
+    end # describe
+
     describe 'with one missing root directory or feature' do
       let(:segments) { %w(items) }
       let(:params)   { super().merge :directories => segments.join('/') }
@@ -135,7 +163,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
       let(:params) { super().merge :directories => 'items/weapons/swords' }
 
       it 'raises an error' do
-        expect { instance.lookup_resource }.to raise_error Directory::NotFoundError do |exception|
+        expect { instance.lookup_resource }.to raise_error Appleseed::ResourcesNotFoundError do |exception|
           expect(exception.found).to be == directories
         end # expect
       end # it
@@ -197,7 +225,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
       let(:params) { super().merge :directories => 'items/weapons/swords' }
 
       it 'raises an error' do
-        expect { instance.lookup_resource }.to raise_error Directory::NotFoundError do |exception|
+        expect { instance.lookup_resource }.to raise_error Appleseed::ResourcesNotFoundError do |exception|
           expect(exception.found).to be == directories
         end # expect
       end # it
