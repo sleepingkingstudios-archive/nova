@@ -16,6 +16,10 @@ class FeaturePresenter < Presenter
 
   delegate :slug, :title, :to => :feature
 
+  def error_messages
+    feature.errors.full_messages.uniq
+  end # method error_messages
+
   def icon options = {}
     super(icon_name, options)
   end # method icon
@@ -27,6 +31,7 @@ class FeaturePresenter < Presenter
   def type
     feature._type
   end # method type
+  alias_method :name, :type
 
   private
 

@@ -1,4 +1,7 @@
 - # app/views/admin/features/blog_posts/new.html.haml
 
-%h1 BlogPost#new
-%p  Find me at app/views/admin/features/blog_posts/new.html.haml
+%h2
+  = present(@resource.blog).label
+  %small Create Post
+
+= render :partial => 'admin/features/blog_posts/form', :locals => { :directories => @directories, :blog => @blog, :post => @resource }

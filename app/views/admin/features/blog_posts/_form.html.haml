@@ -1,0 +1,20 @@
+- # app/views/admin/features/blog_posts/_form.html.haml
+
+- presenter         = present post
+- content_presenter = present post.content
+
+- form_path   = post.persisted? ? blog_post_path(post) : create_blog_post_path(blog)
+- form_method = post.persisted? ? :patch : :post
+= form_for post, :as => :post, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'backbone-layout' => 'Features.BlogPosts.FormLayout' } do |form|
+  = render :partial => 'admin/common/form_errors', :locals => { :resource => post, :presenter => presenter }
+
+  = form.form_group :title do
+    = form.text_field :title, :autofocus => true
+  = form.form_group :slug do
+    = form.text_field :slug, :placeholder => post.to_slug, :value => post.slug_lock ? post.slug : nil
+
+  = render :partial => 'admin/features/contents/selector', :locals => { :form => form, :content => post.content }
+
+  = form.form_group do
+    = form.submit post.persisted? ? 'Update Post' : 'Create Post'
+    = form.button 'Cancel', post.persisted? ? blog_post_path(post) : index_blog_posts_path(blog)
