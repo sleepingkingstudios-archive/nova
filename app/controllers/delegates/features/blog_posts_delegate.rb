@@ -76,6 +76,15 @@ class BlogPostsDelegate < FeaturesDelegate
     end # case
   end # method flash_message
 
+  def redirect_path action, status = nil
+    case "#{action}#{status ? "_#{status}" : ''}"
+    when 'destroy_success'
+      blog_path(blog)
+    else
+      super
+    end # case
+  end # method redirect_path
+
   ### Routing Methods ###
 
   def _resource_path
