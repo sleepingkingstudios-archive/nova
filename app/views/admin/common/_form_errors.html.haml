@@ -8,5 +8,5 @@
     .panel-body
       %p= "The following error(s) prevent the #{presenter.name} from being saved:"
       %ul
-        - messages.each do |message|
+        - presenter.error_messages.each do |message|
           %li= message

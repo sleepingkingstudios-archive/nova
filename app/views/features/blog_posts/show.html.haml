@@ -1,4 +1,41 @@
 - # app/views/features/blog_posts/show.html.haml
 
-%h1 BlogPosts#show
-%p  Find me at app/views/features/blog_posts/show.html.haml
+- directory_presenter = DirectoryPresenter.new @directories.last
+
+- blog_presenter = present(@resource.blog)
+
+- presenter = present(@resource)
+
+- content_presenter = present(@resource.content)
+
+= render :partial => 'admin/common/modals/confirm_delete'
+
+%h2
+  = link_to blog_presenter.label, blog_path(@resource.blog), :class => 'text-plain'
+  %br
+  %small= presenter.label
+
+- if user_signed_in?
+  %div{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } }
+    %p
+      = link_to edit_resource_path(@resource), :class => 'text-warning' do
+        = icon :edit, :scale => :large
+        Edit Post
+      &nbsp;
+      = link_to resource_path(@resource), :class => 'text-danger delete-link', :method => :delete do
+        = icon :trash, :scale => :large
+        Delete Post
+
+- content_presenter.render_content(self)
+
+%p
+  = link_to blog_path(@resource.blog) do
+    = icon(:arrow_circle_left)
+    Back to
+    = blog_presenter.label
+
+%p
+  = link_to directory_path(@directories.last) do
+    = icon(:arrow_circle_left)
+    Back to
+    = directory_presenter.label
