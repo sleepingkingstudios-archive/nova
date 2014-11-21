@@ -12,12 +12,12 @@ class DirectoryPresenter < Presenter
   end # method children
 
   def features
-    directory.blank? ? Feature.roots : directory.features
+    directory.blank? ? DirectoryFeature.roots : directory.features
   end # method features
 
   def label
     return 'Root Directory' if directory.blank?
-    
+
     directory.title_changed? && !directory.title_was.blank? ? directory.title_was : directory.title
   end # method label
 

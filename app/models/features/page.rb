@@ -2,7 +2,7 @@
 
 require 'services/features_enumerator'
 
-class Page < Feature
+class Page < DirectoryFeature
   FeaturesEnumerator.feature :page
 
   ### Class Methods ###

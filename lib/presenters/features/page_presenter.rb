@@ -1,9 +1,15 @@
 # lib/presenters/features/page_presenter.rb
 
-require 'presenters/feature_presenter'
+require 'presenters/features/directory_feature_presenter'
 
-class PagePresenter < FeaturePresenter
+class PagePresenter < DirectoryFeaturePresenter
   alias_method :page, :feature
+
+  def error_messages
+    messages = super.tap { |ary| ary.delete 'Content is invalid' }
+    messages += page.content.errors.full_messages.uniq unless page.content.blank?
+    messages
+  end # method error_messages
 
   def index?
     slug == 'index'

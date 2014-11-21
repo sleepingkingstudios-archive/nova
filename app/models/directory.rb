@@ -43,8 +43,8 @@ class Directory
     end # method feature
 
     # When reloading Directory, re-register features from the FeaturesEnumerator.
-    FeaturesEnumerator.each do |feature_name, class_name|
-      Directory.feature(feature_name, :class => class_name)
+    FeaturesEnumerator.each do |feature_name, options|
+      Directory.feature(feature_name, options)
     end # each
 
     def features
@@ -85,7 +85,7 @@ class Directory
   slugify :title, :lockable => true
 
   ### Relations ###
-  has_many :features, :dependent => :destroy
+  has_many :features, :class_name => "DirectoryFeature", :dependent => :destroy
 
   ### Validations ###
   validates :title, :presence => true

@@ -12,7 +12,7 @@ RSpec.describe DirectoryRouter, :type => :decorator do
     let(:directory) { super().tap { |dir| dir.try(:save!) } }
     let(:feature_slugs) { %w(katana wakizashi tachi) }
     let!(:features) do
-      feature_slugs.map { |slug| create(:feature, :directory => directory, :slug => slug) }
+      feature_slugs.map { |slug| create(:directory_feature, :directory => directory, :slug => slug) }
     end # let
   end # shared_context
 
@@ -159,7 +159,7 @@ RSpec.describe DirectoryRouter, :type => :decorator do
             expect(exception.missing).to be == missing
           end # raise_error
         end # it
-      end
+      end # shared examples
 
       context 'with one missing routing parameter' do
         include_context 'with one missing routing parameter'

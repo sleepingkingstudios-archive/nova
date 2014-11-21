@@ -2,7 +2,7 @@
 
 module Spec
   module Models
-    class ExampleFeature < Feature
+    class ExampleFeature < DirectoryFeature
       field :example_field, :type => String
 
       validates :example_field, :presence => true

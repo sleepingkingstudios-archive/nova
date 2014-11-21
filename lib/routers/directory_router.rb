@@ -8,13 +8,13 @@ class DirectoryRouter < Router
   alias_method :directory, :object
 
   def route_to search, found, missing
-    super || route_to_feature    
+    super || route_to_feature
   end # method route_to
 
   private
 
   def features
-    directory.try(:features) or Feature.roots
+    directory.try(:features) or DirectoryFeature.roots
   end # method features
 
   def route_to_feature

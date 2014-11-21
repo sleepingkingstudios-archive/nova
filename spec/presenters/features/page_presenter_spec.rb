@@ -9,6 +9,55 @@ RSpec.describe PagePresenter, :type => :decorator do
   let(:page)       { build(:page, attributes) }
   let(:instance)   { described_class.new page }
 
+  describe '#error_messages' do
+    it { expect(instance).to have_reader(:error_messages).with([]) }
+
+    context 'with multiple error messages' do
+      let(:errors) do
+        [ "Title can't be blank",
+          'Slug is already taken',
+          "Streams can't be crossed"
+        ] # end array
+      end # let
+
+      before(:each) do
+        errors.each do |message|
+          words = message.split(/\s+/)
+
+          page.errors.add(words.shift.downcase, words.join(' '))
+        end # each
+      end # before each
+
+      it { expect(instance.error_messages).to contain_exactly(*errors) }
+
+      context 'with content error messages' do
+        let(:attributes) { super().merge :content => build(:content) }
+        let(:content_errors) do
+          [ "Text content can't be blank",
+            "Picture content depicts a weeping angel. Any representation of"\
+            " an angel becomes an angel. Don't look away. Don't even blink."\
+            "Blink and you're dead."
+          ] # end array
+        end # let
+        let(:expected) do
+          errors + content_errors
+        end # let
+
+        before(:each) do
+          page.errors.add('content', 'is invalid')
+
+          content_errors.each do |message|
+            words = message.split(/\s+/)
+
+            page.content.errors.add(words.shift.downcase, words.join(' '))
+          end # each
+        end # before each
+
+        it { expect(instance.error_messages).to contain_exactly(*expected) }
+      end # context
+    end # context
+  end # describe
+
   describe '#icon' do
     let(:expected) { %{<span class="fa fa-file-o"></span>} }
 

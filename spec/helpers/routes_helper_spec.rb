@@ -10,7 +10,7 @@ RSpec.describe RoutesHelper, :type => :helper do
     let(:directory) { build(:directory, :slug => slug) }
   end # shared_context
 
-  shared_context 'with a root feature', :feature => :root do |feature_type = :feature|
+  shared_context 'with a root feature', :feature => :root do |feature_type = :directory_feature|
     let(:slug)    { 'character-creation' }
     let(:feature) { build(feature_type, :slug => slug) }
   end # shared_context
@@ -26,7 +26,7 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # let
   end # shared_context
 
-  shared_context 'with a non-root feature', :feature => :leaf do |feature_type = :feature|
+  shared_context 'with a non-root feature', :feature => :leaf do |feature_type = :directory_feature|
     let(:slugs) { %w(weapons swords japanese tachi) }
     let(:directories) do
       [].tap do |ary|
@@ -64,6 +64,26 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#blog_post_path' do
+    it { expect(instance).to respond_to(:blog_post_path).with(1).arguments }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.blog_post_path post).to be == "/#{slug}/#{post.slug}" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.blog_post_path post).to be == "/#{slugs.join '/'}/#{post.slug}" }
+    end # describe
+  end # describe
+
   describe '#create_blog_path' do
     it { expect(instance).to respond_to(:create_blog_path).with(1).arguments }
 
@@ -77,6 +97,22 @@ RSpec.describe RoutesHelper, :type => :helper do
 
     describe 'with a non-root directory', :directories => :many do
       it { expect(instance.create_blog_path directories.last).to be == "/#{slugs.join '/'}/blogs" }
+    end # describe
+  end # describe
+
+  describe '#create_blog_post_path' do
+    it { expect(instance).to respond_to(:create_blog_post_path).with(1).arguments }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      it { expect(instance.create_blog_post_path feature).to be == "/#{slug}/posts" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      it { expect(instance.create_blog_post_path feature).to be == "/#{slugs.join '/'}/posts" }
     end # describe
   end # describe
 
@@ -129,7 +165,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.create_resource_path nil, resource).to be == "/#{resource.class.to_s.tableize}" }
       end # describe
@@ -149,7 +185,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.create_resource_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -169,7 +205,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.create_resource_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -218,15 +254,35 @@ RSpec.describe RoutesHelper, :type => :helper do
     it { expect(instance).to respond_to(:edit_blog_path).with(1).argument }
 
     describe 'with a root feature' do
-      include_context 'with a root feature', :page
+      include_context 'with a root feature', :blog
 
       it { expect(instance.edit_blog_path feature).to be == "/#{slug}/edit" }
     end # describe
 
     describe 'with a non-root feature' do
-      include_context 'with a non-root feature', :page
+      include_context 'with a non-root feature', :blog
 
       it { expect(instance.edit_blog_path feature).to be == "/#{slugs.join '/'}/edit" }
+    end # describe
+  end # describe
+
+  describe '#edit_blog_post_path' do
+    it { expect(instance).to respond_to(:edit_blog_post_path).with(1).argument }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.edit_blog_post_path post).to be == "/#{slug}/#{post.slug}/edit" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.edit_blog_post_path post).to be == "/#{slugs.join '/'}/#{post.slug}/edit" }
     end # describe
   end # describe
 
@@ -290,6 +346,22 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#index_blog_posts_path' do
+    it { expect(instance).to respond_to(:index_blog_posts_path).with(1).arguments }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      it { expect(instance.index_blog_posts_path feature).to be == "/#{slug}/posts" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      it { expect(instance.index_blog_posts_path feature).to be == "/#{slugs.join '/'}/posts" }
+    end # describe
+  end # describe
+
   describe '#index_directories_path' do
     it { expect(instance).to respond_to(:index_directories_path).with(1).arguments }
 
@@ -339,7 +411,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.index_resources_path nil, resource).to be == "/#{resource.class.to_s.tableize}" }
       end # describe
@@ -359,7 +431,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.index_resources_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -379,7 +451,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.index_resources_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}" }
       end # describe
@@ -399,6 +471,22 @@ RSpec.describe RoutesHelper, :type => :helper do
 
     describe 'with a non-root directory', :directories => :many do
       it { expect(instance.new_blog_path directories.last).to be == "/#{slugs.join '/'}/blogs/new" }
+    end # describe
+  end # describe
+
+  describe '#new_blog_post_path' do
+    it { expect(instance).to respond_to(:new_blog_post_path).with(1).arguments }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      it { expect(instance.new_blog_post_path feature).to be == "/#{slug}/posts/new" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      it { expect(instance.new_blog_post_path feature).to be == "/#{slugs.join '/'}/posts/new" }
     end # describe
   end # describe
 
@@ -451,7 +539,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.new_resource_path nil, resource).to be == "/#{resource.class.to_s.tableize}/new" }
       end # describe
@@ -471,7 +559,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.new_resource_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}/new" }
       end # describe
@@ -491,7 +579,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
 
       describe 'with a resource instance' do
-        let(:resource) { build(:feature) }
+        let(:resource) { build(:directory_feature) }
 
         it { expect(instance.new_resource_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}/new" }
       end # describe
@@ -539,7 +627,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.resource_path feature).to be == "/#{slugs.join '/'}" }
 
       context 'with empty slug' do
-        let(:feature) { build(:feature, :directory => directories.last, :slug => nil) }
+        let(:feature) { build(:directory_feature, :directory => directories.last, :slug => nil) }
 
         it { expect(instance.resource_path feature).to be == "/#{slugs[0...-1].join '/'}" }
       end # context

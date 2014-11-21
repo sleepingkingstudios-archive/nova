@@ -9,20 +9,40 @@ RSpec.describe FeaturePresenter, :type => :decorator do
   let(:feature)    { build(:feature, attributes) }
   let(:instance)   { described_class.new feature }
 
-  describe '#directory' do
-    it { expect(instance).to have_reader(:directory) }
+  describe '#error_messages' do
+    it { expect(instance).to have_reader(:error_messages).with([]) }
 
-    context 'without a directory' do
-      let(:attributes) { super().merge :directory => nil }
+    context 'with multiple error messages' do
+      let(:errors) do
+        [ "Title can't be blank",
+          'Slug is already taken',
+          "Streams can't be crossed"
+        ] # end array
+      end # let
 
-      it { expect(instance.directory).to be nil }
-    end # context
+      before(:each) do
+        errors.each do |message|
+          words = message.split(/\s+/)
 
-    context 'with a directory' do
-      let(:directory)  { create(:directory) }
-      let(:attributes) { super().merge :directory => directory }
+          feature.errors.add(words.shift.downcase, words.join(' '))
+        end # each
+      end # before each
 
-      it { expect(instance.directory).to be == directory }
+      it { expect(instance.error_messages).to contain_exactly(*errors) }
+
+      context 'with duplicate error messages' do
+        let(:errors) do
+          [ "Title can't be blank",
+            "Title can't be blank",
+            'Slug is already taken',
+            "Streams can't be crossed",
+            "Streams can't be crossed",
+            "Streams can't be crossed"
+          ] # end array
+        end # let
+
+        it { expect(instance.error_messages).to contain_exactly(*errors.uniq) }
+      end # context
     end # context
   end # describe
 
@@ -55,6 +75,10 @@ RSpec.describe FeaturePresenter, :type => :decorator do
 
       it { expect(instance.label).to be == feature.title_was }
     end # context
+  end # describe
+
+  describe '#name' do
+    it { expect(instance).to have_reader(:name).with(feature.class.name) }
   end # describe
 
   describe '#slug' do

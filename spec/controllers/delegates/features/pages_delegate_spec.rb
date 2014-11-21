@@ -71,7 +71,7 @@ RSpec.describe PagesDelegate, :type => :decorator do
 
     it 'creates the specified resource' do
       expect(perform_action).to be_a Page
-    end # expect
+    end # it
 
     it 'creates an embedded content' do
       object = perform_action
@@ -88,7 +88,7 @@ RSpec.describe PagesDelegate, :type => :decorator do
 
         expect(instance.resource.content).to be_a MarkdownContent
       end # it
-    end # context    
+    end # context
 
     context 'with an explicit content type' do
       let(:params) { super().merge :content_type => 'MarkdownContent' }
@@ -188,6 +188,8 @@ RSpec.describe PagesDelegate, :type => :decorator do
         expect(controller).to receive(:redirect_to).with("/#{attributes[:title].parameterize}")
 
         instance.create request
+
+        expect(flash_messages[:success]).to be == "Page successfully created."
       end # it
 
       describe 'with a directory', :path => :valid_directory do

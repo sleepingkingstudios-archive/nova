@@ -10,7 +10,7 @@
 
 %p{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => "Are you sure you want to delete this directory?<br><br><strong>This will destroy all child directories and features in this directory.</strong>".html_safe } }
   = link_to directory_path(@current_directory), :class => 'text-info' do
-    = icon :cube, :scale => :large
+    = icon :eye, :scale => :large
     Show Directory
   - if @current_directory
     &nbsp;
@@ -41,8 +41,8 @@
 
 %h3 Features
 %p
-  - FeaturesEnumerator.features.each.with_index do |(name, class_name), index|
-    - feature_presenter = present(class_name)
+  - FeaturesEnumerator.select { |_, options| options[:parent] == :directory }.each.with_index do |(name, options), index|
+    - feature_presenter = present(options[:class])
     - if 0 != index
       &nbsp;
     = link_to new_resource_path(@directories.last, name), :class => 'text-primary' do

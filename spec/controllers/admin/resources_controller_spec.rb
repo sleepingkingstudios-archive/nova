@@ -33,6 +33,18 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
+    describe 'with a valid path to a blog post', :path => :valid_feature do
+      let(:blog)     { create(:blog, :directory => directories.last) }
+      let(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
+      let(:path)     { segments.push(blog.slug, resource.slug).join('/') }
+
+      expect_behavior 'renders template', :edit
+
+      expect_behavior 'assigns directories'
+
+      expect_behavior 'assigns the resource'
+    end # describe
+
     describe 'with a valid path to a directory', :path => :valid_directory do
       let(:resource) { directories.last }
 
@@ -70,7 +82,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a page', :path => :valid_feature do
+    describe 'with a valid path to a blog', :path => :valid_feature do
       let(:resource_name) { :blog }
       let(:resource)      { create(:blog, :directory => directories.last) }
 
@@ -96,6 +108,44 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
           expect(response.status).to be == 302
           expect(response).to redirect_to(blog_path(assigns :resource))
+
+          expect(request.flash[:success]).not_to be_blank
+        end # it
+
+        it 'updates the resource' do
+          expect { perform_action }.to change { resource.reload.title }.to(attributes[:title])
+        end # it
+      end # describe
+    end # describe
+
+    describe 'with a valid path to a blog post', :path => :valid_feature do
+      let(:resource_name) { :post }
+      let(:blog)          { create(:blog, :directory => directories.last) }
+      let(:resource)      { create(:blog_post, :blog => blog, :content => build(:content)) }
+      let(:path)          { segments.push(blog.slug, resource.slug).join('/') }
+
+      describe 'with invalid params' do
+        let(:attributes) { super().merge :title => nil }
+
+        expect_behavior 'renders template', :edit
+
+        expect_behavior 'assigns directories'
+
+        expect_behavior 'assigns the resource'
+
+        it 'does not update the resource' do
+          expect { perform_action }.not_to change { resource.reload.title }
+        end # it
+      end # describe
+
+      describe 'with valid params' do
+        let(:attributes) { attributes_for(:blog_post) }
+
+        it 'redirects to the post' do
+          perform_action
+
+          expect(response.status).to be == 302
+          expect(response).to redirect_to(blog_post_path(assigns :resource))
 
           expect(request.flash[:success]).not_to be_blank
         end # it
@@ -208,6 +258,25 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
       it 'destroys the resource' do
         expect { perform_action }.to change(Blog, :count).by(-1)
+      end # it
+    end # describe
+
+    describe 'with a valid path to a blog post', :path => :valid_feature do
+      let(:blog)      { create(:blog, :directory => directories.last) }
+      let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
+      let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
+
+      it 'redirects to the blog' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(blog_path(blog))
+
+        expect(request.flash[:danger]).not_to be_blank
+      end # it
+
+      it 'destroys the resource' do
+        expect { perform_action }.to change(blog.posts, :count).by(-1)
       end # it
     end # describe
 

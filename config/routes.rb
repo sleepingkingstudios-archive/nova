@@ -55,9 +55,18 @@ Rails.application.routes.draw do
     delete '*directories',              :to => 'resources#destroy'
 
     features :blogs, :pages
+
+    get ':blog/posts',              :to => "features/blog_posts#index"
+    get "*directories/:blog/posts", :to => "features/blog_posts#index"
+
+    get ':blog/posts/new',              :to => "features/blog_posts#new"
+    get "*directories/:blog/posts/new", :to => "features/blog_posts#new"
+
+    post ':blog/posts',              :to => "features/blog_posts#create"
+    post "*directories/:blog/posts", :to => "features/blog_posts#create"
   end # namespace
 
-  get '*directories', :to => 'resources#show', :constraints => lambda { |request| Page.reserved_slugs.none? { |slug| request.path =~ /\A\/?#{slug}/ } }
+  get '*directories', :to => 'resources#show', :constraints => lambda { |request| Page.reserved_slugs.none? { |slug| request.path =~ /(\A|\/)#{slug}(\/|\z)/ } }
 
   root 'resources#show'
 end # draw

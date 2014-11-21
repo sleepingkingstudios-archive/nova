@@ -104,7 +104,7 @@ class ResourcesDelegate
     self.request = request
 
     assign :resource, resource
-    
+
     controller.render show_template_path
   end # action show
 
@@ -112,7 +112,7 @@ class ResourcesDelegate
     self.request = request
 
     assign :resource, resource
-    
+
     controller.render edit_template_path
   end # action edit
 
