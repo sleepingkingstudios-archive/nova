@@ -29,6 +29,7 @@ gem 'github-markdown', '~> 0.6.7'
 ### Support ###
 gem 'jbuilder',                    '~> 2.0' # Build JSON APIs. Read more: https://github.com/rails/jbuilder
 gem 'sleeping_king_studios-tools', '~> 0.1.2'
+gem 'sprig',                       '~> 0.1.6', :git => 'https://github.com/sleepingkingstudios/sprig', :branch => 'feature-mongoid' # YAML-based datastore seeding. Read more: http://vigetlabs.github.io/sprig/
 
 ### Testing ###
 group :development, :test do
