@@ -1,0 +1,11 @@
+---
+records:
+- sprig_id: weapons
+  title: Weapons
+- sprig_id: weapons/swords
+  parent_id: <%= sprig_record(Directory, 'weapons').id %>
+  title: Swords
+- sprig_id: weapons/swords/japanese
+  parent_id: <%= sprig_record(Directory, 'weapons/swords').id %>
+  title: Japanese Swords
+  slug: japanese

@@ -2,7 +2,11 @@
 
 require 'rails_helper'
 
+require 'sleeping_king_studios/tools/object_tools'
+
 RSpec.describe Delegation, :type => :controller_concern do
+  include SleepingKingStudios::Tools::ObjectTools
+
   shared_examples 'assigns @controller' do
     it 'assigns @controller' do
       instance.initialize_delegate
@@ -53,7 +57,7 @@ RSpec.describe Delegation, :type => :controller_concern do
     let(:directories) { [] }
 
     before(:each) do
-      instance.metaclass.send :public, :initialize_delegate
+      metaclass(instance).send :public, :initialize_delegate
     end # before each
 
     it { expect(instance).to respond_to(:initialize_delegate).with(0).arguments }
@@ -132,7 +136,7 @@ RSpec.describe Delegation, :type => :controller_concern do
 
   describe '#resource_class' do
     before(:each) do
-      instance.metaclass.send :public, :resource_class
+      metaclass(instance).send :public, :resource_class
     end # before each
 
     it { expect(instance).to have_reader(:resource_class).with(nil) }

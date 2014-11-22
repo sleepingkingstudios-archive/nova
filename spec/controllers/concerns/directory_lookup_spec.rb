@@ -2,7 +2,11 @@
 
 require 'rails_helper'
 
+require 'sleeping_king_studios/tools/object_tools'
+
 RSpec.describe DirectoryLookup, :type => :controller_concern do
+  include SleepingKingStudios::Tools::ObjectTools
+
   let(:method_stubs) { Module.new do def params; end; end }
   let(:instance)     { Object.new.extend(method_stubs).extend(described_class) }
 
@@ -23,7 +27,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
         directories.select { |dir| dir.slug == hsh[:slug] }
       end # allow
 
-      instance.metaclass.send :public, :lookup_directories
+      metaclass(instance).send :public, :lookup_directories
     end # before each
 
     it { expect(instance).to respond_to(:lookup_directories).with(0).arguments }
@@ -83,7 +87,7 @@ RSpec.describe DirectoryLookup, :type => :controller_concern do
         directories.select { |dir| dir.slug == hsh[:slug] }
       end # allow
 
-      instance.metaclass.send :public, :lookup_resource
+      metaclass(instance).send :public, :lookup_resource
     end # before each
 
     it { expect(instance).to respond_to(:lookup_resource).with(0).arguments }
