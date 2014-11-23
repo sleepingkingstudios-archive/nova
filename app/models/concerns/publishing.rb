@@ -16,4 +16,8 @@ module Publishing
   def published?
     !published_at.blank? && published_at < Time.current
   end # method published?
+
+  def unpublish
+    self.published_at = nil
+  end # method unpublish
 end # module

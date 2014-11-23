@@ -377,6 +377,48 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     expect_behavior 'sets the request'
   end # describe
 
+  describe '#publish', :controller => true do
+    let(:object)  { create(:feature) }
+    let(:request) { double('request', :params => ActionController::Parameters.new) }
+
+    def perform_action
+      instance.publish request
+    end # method perform_action
+
+    it { expect(instance).to respond_to(:publish).with(1).argument }
+
+    expect_behavior 'sets the request'
+
+    it 'redirects to the resource path' do
+      expect(controller).to receive(:redirect_to).with(instance.send :_resource_path)
+
+      perform_action
+
+      expect(flash_messages[:warning]).to be == "Unable to publish feature."
+    end # it
+  end # describe
+
+  describe '#unpublish', :controller => true do
+    let(:object)  { create(:feature) }
+    let(:request) { double('request', :params => ActionController::Parameters.new) }
+
+    def perform_action
+      instance.unpublish request
+    end # method perform_action
+
+    it { expect(instance).to respond_to(:unpublish).with(1).argument }
+
+    expect_behavior 'sets the request'
+
+    it 'redirects to the resource path' do
+      expect(controller).to receive(:redirect_to).with(instance.send :_resource_path)
+
+      perform_action
+
+      expect(flash_messages[:warning]).to be == "Unable to unpublish feature."
+    end # it
+  end # describe
+
   describe '#edit', :controller => true do
     let(:object)  { build(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }

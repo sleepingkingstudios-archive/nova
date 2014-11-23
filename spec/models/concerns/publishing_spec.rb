@@ -60,4 +60,16 @@ RSpec.describe Publishing do
       it { expect(instance.published?).to be false }
     end # context
   end # describe
+
+  describe '#unpublish' do
+    it { expect(instance).to respond_to(:unpublish).with(0).arguments }
+
+    context 'with a published date' do
+      before(:each) { instance.published_at = 1.day.ago }
+
+      it 'clears the #published_at value' do
+        expect { instance.unpublish }.to change(instance, :published_at).to be nil
+      end # it
+    end # context
+  end # describe
 end # describe

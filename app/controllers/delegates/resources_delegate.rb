@@ -143,6 +143,22 @@ class ResourcesDelegate
     controller.redirect_to redirect_path(:destroy, :success)
   end # action destroy
 
+  def publish request
+    self.request = request
+
+    set_flash_message :warning, flash_message(:publish, :failure)
+
+    controller.redirect_to redirect_path(:publish, :failure)
+  end # action publish
+
+  def unpublish request
+    self.request = request
+
+    set_flash_message :warning, flash_message(:unpublish, :failure)
+
+    controller.redirect_to redirect_path(:unpublish, :failure)
+  end # action publish
+
   ### Partial Methods ###
 
   def index_template_path
@@ -175,6 +191,10 @@ class ResourcesDelegate
       "#{name} successfully updated."
     when 'destroy_success'
       "#{name} successfully destroyed."
+    when 'publish_failure'
+      "Unable to publish #{name.downcase}."
+    when 'unpublish_failure'
+      "Unable to unpublish #{name.downcase}."
     end # case
   end # method flash_message
 
@@ -186,6 +206,10 @@ class ResourcesDelegate
       _resource_path
     when 'destroy_success'
       _index_resources_path
+    when 'publish_failure'
+      _resource_path
+    when 'unpublish_failure'
+      _resource_path
     end # case
   end # method redirect_path
 
