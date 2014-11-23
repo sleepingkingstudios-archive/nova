@@ -55,6 +55,10 @@ class DirectoriesDelegate < ResourcesDelegate
       _dashboard_resource_path
     when 'destroy_success'
       Directory.join directory_path(resource.parent), 'dashboard'
+    when 'publish_failure'
+      _dashboard_resource_path
+    when 'unpublish_failure'
+      _dashboard_resource_path
     else
       super
     end # case

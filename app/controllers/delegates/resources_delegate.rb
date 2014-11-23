@@ -191,6 +191,10 @@ class ResourcesDelegate
       "#{name} successfully updated."
     when 'destroy_success'
       "#{name} successfully destroyed."
+    when 'publish_success'
+      "#{name} successfully published."
+    when 'unpublish_success'
+      "#{name} successfully unpublished."
     when 'publish_failure'
       "Unable to publish #{name.downcase}."
     when 'unpublish_failure'
@@ -206,7 +210,11 @@ class ResourcesDelegate
       _resource_path
     when 'destroy_success'
       _index_resources_path
+    when 'publish_success'
+      _resource_path
     when 'publish_failure'
+      _resource_path
+    when 'unpublish_success'
       _resource_path
     when 'unpublish_failure'
       _resource_path

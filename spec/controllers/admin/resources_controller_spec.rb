@@ -316,4 +316,118 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
   end # describe
+
+  describe '#publish' do
+    expect_behavior 'requires authentication'
+
+    def perform_action
+      put :publish, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an invalid path', :path => :invalid_directory do
+      expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    describe 'with a valid path to a blog', :path => :valid_feature do
+      let!(:resource) { create(:blog, :directory => directories.last) }
+
+      it 'redirects to the resource' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(blog_path(resource))
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+
+    pending 'with a valid path to a blog post'
+
+    describe 'with a valid path to a directory', :path => :valid_directory do
+      it 'redirects to the directory' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(dashboard_directory_path(directories.last))
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+
+    describe 'with a valid path to a page', :path => :valid_feature do
+      let!(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
+
+      it 'redirects to the page' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(page_path(resource))
+
+        expect(request.flash[:success]).not_to be_blank
+      end # it
+
+      it 'publishes the page' do
+        expect { perform_action }.to change { resource.reload.published_at }.to be_a ActiveSupport::TimeWithZone
+      end # it
+    end # describe
+  end # describe
+
+  describe '#unpublish' do
+    expect_behavior 'requires authentication'
+
+    def perform_action
+      put :unpublish, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    describe 'with an invalid path', :path => :invalid_directory do
+      expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    describe 'with a valid path to a blog', :path => :valid_feature do
+      let!(:resource) { create(:blog, :directory => directories.last) }
+
+      it 'redirects to the resource' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(blog_path(resource))
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+
+    pending 'with a valid path to a blog post'
+
+    describe 'with a valid path to a directory', :path => :valid_directory do
+      it 'redirects to the directory' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(dashboard_directory_path(directories.last))
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+    end # describe
+
+    describe 'with a valid path to a page', :path => :valid_feature do
+      let!(:resource) { create(:page, :directory => directories.last, :content => build(:content), :published_at => 1.day.ago) }
+
+      it 'redirects to the page' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(page_path(resource))
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+
+      it 'unpublishes the page' do
+        expect { perform_action }.to change { resource.reload.published_at }.to nil
+      end # it
+    end # describe
+  end # describe
 end # describe
