@@ -5,6 +5,8 @@ require 'mongoid/sleeping_king_studios/sluggable'
 require 'services/features_enumerator'
 
 class BlogPost < Feature
+  include Publishing
+
   FeaturesEnumerator.feature :post, :class => "BlogPost", :parent => :blog
 
   ### Relations ###

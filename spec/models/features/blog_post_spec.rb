@@ -78,6 +78,14 @@ RSpec.describe BlogPost, :type => :model do
     it { expect(instance).to have_property :slug_lock }
   end # describe
 
+  describe '#published_at' do
+    it { expect(instance).to have_property(:published_at) }
+
+    it 'is set by #publish' do
+      expect { instance.publish }.to change(instance, :published_at).to be_a ActiveSupport::TimeWithZone
+    end # it
+  end # describe
+
   ### Relations ###
 
   describe '#blog' do

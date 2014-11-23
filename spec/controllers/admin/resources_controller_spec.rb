@@ -343,7 +343,24 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    pending 'with a valid path to a blog post'
+    describe 'with a valid path to a blog post', :path => :valid_feature do
+      let(:blog)      { create(:blog, :directory => directories.last) }
+      let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
+      let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
+
+      it 'redirects to the post' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(blog_post_path(resource))
+
+        expect(request.flash[:success]).not_to be_blank
+      end # it
+
+      it 'publishes the post' do
+        expect { perform_action }.to change { resource.reload.published_at }.to be_a ActiveSupport::TimeWithZone
+      end # it
+    end # describe
 
     describe 'with a valid path to a directory', :path => :valid_directory do
       it 'redirects to the directory' do
@@ -400,7 +417,24 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    pending 'with a valid path to a blog post'
+    describe 'with a valid path to a blog post', :path => :valid_feature do
+      let(:blog)      { create(:blog, :directory => directories.last) }
+      let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content), :published_at => 1.day.ago) }
+      let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
+
+      it 'redirects to the post' do
+        perform_action
+
+        expect(response.status).to be == 302
+        expect(response).to redirect_to(blog_post_path(resource))
+
+        expect(request.flash[:warning]).not_to be_blank
+      end # it
+
+      it 'unpublishes the post' do
+        expect { perform_action }.to change { resource.reload.published_at }.to nil
+      end # it
+    end # describe
 
     describe 'with a valid path to a directory', :path => :valid_directory do
       it 'redirects to the directory' do

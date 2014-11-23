@@ -41,6 +41,28 @@ class BlogPostsDelegate < FeaturesDelegate
     super
   end # method update_resource
 
+  ### Actions ###
+
+  def publish request
+    self.request = request
+
+    resource.set(:published_at => Time.current)
+
+    set_flash_message :success, flash_message(:publish, :success)
+
+    controller.redirect_to redirect_path(:publish, :success)
+  end # action publish
+
+  def unpublish request
+    self.request = request
+
+    resource.set(:published_at => nil)
+
+    set_flash_message :warning, flash_message(:unpublish, :success)
+
+    controller.redirect_to redirect_path(:unpublish, :success)
+  end # action publish
+
   ### Partial Methods ###
 
   def index_template_path
