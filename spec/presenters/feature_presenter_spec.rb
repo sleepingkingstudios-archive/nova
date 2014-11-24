@@ -81,6 +81,10 @@ RSpec.describe FeaturePresenter, :type => :decorator do
     it { expect(instance).to have_reader(:name).with(feature.class.name) }
   end # describe
 
+  describe '#published_status' do
+    it { expect(instance).to have_reader(:published_status).with_value('&mdash;'.html_safe) }
+  end # describe
+
   describe '#slug' do
     it { expect(instance).to have_reader(:slug).with(feature.slug) }
   end # describe

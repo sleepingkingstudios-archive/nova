@@ -62,9 +62,17 @@ module RoutesHelper
     Directory.join index_resources_path(directory, resource), 'new'
   end # method new_resource_path
 
+  def publish_resource_path resource
+    Directory.join resource_path(resource), 'publish'
+  end # method edit_resource_path
+
   def resource_path resource
     "/#{resource.try(:to_partial_path)}"
   end # method resource_path
+
+  def unpublish_resource_path resource
+    Directory.join resource_path(resource), 'unpublish'
+  end # method edit_resource_path
 
   ### Blog Helpers ###
 
@@ -110,6 +118,14 @@ module RoutesHelper
     new_resource_path blog, 'posts'
   end # method new_blog_post_path
 
+  def publish_blog_post_path resource
+    publish_resource_path resource
+  end # method publish_blog_post_path
+
+  def unpublish_blog_post_path resource
+    unpublish_resource_path resource
+  end # method publish_blog_post_path
+
   ### Page Helpers ###
 
   def create_page_path directory
@@ -131,4 +147,12 @@ module RoutesHelper
   def page_path resource
     resource_path resource
   end # method page_path
+
+  def publish_page_path resource
+    publish_resource_path resource
+  end # method publish_page_path
+
+  def unpublish_page_path resource
+    unpublish_resource_path resource
+  end # method unpublish_page_path
 end # module

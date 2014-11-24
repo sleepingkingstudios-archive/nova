@@ -93,6 +93,10 @@ class BlogPostsDelegate < FeaturesDelegate
       'Post successfully updated.'
     when 'destroy_success'
       'Post successfully destroyed.'
+    when 'publish_success'
+      'Post successfully published.'
+    when 'publish_failure'
+      'Post successfully unpublished.'
     else
       super
     end # case

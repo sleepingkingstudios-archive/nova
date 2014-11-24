@@ -21,6 +21,15 @@
           = icon :cubes, :scale => :large
           Dashboard
         &nbsp;
+      - if presenter.published?
+        = link_to unpublish_resource_path(@resource), :class => 'text-warning', :method => :put do
+          = icon :reply, :scale => :large
+          Unpublish Page
+      - else
+        = link_to publish_resource_path(@resource), :class => 'text-success', :method => :put do
+          = icon :share, :scale => :large
+          Publish Page
+      &nbsp;
       = link_to edit_resource_path(@resource), :class => 'text-warning' do
         = icon :edit, :scale => :large
         Edit Page
