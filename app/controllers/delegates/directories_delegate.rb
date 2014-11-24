@@ -32,6 +32,8 @@ class DirectoriesDelegate < ResourcesDelegate
 
     if index_page.blank?
       super
+    elsif !index_page.published? && !authorize_user(current_user, :show, resource)
+      super
     else
       assign :resource, index_page
 

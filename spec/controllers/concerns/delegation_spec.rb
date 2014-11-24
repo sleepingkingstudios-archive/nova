@@ -37,7 +37,7 @@ RSpec.describe Delegation, :type => :controller_concern do
 
   let(:method_stubs) do
     Module.new do
-      attr_accessor :resources, :resource, :directories
+      attr_accessor :resources, :resource, :directories, :current_user
 
       def params; end
     end # module

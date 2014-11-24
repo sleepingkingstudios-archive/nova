@@ -31,6 +31,16 @@ class PagesDelegate < DirectoryFeaturesDelegate
 
   ### Actions ###
 
+  def show request
+    if resource.published? || authorize_user(current_user, :show, resource)
+      super
+    else
+      set_flash_message :warning, "Unable to locate directory or feature — #{resource.slug} (1 total)"
+
+      controller.redirect_to directory_path(directories.last)
+    end # if-else
+  end # method show
+
   def publish request
     self.request = request
 

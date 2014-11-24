@@ -11,8 +11,9 @@ module Delegation
 
   def initialize_delegate
     @delegate = decorate(@resources || @resource || resource_class, :Delegate, :default => :ResourcesDelegate, :plural => true)
-    @delegate.controller  = self
-    @delegate.directories = @directories || []
+    @delegate.controller   = self
+    @delegate.current_user = current_user
+    @delegate.directories  = @directories || []
   end # method initialize_delegate
 
   def resource_class

@@ -14,7 +14,7 @@ class ResourcesDelegate
     end # when
   end # constructor
 
-  attr_accessor :controller, :directories, :request
+  attr_accessor :controller, :current_user, :directories, :request
 
   attr_reader :resource, :resources, :resource_class
 
@@ -25,6 +25,10 @@ class ResourcesDelegate
 
     controller.instance_variable_set key, value
   end # method assign
+
+  def authorize_user user, action, resource
+    !user.blank?
+  end # method authorize_user
 
   def build_resource params
     @resources = nil

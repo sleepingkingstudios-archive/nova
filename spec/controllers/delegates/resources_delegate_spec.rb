@@ -42,6 +42,22 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # it
   end # describe
 
+  describe '#authorize_user' do
+    let(:action)   { :show }
+    let(:resource) { double(:resource) }
+    let(:user)     { nil }
+
+    it { expect(instance).to respond_to(:authorize_user).with(3).arguments }
+
+    it { expect(instance.authorize_user user, action, resource).to be false }
+
+    context 'with an authenticated user' do
+      let(:user) { create(:user) }
+
+      it { expect(instance.authorize_user user, action, resource).to be true }
+    end # context
+  end # describe
+
   describe '#build_resource' do
     it { expect(instance).to respond_to(:build_resource).with(1).argument }
 
@@ -69,6 +85,10 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it { expect(instance).to have_property(:controller) }
 
     it { expect(instance.controller).to be nil }
+  end # describe
+
+  describe '#current_user' do
+    it { expect(instance).to have_property(:current_user).with_value(nil) }
   end # describe
 
   describe '#directories' do

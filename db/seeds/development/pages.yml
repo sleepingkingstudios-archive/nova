@@ -2,20 +2,27 @@
 records:
 - title: Index
   content: <%= MarkdownContent.new :text_content => "# Welcome to Sleeping King Studios\n\nThis is the index page.\n\n## Contents\n\n- [Weapons](/weapons)" %>
+  published_at: <%= 1.day.ago %>
 - title: Classes
   content: <%= TextContent.new :text_content => "There are three available classes - Fighter, Thief, and Magic-User." %>
+  published_at: <%= 1.day.ago %>
 - directory_id: <%= sprig_record(Directory, 'weapons').id %>
   title: Index
   content: <%= MarkdownContent.new :text_content => "This is the Weapons page.\n\n## Contents\n\n- [Swords](/weapons/swords)" %>
+  published_at: <%= 1.day.ago %>
 - directory_id: <%= sprig_record(Directory, 'weapons/swords').id %>
   title: Index
   content: <%= MarkdownContent.new :text_content => "This is the Swords page.\n\n## Contents\n\n- [Japanese](/weapons/swords/japanese)" %>
+  published_at: <%= 1.day.ago %>
 - directory_id: <%= sprig_record(Directory, 'weapons/swords/japanese').id %>
   title: Index
   content: <%= MarkdownContent.new :text_content => "This is the Japanese Swords page.\n\n## Contents\n\n- [Daito](/weapons/swords/japanese/daito)\n- [Shoto](/weapons/swords/japanese/shoto)" %>
+  published_at: <%= 1.day.ago %>
 - directory_id: <%= sprig_record(Directory, 'weapons/swords/japanese').id %>
   title: Daito
   content: <%= TextContent.new :text_content => 'A large japanese sword.' %>
+  published_at: <%= 1.day.ago %>
 - directory_id: <%= sprig_record(Directory, 'weapons/swords/japanese').id %>
   title: Shoto
   content: <%= TextContent.new :text_content => 'A small japanese sword.' %>
+  published_at: <%= 1.day.ago %>
