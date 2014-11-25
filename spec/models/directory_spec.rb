@@ -59,6 +59,8 @@ RSpec.describe Directory, :type => :model do
         new
         edit
         dashboard
+        publish
+        unpublish
       ) # end array
     end # it
   end # describe

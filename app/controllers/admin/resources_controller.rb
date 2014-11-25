@@ -9,7 +9,7 @@ class Admin::ResourcesController < Admin::AdminController
   include DirectoryLookup
 
   before_action :lookup_directories, :only => %i(index new create)
-  before_action :lookup_resource,    :only => %i(edit update destroy)
+  before_action :lookup_resource,    :only => %i(edit update destroy publish unpublish)
   before_action :authenticate_user!
   before_action :initialize_delegate
 
@@ -48,6 +48,16 @@ class Admin::ResourcesController < Admin::AdminController
   def destroy
     delegate.destroy(request)
   end # action destroy
+
+  # PUT /path/to/resource/publish
+  def publish
+    delegate.publish(request)
+  end # action publish
+
+  # PUT /path/to/resource/unpublish
+  def unpublish
+    delegate.unpublish(request)
+  end # action unpublish
 
   private
 

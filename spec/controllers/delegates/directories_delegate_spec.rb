@@ -169,8 +169,20 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
       expect(assigns[:resource]).to be == object
     end # it
 
-    describe 'with an index page' do
+    describe 'with an unpublished index page' do
       let!(:index_page) { create(:page, :directory => object, :slug => 'index', :content => build(:content)) }
+
+      it 'renders the directory show template' do
+        expect(controller).to receive(:render).with(instance.show_template_path)
+
+        instance.show request
+
+        expect(assigns[:resource]).to be == object
+      end # it
+    end # describe
+
+    describe 'with an index page' do
+      let!(:index_page) { create(:page, :directory => object, :slug => 'index', :published_at => 1.day.ago, :content => build(:content)) }
 
       it 'renders the page show template' do
         expect(controller).to receive(:render).with(instance.page_template_path)
@@ -209,7 +221,7 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
 
         instance.directories = directories
       end # before each
-    
+
       it { expect(instance.send :_dashboard_resource_path).to be == "/#{segments.join '/'}/#{directory.slug}/dashboard" }
     end # context
   end # describe
@@ -221,7 +233,7 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
       before(:each) do
         instance.directories = directories
       end # before each
-    
+
       it { expect(instance.send :_resources_path).to be == "/#{segments.join '/'}/directories" }
     end # context
   end # describe

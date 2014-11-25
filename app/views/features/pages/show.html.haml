@@ -21,6 +21,15 @@
           = icon :cubes, :scale => :large
           Dashboard
         &nbsp;
+      - if presenter.published?
+        = link_to unpublish_resource_path(@resource), :class => 'text-warning', :method => :put do
+          = icon :reply, :scale => :large
+          Unpublish Page
+      - else
+        = link_to publish_resource_path(@resource), :class => 'text-success', :method => :put do
+          = icon :share, :scale => :large
+          Publish Page
+      &nbsp;
       = link_to edit_resource_path(@resource), :class => 'text-warning' do
         = icon :edit, :scale => :large
         Edit Page
@@ -28,6 +37,14 @@
       = link_to resource_path(@resource), :class => 'text-danger delete-link', :method => :delete do
         = icon :trash, :scale => :large
         Delete Page
+
+- if !presenter.published? && !current_user.blank?
+  .alert.alert-warning.alert-dismissable
+    %button.close{ :type => 'button', :'data-dismiss' => 'alert' }
+      %span{ :'aria-hidden' => true } &times;
+      %span.sr-only Close
+    %strong Warning
+    This page is not yet published. It is not visible to other users.
 
 - content_presenter.render_content(self)
 

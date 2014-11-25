@@ -7,6 +7,15 @@
 - if user_signed_in?
   %div{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } }
     %p
+      - if presenter.published?
+        = link_to unpublish_resource_path(post), :class => 'text-warning', :method => :put do
+          = icon :reply, :scale => :large
+          Unpublish Post
+      - else
+        = link_to publish_resource_path(post), :class => 'text-success', :method => :put do
+          = icon :share, :scale => :large
+          Publish Post
+      &nbsp;
       = link_to edit_resource_path(post), :class => 'text-warning' do
         = icon :edit, :scale => :large
         Edit Post
@@ -14,5 +23,15 @@
       = link_to resource_path(post), :class => 'text-danger delete-link', :method => :delete do
         = icon :trash, :scale => :large
         Delete Post
+
+- if presenter.published? || current_user.blank?
+  %p.text-muted= presenter.published_message
+- else
+  .alert.alert-warning.alert-dismissable
+    %button.close{ :type => 'button', :'data-dismiss' => 'alert' }
+      %span{ :'aria-hidden' => true } &times;
+      %span.sr-only Close
+    %strong Warning
+    This post is not yet published. It is not visible to other users.
 
 - present(post.content).render_content(self)

@@ -49,6 +49,9 @@ Rails.application.routes.draw do
 
     get '*directories/edit',            :to => 'resources#edit'
 
+    put '*directories/publish',         :to => 'resources#publish'
+    put '*directories/unpublish',       :to => 'resources#unpublish'
+
     patch '*directories',               :to => 'resources#update'
     put '*directories',                 :to => 'resources#update'
 

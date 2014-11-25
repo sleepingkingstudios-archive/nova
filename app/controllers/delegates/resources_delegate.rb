@@ -14,7 +14,7 @@ class ResourcesDelegate
     end # when
   end # constructor
 
-  attr_accessor :controller, :directories, :request
+  attr_accessor :controller, :current_user, :directories, :request
 
   attr_reader :resource, :resources, :resource_class
 
@@ -25,6 +25,10 @@ class ResourcesDelegate
 
     controller.instance_variable_set key, value
   end # method assign
+
+  def authorize_user user, action, resource
+    !user.blank?
+  end # method authorize_user
 
   def build_resource params
     @resources = nil
@@ -143,6 +147,22 @@ class ResourcesDelegate
     controller.redirect_to redirect_path(:destroy, :success)
   end # action destroy
 
+  def publish request
+    self.request = request
+
+    set_flash_message :warning, flash_message(:publish, :failure)
+
+    controller.redirect_to redirect_path(:publish, :failure)
+  end # action publish
+
+  def unpublish request
+    self.request = request
+
+    set_flash_message :warning, flash_message(:unpublish, :failure)
+
+    controller.redirect_to redirect_path(:unpublish, :failure)
+  end # action publish
+
   ### Partial Methods ###
 
   def index_template_path
@@ -175,6 +195,14 @@ class ResourcesDelegate
       "#{name} successfully updated."
     when 'destroy_success'
       "#{name} successfully destroyed."
+    when 'publish_success'
+      "#{name} successfully published."
+    when 'unpublish_success'
+      "#{name} successfully unpublished."
+    when 'publish_failure'
+      "Unable to publish #{name.downcase}."
+    when 'unpublish_failure'
+      "Unable to unpublish #{name.downcase}."
     end # case
   end # method flash_message
 
@@ -186,6 +214,14 @@ class ResourcesDelegate
       _resource_path
     when 'destroy_success'
       _index_resources_path
+    when 'publish_success'
+      _resource_path
+    when 'publish_failure'
+      _resource_path
+    when 'unpublish_success'
+      _resource_path
+    when 'unpublish_failure'
+      _resource_path
     end # case
   end # method redirect_path
 

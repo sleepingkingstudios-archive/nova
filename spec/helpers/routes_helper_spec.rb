@@ -612,6 +612,42 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#publish_blog_post_path' do
+    it { expect(instance).to respond_to(:publish_blog_post_path).with(1).argument }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.publish_blog_post_path post).to be == "/#{slug}/#{post.slug}/publish" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.publish_blog_post_path post).to be == "/#{slugs.join '/'}/#{post.slug}/publish" }
+    end # describe
+  end # describe
+
+  describe '#publish_page_path' do
+    it { expect(instance).to respond_to(:publish_page_path).with(1).argument }
+
+    describe 'with a root feature' do
+      include_context 'with a root feature', :page
+
+      it { expect(instance.publish_page_path feature).to be == "/#{slug}/publish" }
+    end # describe
+
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :page
+
+      it { expect(instance.publish_page_path feature).to be == "/#{slugs.join '/'}/publish" }
+    end # describe
+  end # describe
+
   describe '#resource_path' do
     it { expect(instance).to respond_to(:resource_path).with(1).arguments }
 
@@ -631,6 +667,42 @@ RSpec.describe RoutesHelper, :type => :helper do
 
         it { expect(instance.resource_path feature).to be == "/#{slugs[0...-1].join '/'}" }
       end # context
+    end # describe
+  end # describe
+
+  describe '#unpublish_blog_post_path' do
+    it { expect(instance).to respond_to(:unpublish_blog_post_path).with(1).argument }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.unpublish_blog_post_path post).to be == "/#{slug}/#{post.slug}/unpublish" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.unpublish_blog_post_path post).to be == "/#{slugs.join '/'}/#{post.slug}/unpublish" }
+    end # describe
+  end # describe
+
+  describe '#unpublish_page_path' do
+    it { expect(instance).to respond_to(:unpublish_page_path).with(1).argument }
+
+    describe 'with a root feature' do
+      include_context 'with a root feature', :page
+
+      it { expect(instance.unpublish_page_path feature).to be == "/#{slug}/unpublish" }
+    end # describe
+
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :page
+
+      it { expect(instance.unpublish_page_path feature).to be == "/#{slugs.join '/'}/unpublish" }
     end # describe
   end # describe
 end # describe

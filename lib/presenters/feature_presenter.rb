@@ -28,6 +28,10 @@ class FeaturePresenter < Presenter
     feature.title_changed? && !feature.title_was.blank? ? feature.title_was : feature.title
   end # method label
 
+  def published_status
+    '&mdash;'.html_safe
+  end # method published_status
+
   def type
     feature._type
   end # method type

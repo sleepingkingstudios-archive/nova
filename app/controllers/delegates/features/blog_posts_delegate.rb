@@ -41,6 +41,38 @@ class BlogPostsDelegate < FeaturesDelegate
     super
   end # method update_resource
 
+  ### Actions ###
+
+  def show request
+    if resource.published? || authorize_user(current_user, :show, resource)
+      super
+    else
+      set_flash_message :warning, "Unable to locate directory or feature — #{resource.slug} (1 total)"
+
+      controller.redirect_to blog_path(blog)
+    end # if-else
+  end # method show
+
+  def publish request
+    self.request = request
+
+    resource.set(:published_at => Time.current)
+
+    set_flash_message :success, flash_message(:publish, :success)
+
+    controller.redirect_to redirect_path(:publish, :success)
+  end # action publish
+
+  def unpublish request
+    self.request = request
+
+    resource.set(:published_at => nil)
+
+    set_flash_message :warning, flash_message(:unpublish, :success)
+
+    controller.redirect_to redirect_path(:unpublish, :success)
+  end # action publish
+
   ### Partial Methods ###
 
   def index_template_path
@@ -71,6 +103,10 @@ class BlogPostsDelegate < FeaturesDelegate
       'Post successfully updated.'
     when 'destroy_success'
       'Post successfully destroyed.'
+    when 'publish_success'
+      'Post successfully published.'
+    when 'publish_failure'
+      'Post successfully unpublished.'
     else
       super
     end # case

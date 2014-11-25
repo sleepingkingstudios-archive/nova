@@ -94,5 +94,51 @@ RSpec.describe BlogPostPresenter, :type => :decorator do
   describe '#post' do
     it { expect(instance).to have_reader(:post).with(post) }
   end # describe
+
+  describe '#published_at' do
+    it { expect(instance).to have_reader(:published_at).with_value(nil) }
+
+    context 'with a #published_at date' do
+      let(:attributes) { super().merge :published_at => 1.day.ago }
+
+      it { expect(instance.published_at).to be == attributes[:published_at] }
+    end # context
+  end # describe
+
+  describe '#published_message' do
+    it { expect(instance).to have_reader(:published_message).with_value('Not Published') }
+
+    context 'with #published_at date in the past' do
+      let(:attributes) { super().merge :published_at => 1.day.ago }
+
+      it { expect(instance.published_message).to be == "Published on #{attributes[:published_at].strftime '%A, %-d %B %Y'}." }
+    end # context
+  end # describe
+
+  describe '#published_status' do
+    it { expect(instance).to have_reader(:published_status).with_value('No') }
+
+    context 'with #published_at date in the past' do
+      let(:attributes) { super().merge :published_at => 1.day.ago }
+
+      it { expect(instance.published_status).to be == 'Yes' }
+    end # context
+  end # describe
+
+  describe '#published?' do
+    it { expect(instance).to have_reader(:published?).with(false) }
+
+    context 'with #published_at date in the past' do
+      let(:attributes) { super().merge :published_at => 1.day.ago }
+
+      it { expect(instance.published?).to be true }
+    end # context
+
+    context 'with #published_at date in the future' do
+      let(:attributes) { super().merge :published_at => 1.day.from_now }
+
+      it { expect(instance.published?).to be false }
+    end # context
+  end # describe
 end # describe
 

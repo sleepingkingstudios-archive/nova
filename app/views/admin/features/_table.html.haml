@@ -7,6 +7,7 @@
       %th Title
       %th Slug
       %th Type
+      %th Published?
       %th &nbsp;
   %tbody
     - if features.blank?
@@ -20,6 +21,7 @@
           %td= presenter.title
           %td= presenter.slug
           %td= presenter.type
+          %td= presenter.published_status
           %td
             = link_to resource_path(feature), :class => 'text-info' do
               = icon :cube, :width => :fixed

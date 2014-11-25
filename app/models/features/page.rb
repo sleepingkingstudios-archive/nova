@@ -3,6 +3,8 @@
 require 'services/features_enumerator'
 
 class Page < DirectoryFeature
+  include Publishing
+
   FeaturesEnumerator.feature :page
 
   ### Class Methods ###

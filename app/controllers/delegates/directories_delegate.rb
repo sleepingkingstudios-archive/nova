@@ -32,6 +32,8 @@ class DirectoriesDelegate < ResourcesDelegate
 
     if index_page.blank?
       super
+    elsif !index_page.published? && !authorize_user(current_user, :show, resource)
+      super
     else
       assign :resource, index_page
 
@@ -55,6 +57,10 @@ class DirectoriesDelegate < ResourcesDelegate
       _dashboard_resource_path
     when 'destroy_success'
       Directory.join directory_path(resource.parent), 'dashboard'
+    when 'publish_failure'
+      _dashboard_resource_path
+    when 'unpublish_failure'
+      _dashboard_resource_path
     else
       super
     end # case
