@@ -40,7 +40,32 @@ RSpec.describe ResourcesController, :type => :controller do
       let(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
       let(:path)     { segments.push(blog.slug, resource.slug).join('/') }
 
-      expect_behavior 'renders template', :show
+      expect_behavior 'assigns directories'
+
+      expect_behavior 'assigns the resource'
+
+      context 'with an unpublished blog post' do
+        it 'redirects to the blog' do
+          perform_action
+
+          expect(response.status).to be == 302
+          expect(response).to redirect_to(blog_path(blog))
+
+          expect(request.flash[:warning]).not_to be_blank
+        end # it
+
+        context 'as an authenticated user' do
+          before(:each) { sign_in :user, user }
+
+          expect_behavior 'renders template', :show
+        end # context
+      end # context
+
+      context 'with a published blog post' do
+        let(:resource) { create(:blog_post, :blog => blog, :published_at => 1.day.ago, :content => build(:content)) }
+
+        expect_behavior 'renders template', :show
+      end # context
     end # describe
 
     describe 'with a valid path to a directory', :path => :valid_directory do
@@ -93,6 +118,12 @@ RSpec.describe ResourcesController, :type => :controller do
 
           expect(request.flash[:warning]).not_to be_blank
         end # it
+
+        context 'as an authenticated user' do
+          before(:each) { sign_in :user, user }
+
+          expect_behavior 'renders template', :show
+        end # context
       end # context
 
       context 'with a published page' do

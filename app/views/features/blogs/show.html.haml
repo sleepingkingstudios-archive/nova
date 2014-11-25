@@ -1,3 +1,4 @@
 - # app/views/features/blogs/show.html.haml
 
-= render :partial => 'features/blogs/blog', :locals => { :blog => @resource, :post => @resource.posts.last }
+- post = current_user ? @resource.posts.last : @resource.posts.published.last
+= render :partial => 'features/blogs/blog', :locals => { :blog => @resource, :post => post }

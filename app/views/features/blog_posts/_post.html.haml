@@ -24,4 +24,14 @@
         = icon :trash, :scale => :large
         Delete Post
 
+- if presenter.published? || current_user.blank?
+  %p.text-muted= presenter.published_message
+- else
+  .alert.alert-warning.alert-dismissable
+    %button.close{ :type => 'button', :'data-dismiss' => 'alert' }
+      %span{ :'aria-hidden' => true } &times;
+      %span.sr-only Close
+    %strong Warning
+    This post is not yet published. It is not visible to other users.
+
 - present(post.content).render_content(self)

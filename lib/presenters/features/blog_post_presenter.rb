@@ -17,6 +17,10 @@ class BlogPostPresenter < FeaturePresenter
     'Post'
   end # method name
 
+  def published_message
+    published? ? "Published on #{published_at.strftime '%A, %-d %B %Y'}." : 'Not Published'
+  end # method published_message
+
   def published_status
     published? ? 'Yes' : 'No'
   end # method published_status

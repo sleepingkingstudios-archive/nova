@@ -38,6 +38,14 @@
         = icon :trash, :scale => :large
         Delete Page
 
+- if !presenter.published? && !current_user.blank?
+  .alert.alert-warning.alert-dismissable
+    %button.close{ :type => 'button', :'data-dismiss' => 'alert' }
+      %span{ :'aria-hidden' => true } &times;
+      %span.sr-only Close
+    %strong Warning
+    This page is not yet published. It is not visible to other users.
+
 - content_presenter.render_content(self)
 
 - if presenter.index?

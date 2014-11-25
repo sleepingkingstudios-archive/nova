@@ -105,6 +105,16 @@ RSpec.describe BlogPostPresenter, :type => :decorator do
     end # context
   end # describe
 
+  describe '#published_message' do
+    it { expect(instance).to have_reader(:published_message).with_value('Not Published') }
+
+    context 'with #published_at date in the past' do
+      let(:attributes) { super().merge :published_at => 1.day.ago }
+
+      it { expect(instance.published_message).to be == "Published on #{attributes[:published_at].strftime '%A, %-d %B %Y'}." }
+    end # context
+  end # describe
+
   describe '#published_status' do
     it { expect(instance).to have_reader(:published_status).with_value('No') }
 

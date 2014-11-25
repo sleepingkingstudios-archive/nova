@@ -43,6 +43,16 @@ class BlogPostsDelegate < FeaturesDelegate
 
   ### Actions ###
 
+  def show request
+    if resource.published? || authorize_user(current_user, :show, resource)
+      super
+    else
+      set_flash_message :warning, "Unable to locate directory or feature — #{resource.slug} (1 total)"
+
+      controller.redirect_to blog_path(blog)
+    end # if-else
+  end # method show
+
   def publish request
     self.request = request
 
