@@ -1,10 +1,11 @@
 GIT
   remote: https://github.com/sleepingkingstudios/mongoid-sleeping_king_studios.git
-  revision: abe49b4dbcca468cd96e7d7798c7d1558a81bfc9
+  revision: bcbe8e68b8765c54c4234367c24ea9e5914881e3
   branch: feature-scoped-ordering
   specs:
     mongoid-sleeping_king_studios (0.7.9)
       mongoid (~> 4.0)
+      sleeping_king_studios-tools (~> 0.1, >= 0.1.2)
 
 GIT
   remote: https://github.com/sleepingkingstudios/sprig
@@ -103,7 +104,7 @@ GEM
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
     mime-types (2.4.3)
-    minitest (5.4.3)
+    minitest (5.5.0)
     mongoid (4.0.0)
       activemodel (~> 4.0)
       moped (~> 2.0.0)

@@ -2,27 +2,29 @@
 
 - presenter ||= present post
 
-%h3= presenter.label
+%h3
+  = presenter.label
 
-- if user_signed_in?
-  %div{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } }
-    %p
+  - if user_signed_in?
+    = render :layout => 'common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } } } do
       - if presenter.published?
-        = link_to unpublish_resource_path(post), :class => 'text-warning', :method => :put do
-          = icon :reply, :scale => :large
-          Unpublish Post
+        = link_to unpublish_resource_path(post), :class => 'btn btn-sm btn-default', :method => :put do
+          %span.text-warning
+            = icon :reply
+            Unpublish Post
       - else
-        = link_to publish_resource_path(post), :class => 'text-success', :method => :put do
-          = icon :share, :scale => :large
-          Publish Post
-      &nbsp;
-      = link_to edit_resource_path(post), :class => 'text-warning' do
-        = icon :edit, :scale => :large
-        Edit Post
-      &nbsp;
-      = link_to resource_path(post), :class => 'text-danger delete-link', :method => :delete do
-        = icon :trash, :scale => :large
-        Delete Post
+        = link_to publish_resource_path(post), :class => 'btn btn-sm btn-default', :method => :put do
+          %span.text-success
+            = icon :share, :scale => :large
+            Publish Post
+      = link_to edit_resource_path(post), :class => 'btn btn-sm btn-default' do
+        %span.text-warning
+          = icon :files_o
+          Edit Post
+      = link_to resource_path(post), :class => 'btn btn-sm btn-default delete-link', :method => :delete do
+        %span.text-danger
+          = icon :trash, :scale => :large
+          Delete Post
 
 - if presenter.published? || current_user.blank?
   %p.text-muted= presenter.published_message
