@@ -1,0 +1,8 @@
+- # app/views/common/components/_button_bar.html.haml
+
+- options ||= {}
+- options.reverse_merge! :style => 'display:inline-block;'
+
+%div.pull-right{ :style => 'display:inline-block;' }
+  .btn-group{ options }
+    = yield

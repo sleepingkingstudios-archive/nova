@@ -56,21 +56,33 @@ class BlogPostsDelegate < FeaturesDelegate
   def publish request
     self.request = request
 
-    resource.set(:published_at => Time.current)
+    resource.published_at = Time.current
 
-    set_flash_message :success, flash_message(:publish, :success)
+    if resource.save
+      set_flash_message :success, flash_message(:publish, :success)
 
-    controller.redirect_to redirect_path(:publish, :success)
+      controller.redirect_to redirect_path(:publish, :success)
+    else
+      set_flash_message :warning, flash_message(:publish, :failure)
+    end # if-else
   end # action publish
 
   def unpublish request
     self.request = request
 
-    resource.set(:published_at => nil)
+    resource.published_at = nil
 
-    set_flash_message :warning, flash_message(:unpublish, :success)
+    # binding.pry
 
-    controller.redirect_to redirect_path(:unpublish, :success)
+    if resource.save
+      set_flash_message :warning, flash_message(:unpublish, :success)
+
+      controller.redirect_to redirect_path(:unpublish, :success)
+    else
+      set_flash_message :warning, flash_message(:unpublish, :failure)
+
+      controller.redirect_to redirect_path(:unpublish, :failure)
+    end # if
   end # action publish
 
   ### Partial Methods ###
@@ -106,7 +118,11 @@ class BlogPostsDelegate < FeaturesDelegate
     when 'publish_success'
       'Post successfully published.'
     when 'publish_failure'
+      'Unable to publish post.'
+    when 'unpublish_success'
       'Post successfully unpublished.'
+    when 'unpublish_failure'
+      'Unable to unpublish post.'
     else
       super
     end # case

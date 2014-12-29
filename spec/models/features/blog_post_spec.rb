@@ -19,6 +19,16 @@ RSpec.describe BlogPost, :type => :model do
     let(:blog_attrs) { super().merge :directory => directory }
   end # shared_context
 
+  shared_context 'with many sibling posts' do
+    include_context 'with a blog'
+
+    let!(:posts) do
+      Array.new(3).map.with_index do |_, index|
+        create :blog_post, :blog => blog, :content => build(:content), :published_at => (6-2*index).days.ago
+      end # let
+    end # let
+  end # shared_context
+
   shared_context 'with generic content' do
     let(:content)    { build :content }
     let(:attributes) { super().merge :content => content }
@@ -31,6 +41,26 @@ RSpec.describe BlogPost, :type => :model do
 
   describe '::default_content_type' do
     it { expect(described_class).to have_reader(:default_content_type).with(:text) }
+  end # describe
+
+  describe '::first_published' do
+    include_context 'with many sibling posts'
+
+    it { expect(described_class).to respond_to(:first_published).with(1).argument }
+
+    it 'returns the first post in the blog' do
+      expect(described_class.first_published blog).to be == posts.first
+    end # it
+  end # describe
+
+  describe '::last_published' do
+    include_context 'with many sibling posts'
+
+    it { expect(described_class).to respond_to(:last_published).with(1).argument }
+
+    it 'returns the last post in the blog' do
+      expect(described_class.last_published blog).to be == posts.last
+    end # it
   end # describe
 
   describe '::reserved_slugs' do
@@ -84,6 +114,38 @@ RSpec.describe BlogPost, :type => :model do
     it 'is set by #publish' do
       expect { instance.publish }.to change(instance, :published_at).to be_a ActiveSupport::TimeWithZone
     end # it
+  end # describe
+
+  describe '#published_order' do
+    it { expect(instance).to have_reader(:published_order).with_value(nil) }
+
+    context 'with a published post' do
+      include_context 'with a blog'
+      include_context 'with generic content'
+
+      let(:attributes) { super().merge :blog => blog, :content => content }
+      let(:instance)   { super().tap(&:publish).tap(&:save!) }
+
+      it { expect(instance.published_order).to be == 0 }
+
+      context 'with many sibling posts' do
+        include_context 'with many sibling posts'
+
+        it { expect(instance.published_order).to be == posts.count }
+
+        context 'with a back-dated post' do
+          before(:each) do
+            instance.published_at = 3.days.ago
+            instance.save!
+            posts.map &:reload
+          end # before each
+
+          it { expect(instance.published_order).to be == 2 }
+
+          it { expect(posts.map &:published_order).to be == [0, 1, 3] }
+        end # context
+      end # context
+    end # context
   end # describe
 
   ### Relations ###
@@ -199,6 +261,128 @@ RSpec.describe BlogPost, :type => :model do
   end # describe
 
   ### Instance Methods ###
+
+  describe '#first_published' do
+    include_context 'with a blog'
+    include_context 'with generic content'
+    include_context 'with many sibling posts'
+
+    before(:each) do
+      instance.content = content
+      instance.published_at = 3.days.ago
+      instance.save!
+      posts.map &:reload
+    end # before each
+
+    it { expect(instance).to have_reader(:first_published).with(posts.first) }
+
+    context 'with a cached value' do
+      before(:each) { instance.first_published }
+
+      it 'does not query the datastore' do
+        expect(BlogPost).not_to receive(:all)
+
+        expect(instance.first_published).to be == posts.first
+      end # it
+    end # context
+  end # describe
+
+  describe '#last_published' do
+    include_context 'with a blog'
+    include_context 'with generic content'
+    include_context 'with many sibling posts'
+
+    before(:each) do
+      instance.content = content
+      instance.published_at = 3.days.ago
+      instance.save!
+      posts.map &:reload
+    end # before each
+
+    it { expect(instance).to have_reader(:last_published).with(posts.last) }
+
+    context 'with a cached value' do
+      before(:each) { instance.last_published }
+
+      it 'does not query the datastore' do
+        expect(BlogPost).not_to receive(:all)
+
+        expect(instance.last_published).to be == posts.last
+      end # it
+    end # context
+  end # describe
+
+  describe '#next_published' do
+    include_context 'with a blog'
+    include_context 'with generic content'
+    include_context 'with many sibling posts'
+
+    before(:each) do
+      instance.content = content
+      instance.published_at = 3.days.ago
+      instance.save!
+      posts.map &:reload
+    end # before each
+
+    it { expect(instance).to have_reader(:next_published).with(posts.last) }
+
+    context 'with a cached value' do
+      before(:each) { instance.next_published }
+
+      it 'does not query the datastore' do
+        expect(BlogPost).not_to receive(:all)
+
+        expect(instance.next_published).to be == posts.last
+      end # it
+    end # context
+  end # describe
+
+  describe '#prev_published' do
+    include_context 'with a blog'
+    include_context 'with generic content'
+    include_context 'with many sibling posts'
+
+    before(:each) do
+      instance.content = content
+      instance.published_at = 3.days.ago
+      instance.save!
+      posts.map &:reload
+    end # before each
+
+    it { expect(instance).to have_reader(:prev_published).with(posts[1]) }
+
+    context 'with a cached value' do
+      before(:each) { instance.prev_published }
+
+      it 'does not query the datastore' do
+        expect(BlogPost).not_to receive(:all)
+
+        expect(instance.prev_published).to be == posts[1]
+      end # it
+    end # context
+  end # describe
+
+  describe '#reload' do
+    include_context 'with a blog'
+    include_context 'with generic content'
+
+    context 'with cached ordering values' do
+      before(:each) do
+        instance.blog    = blog
+        instance.content = content
+        instance.save!
+        instance.instance_variable_set :@first_published, double('published post')
+      end # before each
+
+      it 'clears the cached ordering values' do
+        expect {
+          instance.reload
+        }.to change {
+          instance.instance_variable_get(:@first_published)
+        }.to nil
+      end # it
+    end # context
+  end # describe
 
   describe '#to_partial_path' do
     it { expect(instance).to respond_to(:to_partial_path).with(0).arguments }

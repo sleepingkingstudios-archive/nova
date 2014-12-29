@@ -3,9 +3,12 @@ records:
 - blog_id: <%= sprig_record(Blog, 'potent-potables').id %>
   title: I Love Scotch
   content: <%= TextContent.new :text_content => "I love scotch. Scotchy-scotchy-scotch." %>
+  published_at: <%= 3.days.ago %>
 - blog_id: <%= sprig_record(Blog, 'potent-potables').id %>
   title: The Rum's Gone
   content: <%= TextContent.new :text_content => "Why's the rum gone?" %>
+  published_at: <%= 2.days.ago %>
 - blog_id: <%= sprig_record(Blog, 'potent-potables').id %>
   title: Drink Guinness
   content: <%= TextContent.new :text_content => "Because if you can see your hand through the glass, it's not real beer." %>
+  published_at: <%= 1.days.ago %>
