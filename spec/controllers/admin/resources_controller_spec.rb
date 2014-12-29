@@ -434,6 +434,10 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       it 'unpublishes the post' do
         expect { perform_action }.to change { resource.reload.published_at }.to nil
       end # it
+
+      it 'clears the published order cache' do
+        expect { perform_action }.to change { resource.reload.published_order }.to nil
+      end # it
     end # describe
 
     describe 'with a valid path to a directory', :path => :valid_directory do

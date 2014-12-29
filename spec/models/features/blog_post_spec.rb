@@ -362,6 +362,28 @@ RSpec.describe BlogPost, :type => :model do
     end # context
   end # describe
 
+  describe '#reload' do
+    include_context 'with a blog'
+    include_context 'with generic content'
+
+    context 'with cached ordering values' do
+      before(:each) do
+        instance.blog    = blog
+        instance.content = content
+        instance.save!
+        instance.instance_variable_set :@first_published, double('published post')
+      end # before each
+
+      it 'clears the cached ordering values' do
+        expect {
+          instance.reload
+        }.to change {
+          instance.instance_variable_get(:@first_published)
+        }.to nil
+      end # it
+    end # context
+  end # describe
+
   describe '#to_partial_path' do
     it { expect(instance).to respond_to(:to_partial_path).with(0).arguments }
 

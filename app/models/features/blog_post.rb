@@ -13,7 +13,7 @@ class BlogPost < Feature
 
   cache_ordering :published_at.asc,
     :as     => :published_order,
-    :filter => ->() { where(:published_at.lte => Time.current) },
+    :filter => ->() { where(:published_at.ne => nil).where(:published_at.lte => Time.current) },
     :scope  => :blog_id
 
   ### Relations ###
@@ -44,9 +44,24 @@ class BlogPost < Feature
     @prev_published ||= super
   end # method prev_published
 
+  def reload
+    clear_ordering_cache
+
+    super
+  end # method reload
+
   def to_partial_path
     return '/' if blog.blank?
 
     Directory.join(*[blog.to_partial_path, slug].reject { |slug| slug.blank? })
   end # method to_partial_path
+
+  private
+
+  def clear_ordering_cache
+    @first_published = nil
+    @last_published  = nil
+    @next_published  = nil
+    @prev_published  = nil
+  end # method clear_ordering_cache
 end # class
