@@ -13,30 +13,16 @@
   - if presenter.index?
     %small Index
 
-- if user_signed_in?
-  %div{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this page?' } }
-    %p
+  - if user_signed_in?
+    = render :layout => 'admin/common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } } } do
       - if presenter.index?
-        = link_to dashboard_directory_path(@directories.last), :class => 'text-info' do
-          = icon :cubes, :scale => :large
-          Dashboard
-        &nbsp;
+        = render :partial => 'admin/common/components/button', :locals => { :text => 'Dashboard', :url => dashboard_directory_path(@directories.last), :options => { :icon => :cubes } }
       - if presenter.published?
-        = link_to unpublish_resource_path(@resource), :class => 'text-warning', :method => :put do
-          = icon :reply, :scale => :large
-          Unpublish Page
+        = render :partial => 'admin/common/components/button', :locals => { :text => 'Unpublish Page', :url => unpublish_resource_path(@resource), :options => { :icon => :reply, :text_color => :warning, :method => :put } }
       - else
-        = link_to publish_resource_path(@resource), :class => 'text-success', :method => :put do
-          = icon :share, :scale => :large
-          Publish Page
-      &nbsp;
-      = link_to edit_resource_path(@resource), :class => 'text-warning' do
-        = icon :edit, :scale => :large
-        Edit Page
-      &nbsp;
-      = link_to resource_path(@resource), :class => 'text-danger delete-link', :method => :delete do
-        = icon :trash, :scale => :large
-        Delete Page
+        = render :partial => 'admin/common/components/button', :locals => { :text => 'Publish Page', :url => publish_resource_path(@resource), :options => { :icon => :share, :text_color => :success, :method => :put } }
+      = render :partial => 'admin/common/components/button', :locals => { :text => 'Edit Page', :url => edit_resource_path(@resource), :options => { :icon => :edit, :text_color => :warning } }
+      = render :partial => 'admin/common/components/button', :locals => { :text => 'Delete Page', :url => resource_path(@resource), :options => { :icon => :trash, :text_color => :danger, :method => :delete, :class => 'delete-link' } }
 
 - if !presenter.published? && !current_user.blank?
   .alert.alert-warning.alert-dismissable

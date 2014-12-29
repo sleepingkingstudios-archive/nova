@@ -1,6 +1,4 @@
 - # app/views/admin/directories/_actions.html.haml
 
-%p
-  = link_to new_directory_path(directory), :class => 'text-primary' do
-    = icon :folder_o, :fixed => true, :scale => :large
-    Create Directory
+= render :layout => 'admin/common/components/button_bar' do
+  = render :partial => 'admin/common/components/button', :locals => { :text => 'Create Directory', :url => new_directory_path(directory), :options => { :icon => :folder_o, :text_color => :primary } }

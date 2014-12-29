@@ -8,7 +8,7 @@
   = presenter.label
   %small Directories
 
-= render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
+  = render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
 
 = render :partial => 'admin/directories/table', :locals => { :directories => presenter.children }
 
