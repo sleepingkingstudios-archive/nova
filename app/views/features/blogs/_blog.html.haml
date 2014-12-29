@@ -8,23 +8,11 @@
   = presenter.label
 
   - if user_signed_in?
-    = render :layout => 'common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this blog?<br><br><strong>This will destroy all posts in this blog.</strong>'.html_safe } } } do
-      = link_to new_blog_post_path(blog), :class => 'btn btn-sm btn-default' do
-        %span.text-primary
-          = icon :file_o
-          Create Post
-      = link_to index_blog_posts_path(blog), :class => 'btn btn-sm btn-default' do
-        %span.text-info
-          = icon :files_o
-          View Posts
-      = link_to edit_resource_path(blog), :class => 'btn btn-sm btn-default' do
-        %span.text-warning
-          = icon :files_o
-          Edit Blog
-      = link_to resource_path(blog), :class => 'btn btn-sm btn-default delete-link', :method => :delete do
-        %span.text-danger
-          = icon :trash, :scale => :large
-          Delete Blog
+    = render :layout => 'admin/common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this blog?<br><br><strong>This will destroy all posts in this blog.</strong>'.html_safe } } } do
+      = render :partial => 'admin/common/components/button', :locals => { :text => 'Create Post', :url => new_blog_post_path(blog), :options => { :icon => :file_o, :text_color => :primary } }
+      = render :partial => 'admin/common/components/button', :locals => { :text => 'View Posts', :url => index_blog_posts_path(blog), :options => { :icon => :files_o, :text_color => :info } }
+      = render :partial => 'admin/common/components/button', :locals => { :text => 'Edit Blog', :url => edit_resource_path(blog), :options => { :icon => :edit, :text_color => :warning } }
+      = render :partial => 'admin/common/components/button', :locals => { :text => 'Delete Blog', :url => resource_path(blog), :options => { :icon => :trash, :text_color => :danger, :method => :delete, :class => 'delete-link' } }
 
 - if post.nil?
   %p This blog does not currently have any posts to display.

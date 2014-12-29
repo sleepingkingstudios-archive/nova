@@ -10,7 +10,7 @@
   = presenter.label
   %small Posts
 
-= render :partial => 'admin/features/blog_posts/actions', :locals => { :blog => @blog }
+  = render :partial => 'admin/features/blog_posts/actions', :locals => { :blog => @blog }
 
 = render :partial => 'admin/features/table', :locals => { :features => @blog.posts }
 
