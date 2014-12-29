@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.7'
+gem 'rails', '4.2.0'
 
 ### App Server ###
 gem 'thin'
@@ -21,7 +21,7 @@ gem 'less-rails',           '~> 2.6.0'
 gem 'less-rails-bootstrap', '~> 3.3.1'
 gem 'coffee-rails',         '~> 4.1.0'
 gem 'jquery-rails',         '~> 3.1.2'
-gem 'uglifier',             '>= 1.3.0' # Compressor for JavaScript assets.
+gem 'uglifier',             '>= 2.6.0' # Compressor for JavaScript assets.
 
 ### Content ###
 gem 'github-markdown', '~> 0.6.7'
@@ -43,7 +43,8 @@ group :development, :test do
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'database_cleaner',   '~> 1.3.0'
 
-  gem 'pry', '~> 0.10.1'
+  gem 'pry',         '~> 0.10.1'
+  gem 'web-console', '~> 2.0.0'
 end # group
 
 ### Production ###
@@ -51,4 +52,4 @@ group :production do
   gem 'rails_12factor', '~> 0.0.3' # Required for Heroku deployment.
 end # group
 
-ruby "2.1.5"
+ruby "2.2.0"

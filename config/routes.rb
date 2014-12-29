@@ -73,6 +73,3 @@ Rails.application.routes.draw do
 
   root 'resources#show'
 end # draw
-
-# Include custom routing helpers.
-Rails.application.routes.url_helpers.send :include, RoutesHelper

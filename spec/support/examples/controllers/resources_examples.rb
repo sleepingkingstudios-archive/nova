@@ -7,10 +7,10 @@ module Spec
   module Examples
     module Controllers
       module ResourcesExamples
-        include Rails.application.routes.url_helpers
+        include RoutesHelper
 
         include Spec::Contexts::Controllers::ResourcesContexts
-        
+
         include Spec::Examples::Controllers::RenderingExamples
 
         def default_url_options(options = {})

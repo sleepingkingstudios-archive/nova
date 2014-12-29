@@ -706,14 +706,3 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 end # describe
-
-RSpec.describe 'Rails url_helpers' do
-  let(:instance) { Object.new.extend Rails.application.routes.url_helpers }
-  let(:methods)  { Object.new.extend(RoutesHelper).methods - Object.new.methods }
-
-  it 'includes the helper methods' do
-    methods.each do |method|
-      expect(instance).to respond_to(method)
-    end # each
-  end # it
-end # describe

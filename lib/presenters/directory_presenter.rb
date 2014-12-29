@@ -4,6 +4,7 @@ require 'presenters/presenter'
 
 class DirectoryPresenter < Presenter
   include IconsHelper
+  include RoutesHelper
 
   alias_method :directory, :object
 
