@@ -5,8 +5,104 @@ require 'rails_helper'
 RSpec.describe Setting, :type => :model do
   include RSpec::SleepingKingStudios::Examples::PropertyExamples
 
+  shared_context 'with many settings' do
+    let(:settings_hash) do
+      { 'ace.title'      => 'Baron',
+        'ace.first_name' => 'Manfred',
+        'ace.last_name'  => 'von Richthofen'
+      } # end hash
+    end # let
+    let!(:settings) do
+      settings_hash.map do |key, value|
+        create(:setting, :key => key, :value => value)
+      end # each
+    end # let!
+  end # context
+
   let(:attributes) { attributes_for(:setting) }
   let(:instance)   { described_class.new attributes }
+
+  ### Class Methods ###
+
+  describe '::fetch' do
+    it { expect(described_class).to respond_to(:fetch).with(1..2).arguments }
+
+    it 'raises an error' do
+      expect {
+        described_class.fetch 'namespaced.key'
+      }.to raise_error KeyError, 'key not found: "namespaced.key"'
+    end # it
+
+    describe 'with a default value' do
+      it { expect(described_class.fetch 'namespaced.key', 'default').to be == 'default' }
+    end # describe
+
+    context 'with many settings' do
+      include_context 'with many settings'
+
+      it { expect(described_class.fetch settings_hash.keys.first).to be == settings_hash.values.first }
+
+      describe 'with a default value' do
+        it { expect(described_class.fetch settings_hash.keys.first, 'default').to be == settings_hash.values.first }
+      end # describe
+    end # context
+  end # describe
+
+  describe '::fetch_with_i18n_fallback' do
+    it { expect(described_class).to respond_to(:fetch_with_i18n_fallback).with(1..2).arguments }
+
+    it 'raises an error' do
+      expect {
+        described_class.fetch_with_i18n_fallback 'namespaced.key'
+      }.to raise_error KeyError, 'key not found: "namespaced.key"'
+    end # it
+
+    describe 'with a default value' do
+      it { expect(described_class.fetch_with_i18n_fallback 'namespaced.key', 'default').to be == 'default' }
+    end # describe
+
+    context 'with an i18n translation' do
+      before(:each) { allow(I18n).to receive(:translate).and_return('translated') }
+
+      it 'falls back to i18n' do
+        expect(described_class.fetch_with_i18n_fallback 'namespaced.key').to be == 'translated'
+      end # it
+
+      describe 'with a default value' do
+        it { expect(described_class.fetch_with_i18n_fallback 'namespaced.key', 'default').to be == 'translated' }
+      end # describe
+    end # describe
+
+    context 'with many settings' do
+      include_context 'with many settings'
+
+      it { expect(described_class.fetch_with_i18n_fallback settings_hash.keys.first).to be == settings_hash.values.first }
+
+      describe 'with a default value' do
+        it { expect(described_class.fetch_with_i18n_fallback settings_hash.keys.first, 'default').to be == settings_hash.values.first }
+      end # describe
+
+      context 'with an i18n translation' do
+        before(:each) { allow(I18n).to receive(:translate).and_return('translated') }
+
+        it 'falls back to i18n' do
+          expect(described_class.fetch_with_i18n_fallback settings_hash.keys.first).to be == settings_hash.values.first
+        end # it
+      end # context
+    end # context
+  end # describe
+
+  describe '::get' do
+    it { expect(described_class).to respond_to(:get).with(1).argument }
+
+    it { expect(described_class.get 'namespaced.key').to be nil }
+
+    context 'with many settings' do
+      include_context 'with many settings'
+
+      it { expect(described_class.get settings_hash.keys.first).to be == settings_hash.values.first }
+    end # context
+  end # describe
 
   ### Attributes ###
 

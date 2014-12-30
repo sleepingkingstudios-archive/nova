@@ -13,7 +13,7 @@
     = favicon_link_tag '/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
     = favicon_link_tag '/favicon.ico', :rel => 'shortcut icon'
 
-    %title= content_for?(:title) ? yield(:title) : "Appleseed"
+    %title= content_for?(:title) ? yield(:title) : Setting.fetch_with_i18n_fallback('site.title')
 
     = csrf_meta_tags
 
@@ -27,8 +27,10 @@
     .container
       %header
         %h1
-          = link_to 'Appleseed', root_path, :class => 'text-plain'
-          %small Greatness Sprouts From Little Seeds
+          = link_to Setting.fetch_with_i18n_fallback('site.heading'), root_path, :class => 'text-plain'
+          - subhead = Setting.fetch_with_i18n_fallback('site.subheading', '')
+          - unless subhead.blank?
+            %small= subhead
 
       = render 'common/session'
 
