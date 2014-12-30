@@ -1,0 +1,6 @@
+---
+records:
+- klass: StringSetting
+  key: Site Title
+  value: Appleseed CMS
+  validate_presence: true

@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/sleepingkingstudios/sprig
-  revision: d2cbf91bd39b63da8d7ca8f2d4bf6c1681cb6d50
+  revision: e9095ff988ddcb23d93cfbad01c921c43d88edf8
   branch: feature-mongoid
   specs:
     sprig (0.1.6)

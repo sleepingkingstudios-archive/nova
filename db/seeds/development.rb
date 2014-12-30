@@ -17,7 +17,7 @@ begin
     raise Mongoid::Errors::Validations.new(user.tap &:destroy) unless user.valid?
   end # if
 
-  sprig [Directory, Page, Blog, BlogPost]
+  sprig [Setting, Directory, Page, Blog, BlogPost]
 rescue StandardError
   puts "error!\n"
 
@@ -26,6 +26,6 @@ end # begin-rescue
 
 puts "success!\n\nObjects:"
 
-[User, Directory, Page, Blog, BlogPost].each do |collection|
+[Setting, User, Directory, Page, Blog, BlogPost].each do |collection|
   puts "- #{collection.name}: #{collection.count}"
 end
