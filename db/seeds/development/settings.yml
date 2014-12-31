@@ -11,3 +11,9 @@ records:
   klass: StringSetting
   value: Appleseed CMS
   validate_presence: true
+- key: site.navigation
+  klass: NavigationListSetting
+  value:
+    "Home": '/'
+    "Weapons": '/weapons'
+    "Potent Potables": '/potent-potables'

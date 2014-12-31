@@ -25,12 +25,7 @@
 
   %body
     .container
-      %header
-        %h1
-          = link_to Setting.fetch_with_i18n_fallback('site.heading'), root_path, :class => 'text-plain'
-          - subhead = Setting.fetch_with_i18n_fallback('site.subheading', '')
-          - unless subhead.blank?
-            %small= subhead
+      = render 'common/header'
 
       = render 'common/session'
 
