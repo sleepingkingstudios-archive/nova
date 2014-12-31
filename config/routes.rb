@@ -32,6 +32,10 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get 'contents/:content_type/fields', :to => 'features/contents#fields'
+
+    get 'settings',   :to => 'settings#edit'
+    put 'settings',   :to => 'settings#update'
+    patch 'settings', :to => 'settings#update'
   end # namespace
 
   scope :module => :admin do
