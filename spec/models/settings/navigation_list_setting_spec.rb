@@ -3,38 +3,62 @@
 require 'rails_helper'
 
 RSpec.describe NavigationListSetting, :type => :model do
+  shared_context 'with a list' do
+    let!(:list) { build(:navigation_list, :container => instance) }
+  end # shared_context
+
+  shared_context 'with many items' do
+    let!(:items) do
+      Array.new(3).map { build(:navigation_list_item, :list => list) }
+    end # let!
+  end # shared_contex
+
   let(:attributes) { attributes_for(:navigation_list_setting) }
   let(:instance)   { described_class.new attributes }
 
-  describe '#validation' do
+  ### Relations ###
+
+  describe '#list' do
+    it { expect(instance).to have_reader(:list).with(nil) }
+
+    context 'with a list' do
+      include_context 'with a list'
+
+      it { expect(instance).to have_reader(:list).with(list) }
+    end # context
+  end # describe
+
+  ### Validation ###
+
+  describe 'validation' do
     it { expect(instance).to be_valid }
 
-    describe 'value must be a Hash' do
-      let(:attributes) { super().merge :value => 'Second Star to the Right, and Straight On \'till Morning' }
-
-      it { expect(instance).to have_errors.on(:value).with_message('must be a hash') }
-    end # describe
-
-    describe 'value labels must be present' do
-      let(:attributes) { super().merge :value => { nil => 'weapons/swords/japanese' } }
-
-      it { expect(instance).to have_errors.on(:value).with_message("label can't be blank") }
-    end # describe
-
-    describe 'value urls must be present' do
-      let(:attributes) { super().merge :value => { 'Potent Potables' => '' } }
-
-      it { expect(instance).to have_errors.on(:value).with_message("url can't be blank") }
-    end # describe
-
     describe 'with :validate_presence => true' do
-      let(:attributes) { super().merge :validate_presence => true }
+      let(:attributes) { super().merge :options => (super()[:options] || {}).merge(:validate_presence => true) }
 
-      describe 'value must be present' do
-        let(:attributes) { super().merge :value => {} }
+      describe 'list must be present' do
+        let(:attributes) { super().merge :list => nil }
 
-        it { expect(instance).to have_errors.on(:value).with_message("can't be blank") }
+        it { expect(instance).to have_errors.on(:list).with_message("can't be blank") }
       end # describe
     end # describe
+  end # describe
+
+  ### Instance Methods ###
+
+  describe '#value' do
+    it { expect(instance).to have_reader(:value).with([]) }
+
+    context 'with a list' do
+      include_context 'with a list'
+
+      it { expect(instance.value).to be == [] }
+
+      context 'with many items' do
+        include_context 'with many items'
+
+        it { expect(instance.value).to be == items.map(&:value) }
+      end # context
+    end # context
   end # describe
 end # describe

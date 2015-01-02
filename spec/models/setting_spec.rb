@@ -14,7 +14,7 @@ RSpec.describe Setting, :type => :model do
     end # let
     let!(:settings) do
       settings_hash.map do |key, value|
-        create(:setting, :key => key, :value => value)
+        create(:string_setting, :key => key, :value => value)
       end # each
     end # let!
   end # context
@@ -110,12 +110,12 @@ RSpec.describe Setting, :type => :model do
     it { expect(instance).to have_property(:key).with_value(attributes.fetch(:key)) }
   end # describe
 
-  describe '#value' do
-    it { expect(instance).to have_property(:value) }
+  describe '#options' do
+    it { expect(instance).to have_property(:options).with_value({}) }
   end # describe
 
-  describe '#validate_presence' do
-    it { expect(instance).to have_property(:validate_presence) }
+  describe '#value' do
+    it { expect(instance).to have_reader(:value).with_value(nil) }
   end # describe
 
   ### Validation ###
@@ -134,16 +134,6 @@ RSpec.describe Setting, :type => :model do
 
       it { expect(instance).to have_errors.on(:key).with_message("is already taken") }
     end # describe
-
-    describe 'with :validate_presence => true' do
-      let(:attributes) { super().merge :validate_presence => true }
-
-      describe 'value must be present' do
-        let(:attributes) { super().merge :value => nil }
-
-        it { expect(instance).to have_errors.on(:value).with_message("can't be blank") }
-      end # describe
-    end # describe
   end # describe
 
   ### Instance Methods ###
@@ -152,7 +142,7 @@ RSpec.describe Setting, :type => :model do
     it { expect(instance).to have_reader(:validate_presence?).with_value(false) }
 
     describe 'with :validate_presence => true' do
-      let(:attributes) { super().merge :validate_presence => true }
+      let(:attributes) { super().merge :options => (super()[:options] || {}).merge(:validate_presence => true) }
 
       it { expect(instance.validate_presence?).to be true }
     end # describe

@@ -42,12 +42,23 @@ class Setting
   end # eigenclass
 
   ### Attributes ###
-  field :key,               :type => String
-  field :value,             :type => Object
-  field :validate_presence, :type => Boolean
+  field :key,     :type => String
+  field :options, :type => Hash
 
   ### Validations ###
   validates :key, :presence => true, :uniqueness => true
 
-  validates :value, :presence => { :if => :validate_presence? }
+  ### Instance Methods ###
+
+  def options
+    self[:options] ||= {}
+  end # method options
+
+  def validate_presence?
+    !!options[:validate_presence]
+  end # method validate_presence?
+
+  def value
+    nil
+  end # method value
 end # class

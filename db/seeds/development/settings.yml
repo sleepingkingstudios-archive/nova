@@ -3,17 +3,21 @@ records:
 - key: site.heading
   klass: StringSetting
   value: Appleseed
-  validate_presence: true
+  options: { validate_presence: true }
 - key: site.subheading
   klass: StringSetting
   value: Greatness Sprouts From Little Seeds
 - key: site.title
   klass: StringSetting
   value: Appleseed CMS
-  validate_presence: true
+  options: { validate_presence: true }
 - key: site.navigation
   klass: NavigationListSetting
-  value:
-    "Home": '/'
-    "Weapons": '/weapons'
-    "Potent Potables": '/potent-potables'
+  list:
+    items:
+      - label: Home
+        url: '/'
+      - label: Weapons
+        url: '/weapons'
+      - label: Potent Potables
+        url: '/potent-potables'

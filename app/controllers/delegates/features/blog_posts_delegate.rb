@@ -72,8 +72,6 @@ class BlogPostsDelegate < FeaturesDelegate
 
     resource.published_at = nil
 
-    # binding.pry
-
     if resource.save
       set_flash_message :warning, flash_message(:unpublish, :success)
 

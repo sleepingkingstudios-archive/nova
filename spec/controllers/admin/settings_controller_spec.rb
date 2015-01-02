@@ -14,7 +14,7 @@ RSpec.describe Admin::SettingsController, :type => :controller do
     end # let
     let!(:settings) do
       settings_hash.map do |key, value|
-        create(:setting, :key => key, :value => value)
+        create(:string_setting, :key => key, :value => value)
       end # each
     end # let!
   end # context
