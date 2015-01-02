@@ -127,6 +127,6 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
   end # method concat_class
 
   def has_errors?
-    !object.errors.blank?
+    object.respond_to?(:errors) && !object.errors.blank?
   end # method validated?
 end # class

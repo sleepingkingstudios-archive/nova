@@ -1,0 +1,8 @@
+- # app/views/admin/settings/navigation_list_settings/_item.html.haml
+
+= form.fields_for index.to_s, item do |fields|
+  .row{ :style => 'margin-left:0px;margin-right:0px;margin-bottom:10px;' }
+    .col-sm-1{ :style => 'padding-left:0px' }= fields.label :label
+    .col-sm-3{ :style => 'padding-right:0px' }= fields.text_field :label
+    .col-sm-1{ :style => 'padding-right:0px' }= fields.label :url
+    .col-sm-7{ :style => 'padding-right:0px' }= fields.text_field :url

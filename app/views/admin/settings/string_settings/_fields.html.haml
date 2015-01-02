@@ -1,0 +1,4 @@
+- # app/views/admin/settings/string_settings/_fields.html.haml
+
+= form.fields_for setting.key, setting do |fields|
+  = fields.text_field :value

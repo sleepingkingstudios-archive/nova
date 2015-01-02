@@ -1,0 +1,4 @@
+- # app/views/admin/settings/navigation_list_settings/_fields.html.haml
+
+= form.fields_for presenter.name, setting do |fields|
+  = render :partial => 'admin/settings/navigation_list_settings/list', :locals => { :form => fields, :list => setting.list }

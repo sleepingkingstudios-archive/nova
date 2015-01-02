@@ -1,5 +1,7 @@
 # app/controllers/admin/settings_controller.rb
 
+require 'form_builders/bootstrap_horizontal_form_builder'
+
 class Admin::SettingsController < Admin::AdminController
   before_action :load_settings
 
