@@ -21,4 +21,10 @@ class NavigationListItem
       'url'   => url
     } # hash
   end # method value
+
+  def value= params
+    params.permit('label', 'url').each do |attribute, value|
+      self[attribute] = value
+    end # each
+  end # method value=
 end # class

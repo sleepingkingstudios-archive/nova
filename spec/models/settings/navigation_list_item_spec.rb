@@ -72,4 +72,23 @@ RSpec.describe NavigationListItem, :type => :model do
       end # each
     end # it
   end # describe
+
+  describe '#value=' do
+    let(:params) do
+      ActionController::Parameters.new(
+        'label' => 'Igneous Rocks',
+        'url'   => '/rocks/igneous/basalt'
+      ) # end params
+    end # let
+
+    it { expect(instance).to have_writer :value }
+
+    it 'updates the label' do
+      expect { instance.value=(params) }.to change(instance, :label).to(params['label'])
+    end # it
+
+    it 'updates the url' do
+      expect { instance.value=(params) }.to change(instance, :url).to(params['url'])
+    end # it
+  end # describe
 end # describe

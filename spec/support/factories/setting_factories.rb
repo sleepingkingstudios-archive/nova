@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :setting do
-    sequence(:key) { |index| "setting#{index}" }
+    sequence(:key) { |index| "setting_#{index}" }
 
     factory :navigation_list_setting, :class => 'NavigationListSetting'
 

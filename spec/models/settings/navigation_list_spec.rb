@@ -100,4 +100,49 @@ RSpec.describe NavigationList, :type => :model do
       it { expect(instance.value).to be == items.map(&:value) }
     end # context
   end # describe
+
+  describe '#value=' do
+    shared_examples 'updates the items' do
+      it 'updates the items' do
+        instance.value = params
+
+        expect(instance.items.to_a.count).to be == params.count
+
+        params.each do |(index, hsh)|
+          item = instance.items.to_a[index.to_i]
+
+          expect(item.label).to be == hsh['label']
+          expect(item.url).to   be == hsh['url']
+        end # each
+      end # it
+    end # shared_examples
+
+    let(:params) do
+      ActionController::Parameters.new(
+        '1' => {
+          'label' => 'Igneous Rocks',
+          'url'   => '/rocks/igneous/basalt'
+        },
+        '2' => {
+          'label' => 'Sedimentary Rocks',
+          'url'   => '/rocks/sedimentary/limestone'
+        },
+        '0' => {
+          'label' => 'Metamorphic Rocks',
+          'url'   => '/rocks/metamorphic/slate'
+        }
+      ) # end params
+    end # let
+
+    it { expect(instance).to have_writer :value }
+
+    include_examples 'updates the items'
+
+    context 'with many items' do
+      include_context 'with a setting'
+      include_context 'with many items'
+
+      include_examples 'updates the items'
+    end # context
+  end # describe
 end # describe

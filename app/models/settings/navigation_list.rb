@@ -24,4 +24,12 @@ class NavigationList
   def value
     items.map &:value
   end # method value
+
+  def value= params
+    items.destroy_all
+
+    params.sort_by { |key, _| key }.each do |_, hsh|
+      items.build.value = hsh
+    end # each
+  end # method value=
 end # class

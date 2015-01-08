@@ -33,7 +33,7 @@ module DecoratorsHelper
         object_klass = object_klass.superclass
       end # begin-rescue
     end # while
-    
+
     options.fetch(:default, decorator_name).to_s.constantize.new(object)
   end # method decorate
 

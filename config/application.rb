@@ -22,6 +22,10 @@ module Appleseed
     # Autoload namespaced model classes.
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '**', '*')].reject { |file| file =~ /.rb\z/ }
 
+    # Autoload decorators.
+    config.autoload_paths += Dir[Rails.root.join('app', 'decorators', '**', '*')].reject { |file| file =~ /.rb\z/ }
+    config.autoload_paths += Dir[Rails.root.join('app', 'forms', '**', '*')].reject { |file| file =~ /.rb\z/ }
+
     # Set FactoryGirl factories directory.
     config.generators do |config|
       config.factory_girl :dir => 'spec/support/factories'
