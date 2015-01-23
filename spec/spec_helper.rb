@@ -2,6 +2,8 @@
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.disable_monkey_patching!
+
   # Limit a spec run to individual examples or groups you care about by tagging
   # them with `:focus` metadata.
   config.filter_run :focus

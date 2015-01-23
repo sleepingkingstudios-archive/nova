@@ -3,11 +3,11 @@
 require 'form_builders/bootstrap_horizontal_form_builder'
 
 class Admin::SettingsController < Admin::AdminController
-  before_action :load_settings
+  before_action :load_settings, :only => %i(index)
 
-  def edit
+  def index
 
-  end # action edit
+  end # action index
 
   private
 

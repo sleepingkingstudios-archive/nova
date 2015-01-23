@@ -8,32 +8,36 @@ RSpec.describe 'admin routing for settings', :type => :routing do
   describe 'GET /admin/settings' do
     let(:path) { 'admin/settings' }
 
-    it 'routes to Admin::SettingsController#edit' do
+    it 'routes to Admin::SettingsController#index' do
       expect(:get => "/#{path}").to route_to({
         :controller => settings_controller,
-        :action     => 'edit'
+        :action     => 'index'
       }) # end hash
     end # it
   end # describe
 
   describe 'PUT /admin/settings' do
-    let(:path) { 'admin/settings' }
+    let(:setting) { create(:setting) }
+    let(:path)    { "admin/settings/#{setting.id}" }
 
     it 'routes to Admin::SettingsController#update' do
       expect(:put => "/#{path}").to route_to({
         :controller => settings_controller,
-        :action     => 'update'
+        :action     => 'update',
+        :id         => setting.id.to_s
       }) # end hash
     end # it
   end # describe
 
   describe 'PATCH /admin/settings' do
-    let(:path) { 'admin/settings' }
+    let(:setting) { create(:setting) }
+    let(:path)    { "admin/settings/#{setting.id}" }
 
     it 'routes to Admin::SettingsController#update' do
       expect(:patch => "/#{path}").to route_to({
         :controller => settings_controller,
-        :action     => 'update'
+        :action     => 'update',
+        :id         => setting.id.to_s
       }) # end hash
     end # it
   end # describe

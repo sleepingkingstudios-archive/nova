@@ -7,6 +7,8 @@ module Spec
   module Examples
     module Controllers
       module ResourcesExamples
+        extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+
         include RoutesHelper
 
         include Spec::Contexts::Controllers::ResourcesContexts

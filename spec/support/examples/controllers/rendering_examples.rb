@@ -4,6 +4,8 @@ module Spec
   module Examples
     module Controllers
       module RenderingExamples
+        extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+
         shared_examples 'renders template' do |template, options = {}|
           it "renders the #{template} template" do
             perform_action

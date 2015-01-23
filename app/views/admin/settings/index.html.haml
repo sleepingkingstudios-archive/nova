@@ -1,0 +1,16 @@
+- # app/views/admin/settings/index.html.haml
+
+%h1 Admin::Settings#index
+%p  Find me at app/views/admin/settings/index.html.haml
+
+- @settings.each do |setting|
+  - presenter   = present setting
+  - form_path   = admin_setting_path(@settings.first)
+  - form_method = :patch
+
+  = form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'x-backbone-layout' => 'Directories.FormLayout' } do |form|
+    = form.form_group setting.key, :label => presenter.label do
+      = render :partial => presenter.fields_partial_path, :locals => { :form => form, :presenter => presenter, :setting => setting }
+
+    = form.form_group do
+      = form.submit 'Update Setting'

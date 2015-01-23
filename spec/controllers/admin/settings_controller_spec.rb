@@ -19,12 +19,12 @@ RSpec.describe Admin::SettingsController, :type => :controller do
     end # let!
   end # context
 
-  describe 'GET #edit' do
+  describe 'GET #index' do
     def perform_action
-      get :edit
+      get :index
     end # method perform_action
 
-    expect_behavior 'renders template', :edit
+    expect_behavior 'renders template', :index
 
     it 'assigns @settings' do
       perform_action
