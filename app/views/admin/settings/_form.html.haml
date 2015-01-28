@@ -1,15 +1,14 @@
 - # app/views/admin/settings/_form.html.haml
 
-- form_path   = admin_settings_path
+- presenter   = present setting
+- form_path   = admin_setting_path(setting)
 - form_method = :patch
-= form_for :settings, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'x-backbone-layout' => 'Directories.FormLayout' } do |form|
-  %h2 Admin::Settings#form
 
-  - settings.each do |setting|
-    - presenter = present setting
-    = form.form_group setting.key, :label => presenter.label do
-      = render :partial => presenter.fields_partial_path, :locals => { :form => form, :presenter => presenter, :setting => setting }
+= form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'x-backbone-layout' => 'Directories.FormLayout' } do |form|
+  = form.form_group setting.key, :label => presenter.label do
+    /= form.static_field setting.try(:value)
+
+    = render :partial => presenter.fields_partial_path, :locals => { :form => form, :presenter => presenter, :setting => setting }
 
   = form.form_group do
-    = form.submit 'Update Settings'
-    = form.button 'Cancel', :root
+    = form.submit 'Update Setting'

@@ -27,7 +27,7 @@ RSpec.describe NavigationListSettingForm, :type => :decorator do
           }
         } # end hash
       end # let
-      let(:params) { ActionController::Parameters.new(resource.key => { :value => list_items }) }
+      let(:params) { ActionController::Parameters.new(:setting => { :value => list_items }) }
 
       it 'updates the value' do
         instance.update params
@@ -45,7 +45,7 @@ RSpec.describe NavigationListSettingForm, :type => :decorator do
 
     describe 'with options hash' do
       let(:options) { { 'validate_presence' => true } }
-      let(:params)  { ActionController::Parameters.new(resource.key => { :options => options }) }
+      let(:params)  { ActionController::Parameters.new(:setting => { :options => options }) }
 
       it 'updates the options' do
         expect { instance.update params }.to change(resource, :options).to be == options

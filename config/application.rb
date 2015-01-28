@@ -23,8 +23,9 @@ module Appleseed
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '**', '*')].reject { |file| file =~ /.rb\z/ }
 
     # Autoload decorators.
-    config.autoload_paths += Dir[Rails.root.join('app', 'decorators', '**', '*')].reject { |file| file =~ /.rb\z/ }
-    config.autoload_paths += Dir[Rails.root.join('app', 'forms', '**', '*')].reject { |file| file =~ /.rb\z/ }
+    %w(decorators forms serializers).each do |decorators|
+      config.autoload_paths += Dir[Rails.root.join('app', decorators, '**', '*')].reject { |file| file =~ /.rb\z/ }
+    end # each
 
     # Set FactoryGirl factories directory.
     config.generators do |config|

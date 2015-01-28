@@ -2,7 +2,7 @@
 
 class SettingForm < Form
   def resource_key
-    resource ? resource.key : nil
+    'setting'
   end # method resource_key
 
   def resource_params params

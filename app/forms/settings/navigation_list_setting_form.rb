@@ -4,7 +4,7 @@ class NavigationListSettingForm < SettingForm
   def update params
     super
 
-    if (value = params.fetch(resource.key, {}).fetch('value', nil)).blank?
+    if (value = params.fetch(resource_key, {}).fetch('value', nil)).blank?
       resource.list ? resource.list.destroy : nil
     else
       resource.list ||= resource.build_list

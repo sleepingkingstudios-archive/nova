@@ -77,7 +77,7 @@ class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
     options = block_given? ? text_or_options : options
     options[:class] = concat_class options.fetch(:class, ''), 'form-control-static'
 
-    block_given? ? content_tag(:p, options, &block) : content_tag(:p, text, options)
+    block_given? ? content_tag(:p, options, &block) : content_tag(:p, text_or_options, options)
   end # method static_field
 
   def submit value = nil, options = {}
