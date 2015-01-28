@@ -9,6 +9,43 @@ RSpec.describe SettingPresenter, :type => :decorator do
   let(:setting)    { build(:setting, attributes) }
   let(:instance)   { described_class.new setting }
 
+  describe '#error_messages' do
+    it { expect(instance).to have_reader(:error_messages).with([]) }
+
+    context 'with multiple error messages' do
+      let(:errors) do
+        [ "Title can't be blank",
+          'Slug is already taken',
+          "Streams can't be crossed"
+        ] # end array
+      end # let
+
+      before(:each) do
+        errors.each do |message|
+          words = message.split(/\s+/)
+
+          setting.errors.add(words.shift.downcase, words.join(' '))
+        end # each
+      end # before each
+
+      it { expect(instance.error_messages).to contain_exactly(*errors) }
+
+      context 'with duplicate error messages' do
+        let(:errors) do
+          [ "Title can't be blank",
+            "Title can't be blank",
+            'Slug is already taken',
+            "Streams can't be crossed",
+            "Streams can't be crossed",
+            "Streams can't be crossed"
+          ] # end array
+        end # let
+
+        it { expect(instance.error_messages).to contain_exactly(*errors.uniq) }
+      end # context
+    end # context
+  end # describe
+
   describe '#fields_partial_path' do
     let(:expected) { "admin/settings/fields" }
 

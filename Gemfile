@@ -31,6 +31,9 @@ gem 'jbuilder',                    '~> 2.0' # Build JSON APIs. Read more: https:
 gem 'sleeping_king_studios-tools', '~> 0.1.2'
 gem 'sprig',                       '~> 0.1.6', :git => 'https://github.com/sleepingkingstudios/sprig', :branch => 'feature-mongoid' # YAML-based datastore seeding. Read more: http://vigetlabs.github.io/sprig/
 
+### Logging ###
+gem 'quiet_assets', :group => :development # Silence logging of asset requests. Read more: https://github.com/evrone/quiet_assets
+
 ### Testing ###
 group :development, :test do
   gem 'rake', '~> 10.3.2' # Required for Travis-CI.
@@ -43,7 +46,7 @@ group :development, :test do
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'database_cleaner',   '~> 1.3.0'
 
-  gem 'pry',         '~> 0.10.1'
+  gem 'byebug',      '~> 3.5', '>= 3.5.1'
   gem 'web-console', '~> 2.0.0'
 end # group
 

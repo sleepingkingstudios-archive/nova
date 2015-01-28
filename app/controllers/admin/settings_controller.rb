@@ -20,8 +20,6 @@ class Admin::SettingsController < Admin::AdminController
     serializer = decorate(@setting, :Serializer)
 
     if form.update(params)
-      serializer = decorate(@setting, :Serializer)
-
       render :json => {
         :setting => serializer.to_json
       } # end hash

@@ -1,12 +1,14 @@
 - # app/views/admin/common/_form_errors.html.haml
 
-- presenter ||= present(resource)
+- force_render  ||= false
+- presenter     ||= present(resource)
+- resource_name ||= presenter.name
 
-- unless presenter.error_messages.blank?
+- if force_render || !presenter.error_messages.blank?
   .panel.panel-warning
-    .panel-heading= "#{presenter.name} Errors"
+    .panel-heading= "#{resource_name} Errors"
     .panel-body
-      %p= "The following error(s) prevent the #{presenter.name} from being saved:"
+      %p= "The following error(s) prevent the #{resource_name} from being saved:"
       %ul
         - presenter.error_messages.each do |message|
           %li= message

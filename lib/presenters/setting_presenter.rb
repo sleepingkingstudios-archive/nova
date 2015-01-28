@@ -5,6 +5,10 @@ require 'presenters/presenter'
 class SettingPresenter < Presenter
   alias_method :setting, :object
 
+  def error_messages
+    setting.errors.full_messages.uniq
+  end # method error_messages
+
   def fields_partial_path
     setting.class == Setting ? 'admin/settings/fields' : "admin/settings/#{setting.class.to_s.pluralize.underscore}/fields"
   end # method fields_partial_path

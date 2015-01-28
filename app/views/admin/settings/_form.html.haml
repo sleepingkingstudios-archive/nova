@@ -4,9 +4,10 @@
 - form_path   = admin_setting_path(setting)
 - form_method = :patch
 
-= form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'x-backbone-layout' => 'Directories.FormLayout' } do |form|
+= form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => form_path, :method => form_method, :data => { :'backbone-layout' => 'Settings.FormLayout' } do |form|
   = form.form_group setting.key, :label => presenter.label do
-    /= form.static_field setting.try(:value)
+    .errors{ :style => 'display:none;' }
+      = render :partial => 'admin/common/form_errors', :locals => { :force_render => true, :resource => setting, :presenter => presenter, :resource_name => presenter.label }
 
     = render :partial => presenter.fields_partial_path, :locals => { :form => form, :presenter => presenter, :setting => setting }
 

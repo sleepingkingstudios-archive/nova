@@ -1,7 +1,6 @@
 - # app/views/admin/settings/index.html.haml
 
-%h1 Admin::Settings#index
-%p  Find me at app/views/admin/settings/index.html.haml
+%h2 Site Settings
 
 - @settings.each do |setting|
   = render :partial => 'admin/settings/form', :locals => { :setting => setting }
