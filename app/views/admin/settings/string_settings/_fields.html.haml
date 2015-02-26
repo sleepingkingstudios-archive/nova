@@ -1,7 +1,0 @@
-- # app/views/admin/settings/string_settings/_fields.html.haml
-
-= form.text_field :value
-
-= form.fields_for :options do |fields|
-  - setting.options.each do |setting, value|
-    = fields.hidden_field setting, { :value => value }

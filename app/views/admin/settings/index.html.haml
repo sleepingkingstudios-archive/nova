@@ -3,4 +3,5 @@
 %h2 Site Settings
 
 - @settings.each do |setting|
-  = render :partial => 'admin/settings/form', :locals => { :setting => setting }
+  - setting_type = setting.class.name.underscore.pluralize
+  = render :partial => "admin/settings/#{setting_type}/form", :locals => { :setting => setting }

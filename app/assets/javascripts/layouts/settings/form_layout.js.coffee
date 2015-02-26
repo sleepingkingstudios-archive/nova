@@ -38,13 +38,17 @@ class Appleseed.Layouts.Settings.FormLayout extends Appleseed.Layouts.BaseLayout
 
     $form  = $(event.target)
     action = $form.attr('action')
-    data   = $form.serialize()
+    data   = @_formData()
 
     @hideErrors()
 
     request = $.post action, data
     request.done @submitFormSuccess
     request.fail @submitFormFailure
+
+  _formData: () =>
+    $form = $(event.target)
+    data  = $form.serialize()
 
   ### Event Handlers ###
 

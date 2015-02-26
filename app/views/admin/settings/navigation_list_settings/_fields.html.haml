@@ -1,6 +1,0 @@
-- # app/views/admin/settings/navigation_list_settings/_fields.html.haml
-
-- unless setting.list.blank?
-  = form.fields_for :value do |fields|
-    - setting.list.items.each.with_index do |item, index|
-      = render :partial => 'admin/settings/navigation_list_settings/item', :locals => { :form => fields, :index => index, :item => item }

@@ -1,0 +1,18 @@
+- # app/views/admin/settings/string_settings/_form.html.haml
+
+- presenter = present setting
+
+= form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => admin_setting_path(setting), :method => :patch, :data => { :'backbone-layout' => 'Settings.FormLayout' } do |form|
+  = form.form_group setting.key, :label => presenter.label do
+    .errors{ :style => 'display:none;' }
+      = render :partial => 'admin/common/form_errors', :locals => { :force_render => true, :resource => setting, :presenter => presenter, :resource_name => presenter.label }
+
+    = form.fields_for :options do |fields|
+      - setting.options.each do |setting, value|
+        = fields.hidden_field setting, { :value => value }
+
+    .row{ :style => 'margin-left:0px;margin-right:0px;margin-bottom:10px;' }
+      .col-sm-10{ :style => 'padding:0px' }
+        = form.text_field :value
+      .col-sm-2{ :style => 'padding-right:0px' }
+        = form.submit 'Update Setting', :style => 'width:100%'

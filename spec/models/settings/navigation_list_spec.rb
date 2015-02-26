@@ -34,12 +34,6 @@ RSpec.describe NavigationList, :type => :model do
   ### Validation ###
 
   describe 'validation' do
-    context 'with a setting' do
-      include_context 'with a setting'
-
-      it { expect(instance).to be_valid }
-    end # context
-
     describe 'container must be present' do
       let(:attributes) { super().merge :container => nil }
 
@@ -49,12 +43,28 @@ RSpec.describe NavigationList, :type => :model do
     context 'with a setting' do
       include_context 'with a setting'
 
+      it { expect(instance).to be_valid }
+
       context 'with validate_presence => true' do
         let(:setting_attributes) { super().merge :options => ((super()[:options] || {}).merge :validate_presence => true) }
 
         describe 'items must be present' do
           it { expect(instance).to have_errors.on(:items).with_message("can't be blank") }
         end # describe
+      end # context
+
+      context 'with many items' do
+        include_context 'with many items'
+
+        it { expect(instance).to be_valid }
+
+        context 'with an invalid item' do
+          let(:items) { super() << build(:navigation_list_item, :list => instance, :label => nil) }
+
+          it { expect(instance).not_to have_errors.on(:items) }
+
+          it { expect(instance).to have_errors.on(:"items[#{items.count-1}][label]").with_message("can't be blank") }
+        end # context
       end # context
     end # context
   end # describe

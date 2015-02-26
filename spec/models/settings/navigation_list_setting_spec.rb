@@ -42,6 +42,32 @@ RSpec.describe NavigationListSetting, :type => :model do
         it { expect(instance).to have_errors.on(:list).with_message("can't be blank") }
       end # describe
     end # describe
+
+    describe 'with a list' do
+      include_context 'with a list'
+
+      it { expect(instance).to be_valid }
+
+      describe 'with :validate_presence => true' do
+        let(:attributes) { super().merge :options => (super()[:options] || {}).merge(:validate_presence => true) }
+
+        describe "list can't be empty" do
+          it { expect(instance).to have_errors.on(:list).with_message("can't be blank") }
+        end # describe
+      end # describe
+
+      describe 'with many items' do
+        include_context 'with many items'
+
+        it { expect(instance).to be_valid }
+
+        describe 'with an invalid item' do
+          let(:items) { super() << build(:navigation_list_item, :list => list, :label => nil) }
+
+          it { expect(instance).to have_errors.on("Item #{items.count}'s label").with_message("can't be blank") }
+        end # describe
+      end # describe
+    end # describe
   end # describe
 
   ### Instance Methods ###
