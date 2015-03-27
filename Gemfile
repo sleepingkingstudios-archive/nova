@@ -41,7 +41,7 @@ group :development, :test do
   gem 'rspec',                       '~> 3.1'
   gem 'rspec-rails',                 '~> 3.1'
   gem 'rspec-collection_matchers',   '~> 1.1.2'
-  gem 'rspec-sleeping_king_studios', '>= 2.0.0.rc.0'
+  gem 'rspec-sleeping_king_studios', '~> 2.0', '>= 2.0.1'
 
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'database_cleaner',   '~> 1.3.0'

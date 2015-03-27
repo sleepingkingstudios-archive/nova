@@ -2,6 +2,11 @@
 
 %h2 Site Settings
 
-- @settings.each do |setting|
-  - setting_type = setting.class.name.underscore.pluralize
-  = render :partial => "admin/settings/#{setting_type}/form", :locals => { :setting => setting }
+%div{ :data => { :'backbone-layout' => 'Settings.ListLayout' } }
+  = render :partial => 'admin/settings/modals/edit_setting'
+
+  - @settings.each do |setting|
+    - presenter    = present setting
+    - setting_type = setting.class.name.underscore.pluralize
+
+    = render :partial => "admin/settings/#{setting_type}/show", :locals => { :presenter => presenter, :setting => setting }

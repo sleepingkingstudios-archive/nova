@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Admin::SettingsController, :type => :controller do
-  include Spec::Examples::Controllers::ResourcesExamples
   include Spec::Examples::Controllers::RenderingExamples
 
   shared_context 'with many settings' do

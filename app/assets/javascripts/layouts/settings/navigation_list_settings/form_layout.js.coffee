@@ -1,4 +1,4 @@
-- # app/assets/javascripts/layouts/settings/navigation_list_settings/form_layout.js.coffee
+# app/assets/javascripts/layouts/settings/navigation_list_settings/form_layout.js.coffee
 
 class Appleseed.Layouts.Settings.NavigationListSettings.FormLayout extends Appleseed.Layouts.Settings.FormLayout
   @selectors: {

@@ -5,6 +5,14 @@ require 'rails_helper'
 RSpec.describe IconsHelper, :type => :helper do
   let(:instance) { Object.new.extend described_class }
 
+  describe '#edit_icon' do
+    let(:icon) { %{<span class="fa fa-edit"></span>} }
+
+    it { expect(instance).to respond_to(:edit_icon).with(0..1).arguments }
+
+    it { expect(instance.edit_icon).to be == icon }
+  end # describe
+
   describe '#icon' do
     it { expect(instance).to respond_to(:icon).with(1..2).arguments }
 
@@ -16,7 +24,7 @@ RSpec.describe IconsHelper, :type => :helper do
       describe 'with a border option' do
         let(:icon) { %{<span class="fa fa-user fa-border"></span>} }
 
-        it { expect(instance.icon :user, :border => true).to be == icon }        
+        it { expect(instance.icon :user, :border => true).to be == icon }
       end # describe
 
       describe 'with a fixed-width option' do

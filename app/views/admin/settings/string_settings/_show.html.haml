@@ -1,0 +1,16 @@
+- # app/views/admin/settings/string_settings/_show.html.haml
+
+.setting{ :data => { :label => presenter.label } }
+  .row
+    %p.col-sm-2.text-right
+      %strong= presenter.label
+    .col-sm-10
+      .row
+        %p.col-sm-10= setting.value
+        %p.col-sm-2{ :style => 'padding-left:5px' }
+          = link_to '#', :class => 'btn btn-primary edit-setting-link', :style => 'width:100%' do
+            = edit_icon
+            Edit Setting
+
+  .form-container.hidden
+    = render :partial => "admin/settings/string_settings/form", :locals => { :setting => setting, :presenter => presenter }

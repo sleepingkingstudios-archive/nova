@@ -26,7 +26,6 @@ class Appleseed.Layouts.BaseLayout extends Backbone.Marionette.LayoutView
   initialize: (options) ->
     super(options)
 
-    window.layout = @
     fn.apply(@) for fn in @constructor._initializers if @constructor._initializers?
 
   get: (name, strict = true) ->

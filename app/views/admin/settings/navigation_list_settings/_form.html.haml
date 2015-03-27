@@ -2,21 +2,20 @@
 
 - presenter = present setting
 
-= form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => admin_setting_path(setting), :method => :patch, :data => { :'backbone-layout' => 'Settings.NavigationListSettings.FormLayout' } do |form|
-  = form.form_group setting.key, :label => presenter.label do
-    .errors{ :style => 'display:none;' }
-      = render :partial => 'admin/common/form_errors', :locals => { :force_render => true, :resource => setting, :presenter => presenter, :resource_name => presenter.label }
+= form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => admin_setting_path(setting), :method => :patch do |form|
+  .errors{ :style => 'display:none;' }
+    = render :partial => 'admin/common/form_errors', :locals => { :force_render => true, :resource => setting, :presenter => presenter, :resource_name => presenter.label }
 
-    = form.fields_for :options do |fields|
-      - setting.options.each do |setting, value|
-        = fields.hidden_field setting, { :value => value }
+  = form.fields_for :options do |fields|
+    - setting.options.each do |setting, value|
+      = fields.hidden_field setting, { :value => value }
 
-    = form.fields_for :value do |fields|
-      .list-items
-        .item-template{ :style => 'display:none;' }= render :partial => 'admin/settings/navigation_list_settings/item', :locals => { :form => fields, :index => -1, :item => NavigationListItem.new }
-        - unless setting.list.blank?
-          - setting.list.items.each.with_index do |item, index|
-            = render :partial => 'admin/settings/navigation_list_settings/item', :locals => { :form => fields, :index => index, :item => item }
+  = form.fields_for :value do |fields|
+    .list-items
+      .item-template{ :style => 'display:none;' }= render :partial => 'admin/settings/navigation_list_settings/items/fields', :locals => { :form => fields, :index => -1, :item => NavigationListItem.new }
+      - unless setting.list.blank?
+        - setting.list.items.each.with_index do |item, index|
+          = render :partial => 'admin/settings/navigation_list_settings/items/fields', :locals => { :form => fields, :index => index, :item => item }
 
     %hr
 

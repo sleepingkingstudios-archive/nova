@@ -200,7 +200,7 @@ GEM
       rspec-expectations (~> 3.1.0)
       rspec-mocks (~> 3.1.0)
       rspec-support (~> 3.1.0)
-    rspec-sleeping_king_studios (2.0.0.rc.0)
+    rspec-sleeping_king_studios (2.0.1)
       rspec (~> 3.0)
       sleeping_king_studios-tools (~> 0.1, >= 0.1.2)
     rspec-support (3.1.2)
@@ -262,7 +262,7 @@ DEPENDENCIES
   rspec (~> 3.1)
   rspec-collection_matchers (~> 1.1.2)
   rspec-rails (~> 3.1)
-  rspec-sleeping_king_studios (>= 2.0.0.rc.0)
+  rspec-sleeping_king_studios (~> 2.0, >= 2.0.1)
   sleeping_king_studios-tools (~> 0.1.2)
   sprig (~> 0.1.6)!
   therubyracer (~> 0.12.1)

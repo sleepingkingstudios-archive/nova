@@ -11,8 +11,12 @@ class Appleseed.Layouts.Settings.FormLayout extends Appleseed.Layouts.BaseLayout
   initialize: (root, options) ->
     super(root, options)
 
-    $form = root.el
-    $form.bind 'submit', @submitForm
+    console.log 'Settings.FormLayout#initialize()'
+
+    @$form = root.el
+    @$form.on 'submit', @submitForm
+
+  @$form = null
 
   clearErrors: () =>
     @get('errors.messages').empty()
@@ -36,9 +40,14 @@ class Appleseed.Layouts.Settings.FormLayout extends Appleseed.Layouts.BaseLayout
   submitForm: (event) =>
     event.preventDefault()
 
-    $form  = $(event.target)
-    action = $form.attr('action')
+    console.log('FormLayout.submitForm()')
+
+    action = @$form.attr('action')
     data   = @_formData()
+
+    console.log(@$form)
+    console.log(action)
+    console.log(data)
 
     @hideErrors()
 
@@ -47,8 +56,7 @@ class Appleseed.Layouts.Settings.FormLayout extends Appleseed.Layouts.BaseLayout
     request.fail @submitFormFailure
 
   _formData: () =>
-    $form = $(event.target)
-    data  = $form.serialize()
+    data  = @$form.serialize()
 
   ### Event Handlers ###
 

@@ -1,0 +1,19 @@
+- # app/views/admin/settings/navigation_list_settings/_show.html.haml
+
+.setting{ :data => { :label => presenter.label, :modal => { :class => 'modal-lg' } } }
+  .row
+    .col-sm-2.text-right
+      %strong= presenter.label
+    .col-sm-10
+      .row
+        .col-sm-10
+          - unless setting.list.blank?
+            - setting.list.items.each.with_index do |item, index|
+              = render :partial => 'admin/settings/navigation_list_settings/items/show', :locals => { :index => index, :item => item }
+        .col-sm-2{ :style => 'padding-left:5px' }
+          = link_to '#', :class => 'btn btn-primary edit-setting-link', :style => 'width:100%' do
+            = edit_icon
+            Edit Setting
+
+  .form-container.hidden
+    = render :partial => "admin/settings/navigation_list_settings/form", :locals => { :setting => setting, :presenter => presenter }
