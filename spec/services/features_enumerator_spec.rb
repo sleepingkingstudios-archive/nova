@@ -5,10 +5,48 @@ require 'rails_helper'
 require 'services/features_enumerator'
 
 RSpec.describe FeaturesEnumerator, :type => :service do
+  shared_context 'with many features' do
+    let(:features) do
+      { :rant => {
+          :class  => 'Rant',
+          :parent => :directory
+        }, # end hash
+        :rave => {
+          :class  => 'Rave',
+          :parent => :directory
+        }, # end hash
+        :comment => {
+          :class  => 'Comment',
+          :parent => :rant
+        } # end hash
+      } # end hash
+    end # let
+
+    before(:each) { allow(instance).to receive(:features).and_return(features) }
+  end # shared_context
+
   let(:instance) { Object.new.extend described_class }
 
   describe '#each' do
     it { expect(instance).to respond_to(:each).with(0..9001).arguments.with_a_block }
+  end # describe
+
+  describe '#directory_features' do
+    it { expect(instance).to have_reader(:directory_features) }
+
+    it 'is immutable' do
+      expect { instance.directory_features['autodefenestrate'] = "Autodefenestrate" }.not_to change(described_class, :directory_features)
+    end # it
+
+    context 'with many features' do
+      include_context 'with many features'
+
+      it 'returns features with parent => directory' do
+        expect(instance.directory_features).to be_a Hash
+
+        expect(instance.directory_features.keys).to contain_exactly *%i(rant rave)
+      end # it
+    end # context
   end # describe
 
   describe '#feature' do

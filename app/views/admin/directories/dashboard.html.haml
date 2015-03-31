@@ -36,7 +36,7 @@
   Features
 
   = render :layout => 'admin/common/components/button_bar' do
-    - FeaturesEnumerator.select { |_, options| options[:parent] == :directory }.each do |name, options|
+    - FeaturesEnumerator.directory_features.each do |name, options|
       - feature_presenter = present(options[:class])
       = render :partial => 'admin/common/components/button', :locals => { :text => "Create #{feature_presenter.type}", :url => new_resource_path(@directories.last, name), :options => { :icon => feature_presenter.send(:icon_name), :text_color => :primary } }
 
