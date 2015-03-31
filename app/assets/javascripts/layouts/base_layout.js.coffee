@@ -6,7 +6,7 @@ class Appleseed.Layouts.BaseLayout extends Backbone.Marionette.LayoutView
       @_initializers = @_initializers.slice(0)
     else
       @_initializers = []
-    
+
     @_initializers.push(fn)
 
   @extend: (sources...) ->
@@ -26,7 +26,6 @@ class Appleseed.Layouts.BaseLayout extends Backbone.Marionette.LayoutView
   initialize: (options) ->
     super(options)
 
-    window.layout = @
     fn.apply(@) for fn in @constructor._initializers if @constructor._initializers?
 
   get: (name, strict = true) ->
@@ -68,6 +67,3 @@ class Appleseed.Layouts.BaseLayout extends Backbone.Marionette.LayoutView
 
   _getSuperclassProperty: (property) ->
     @constructor.__super__.constructor[property]
-
-Appleseed.Layouts.BaseLayout.addInitializer ->
-  console.log "#{@constructor.name}#initialize()"

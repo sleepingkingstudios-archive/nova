@@ -4,6 +4,8 @@ module Spec
   module Contexts
     module Controllers
       module ResourcesContexts
+        extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+
         shared_context 'with an empty path', :path => :empty do
           let(:path)        { nil }
           let(:directories) { [] }

@@ -1,0 +1,23 @@
+- # app/views/admin/settings/navigation_list_settings/_form.html.haml
+
+- presenter = present setting
+
+= form_for setting, :as => :setting, :builder => BootstrapHorizontalFormBuilder, :url => admin_setting_path(setting), :method => :patch do |form|
+  .errors{ :style => 'display:none;' }
+    = render :partial => 'admin/common/form_errors', :locals => { :force_render => true, :resource => setting, :presenter => presenter, :resource_name => presenter.label }
+
+  = form.fields_for :options do |fields|
+    - setting.options.each do |setting, value|
+      = fields.hidden_field setting, { :value => value }
+
+  = form.fields_for :value do |fields|
+    .list-items
+      .item-template{ :style => 'display:none;' }= render :partial => 'admin/settings/navigation_list_settings/items/fields', :locals => { :form => fields, :index => -1, :item => NavigationListItem.new }
+      - unless setting.list.blank?
+        - setting.list.items.each.with_index do |item, index|
+          = render :partial => 'admin/settings/navigation_list_settings/items/fields', :locals => { :form => fields, :index => index, :item => item }
+
+    .row{ :style => 'margin-left:0px;margin-right:0px;margin-bottom:10px;' }
+      .col-sm-8 &nbsp;
+      .col-sm-4{ :style => 'padding-right:0px' }
+        = form.button 'Create Item', '#', :class => 'btn-success create-item-button', :style => 'width:100%'

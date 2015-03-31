@@ -1,0 +1,25 @@
+---
+records:
+- key: site.heading
+  class_name: StringSetting
+  value: Appleseed
+  options: { validate_presence: true }
+- key: site.subheading
+  class_name: StringSetting
+  value: Greatness Sprouts From Little Seeds
+- key: site.title
+  class_name: StringSetting
+  value: Appleseed CMS
+  options: { validate_presence: true }
+- key: site.navigation
+  class_name: NavigationListSetting
+  list:
+    items:
+      - label: Home
+        url: '/'
+      - label: Weapons
+        url: '/weapons'
+      - label: Potent Potables
+        url: '/potent-potables'
+      - label: Settings
+        url: '/admin/settings'

@@ -15,14 +15,9 @@ Appleseed.Layouts.Concerns.ContentSelection = {
     @get('content.area').html(htmlContent)
 
   _deserializeContentData: (data) ->
-    # console.log 'Pages.FormLayout#deserializeData()'
-    # console.log data
-
     $(input = $("##{id}"))?.val(value) for id, value of data
 
   _serializeContentData: ->
-    # console.log 'Pages.FormLayout#serializeData()'
-
     data = {}
     for input in @get('content.inputs')
       $input = $(input)
@@ -47,10 +42,7 @@ Appleseed.Layouts.Concerns.ContentSelection = {
   ### Network Requests ###
 
   _requestContentFields: (contentType) ->
-    # console.log 'Pages.FormLayout#requestContentFields()'
-
     fieldsUrl = "/admin/contents/#{contentType}/fields?resource_type=#{@_resourceType}"
-    # console.log fieldsUrl
 
     request = $.get(fieldsUrl)
     request.done @_requestContentFieldsSuccessHandler()
@@ -61,10 +53,7 @@ Appleseed.Layouts.Concerns.ContentSelection = {
   _contentSelectorChangedHandler: ->
     layout = @
     (event) =>
-      # console.log 'Pages.FormLayout#contentSelectorChanged()'
-
       contentType = layout.get('content.selector').val()
-      # console.log contentType
 
       layout._serializeContentData()
       layout._clearContent()
@@ -75,9 +64,6 @@ Appleseed.Layouts.Concerns.ContentSelection = {
   _requestContentFieldsSuccessHandler: ->
     layout = @
     (htmlContent, status, request) =>
-      # console.log 'Pages.FormLayout#requestContentFieldsSuccess()'
-      # console.log arguments
-
       layout._hideLoadingNotice()
       layout._setContent(htmlContent)
       layout._deserializeContentData(@_serializedContentData) if @_serializedContentData?

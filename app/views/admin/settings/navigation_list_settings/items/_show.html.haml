@@ -1,0 +1,9 @@
+- # app/views/admin/settings/navigation_list_settings/items/_show.html.haml
+
+.row{ :style => 'margin-left:0px;margin-right:0px;margin-bottom:10px;' }
+  .col-sm-1.text-left{ :style => 'padding-left:0px;' }
+    %strong= 'Label'
+  .col-sm-3{ :style => 'padding:0px;' }= item.label
+  .col-sm-1.text-left
+    %strong= 'URL'
+  .col-sm-7{ :style => 'padding:0px;' }= item.url

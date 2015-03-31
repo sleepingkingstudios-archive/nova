@@ -5,6 +5,10 @@ module FeaturesEnumerator
 
   extend self
 
+  def directory_features
+    features.select { |_, options| options.fetch(:parent) == :directory }
+  end # method directory_features
+
   def each *args, &block
     features.each *args, &block
   end # each
@@ -13,7 +17,7 @@ module FeaturesEnumerator
     model_name = name.to_s.singularize
     scope_name = model_name.pluralize
 
-    options[:class]  = options.key?(:class)  ? options[:class].to_s : model_name.camelize
+    options[:class]  = options.key?(:class) ? options[:class].to_s : model_name.camelize
     options[:parent] ||= :directory
 
     # Append to the feature_names collection.

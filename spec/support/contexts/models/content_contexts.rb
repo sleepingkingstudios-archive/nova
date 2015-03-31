@@ -4,6 +4,8 @@ module Spec
   module Contexts
     module Models
       module ContentContexts
+        extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+
         shared_context 'with a container', :container => :one do
           let(:container)  { build :page }
           let(:attributes) { super().merge :container => container }

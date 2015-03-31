@@ -4,6 +4,8 @@ module Spec
   module Contexts
     module Delegates
       module DelegateContexts
+        extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+
         shared_context 'with a controller', :controller => true do
           let(:flash_messages) { ActionDispatch::Flash::FlashHash.new }
           let(:controller)     { double('controller', :flash => flash_messages, :render => nil, :redirect_to => nil) }
