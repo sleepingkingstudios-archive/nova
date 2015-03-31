@@ -5,7 +5,12 @@ class Appleseed.Layouts.Settings.NavigationListSettings.FormLayout extends Apple
     createItemButton: '.create-item-button'
     list: {
       sel: '.list-items'
-      items: '> div.row'
+      item: {
+        sel: '> div.row'
+        deleteItemButton:   '.delete-item-button'
+        moveItemDownButton: '.move-item-down-button'
+        moveItemUpButton:   '.move-item-up-button'
+      }
       template: '.item-template div.row'
     }
   }
@@ -13,20 +18,60 @@ class Appleseed.Layouts.Settings.NavigationListSettings.FormLayout extends Apple
   initialize: (root, options) ->
     super(root, options)
 
-    console.log 'NavigationListSettings.FormLayout#initialize()'
+    @get('createItemButton').on 'click', @createItem
 
-    @get('createItemButton').bind 'click', @createItem
+    @get('list.item.deleteItemButton').on   'click', @deleteItem
+    @get('list.item.moveItemDownButton').on 'click', @moveItemDown
+    @get('list.item.moveItemUpButton').on   'click', @moveItemUp
 
     @get('list.template').find('input').attr('disabled', 'disabled')
+
+    @_updateItemOrderingKeys()
 
   createItem: (event) =>
     event.preventDefault()
 
-    console.log 'NavigationListSettings.FormLayout#createItem()'
-
     $item = @get('list.template').clone()
     $item.find('input').removeAttr('disabled')
-    @get('list.items').last().after($item)
+    @get('list.item').last().after($item)
+
+    $item.find('.delete-item-button').on 'click',  @deleteItem
+    $item.find('.move-item-up-button').on 'click', @moveItemUp
+
+    @_updateItemOrderingKeys()
+
+  deleteItem: (event) =>
+    event.preventDefault()
+
+    $item = $(event.target).closest('.navigation-list-item')
+    $item.remove()
+
+    @_updateItemOrderingKeys()
+
+  moveItemUp: (event) =>
+    event.preventDefault()
+
+    $item = $(event.target).closest('.navigation-list-item')
+    index = @get('list.item').index($item)
+
+    return if 0 == index
+
+    $prev = @get('list.item').eq(index - 1)
+    $prev.before($item)
+
+    @_updateItemOrderingKeys()
+
+  moveItemDown: (event) =>
+    event.preventDefault()
+
+    $item = $(event.target).closest('.navigation-list-item')
+    index = @get('list.item').index($item)
+    count = @get('list.item').length
+
+    return if count == index + 1
+
+    $next = @get('list.item').eq(index + 1)
+    $next.after($item)
 
     @_updateItemOrderingKeys()
 
@@ -41,9 +86,7 @@ class Appleseed.Layouts.Settings.NavigationListSettings.FormLayout extends Apple
     data
 
   _updateItemOrderingKeys: () =>
-    console.log 'NavigationListSettings.FormLayout#_updateItemOrderingKeys()'
-
-    for item, index in @get('list.items')
+    for item, index in @get('list.item')
       $item = $(item)
 
       for label in $item.find('label')
@@ -63,3 +106,9 @@ class Appleseed.Layouts.Settings.NavigationListSettings.FormLayout extends Apple
         id = $control.attr('id')
         id = id.replace /value_-?\d+_/, "value_#{index}_"
         $control.attr('id', id)
+
+    @get('list.item.moveItemDownButton').removeClass('disabled')
+    @get('list.item.moveItemDownButton').last().addClass('disabled')
+
+    @get('list.item.moveItemUpButton').removeClass('disabled')
+    @get('list.item.moveItemUpButton').first().addClass('disabled')

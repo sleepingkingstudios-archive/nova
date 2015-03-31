@@ -11,8 +11,6 @@ class Appleseed.Layouts.Settings.FormLayout extends Appleseed.Layouts.BaseLayout
   initialize: (root, options) ->
     super(root, options)
 
-    console.log 'Settings.FormLayout#initialize()'
-
     @$form = root.el
     @$form.on 'submit', @submitForm
 
