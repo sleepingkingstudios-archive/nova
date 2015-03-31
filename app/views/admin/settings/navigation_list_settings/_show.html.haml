@@ -1,6 +1,6 @@
 - # app/views/admin/settings/navigation_list_settings/_show.html.haml
 
-.setting{ :data => { :label => presenter.label, :modal => { :class => 'modal-lg' } } }
+.setting{ :data => { :label => presenter.label, :layout_name => 'Settings.NavigationListSettings.FormLayout', :modal => { :class => 'modal-lg' } } }
   .row
     .col-sm-2.text-right
       %strong= presenter.label

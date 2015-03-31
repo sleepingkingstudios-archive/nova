@@ -16,6 +16,31 @@ RSpec.describe Form, :type => :decorator do
 
   ### Instance Methods ###
 
+  describe '#assign_attributes' do
+    let(:resource) { double('resource', :assign_attributes => nil) }
+    let(:params)   { { 'resource' => { 'evil' => 'malicious' } } }
+
+    before(:each) { allow(instance).to receive(:resource_key).and_return('resource') }
+
+    it { expect(instance).to respond_to(:assign_attributes).with(1).argument }
+
+    it 'calls update_attributes on the resource with the permitted params' do
+      expect(resource).to receive(:assign_attributes).with({})
+
+      instance.assign_attributes ActionController::Parameters.new(params)
+    end # it
+
+    context 'with permitted params' do
+      before(:each) { allow(instance).to receive(:permitted_params).and_return([:evil]) }
+
+      it 'calls assign_attributes on the resource with the permitted params' do
+        expect(resource).to receive(:assign_attributes).with(params.fetch('resource'))
+
+        instance.assign_attributes ActionController::Parameters.new(params)
+      end # it
+    end # context
+  end # describe
+
   describe '#resource_params' do
     let(:params) { ActionController::Parameters.new(instance.resource_key => { :evil => 'malicious' }) }
 
@@ -30,27 +55,31 @@ RSpec.describe Form, :type => :decorator do
     end # context
   end # describe
 
-  describe '#update' do
-    let(:resource) { double('resource', :update => nil) }
+  describe '#update_attributes' do
+    let(:resource) { double('resource', :assign_attributes => nil, :save => nil) }
     let(:params)   { { 'resource' => { 'evil' => 'malicious' } } }
 
     before(:each) { allow(instance).to receive(:resource_key).and_return('resource') }
 
     it { expect(instance).to respond_to(:update).with(1).argument }
 
-    it 'calls update on the resource with the permitted params' do
-      expect(resource).to receive(:update_attributes).with({})
+    it { expect(instance).to respond_to(:update_attributes).with(1).argument }
 
-      instance.update ActionController::Parameters.new(params)
+    it 'assigns attributes with the permitted params and saves the resource' do
+      expect(resource).to receive(:assign_attributes).with({})
+      expect(resource).to receive(:save).and_return(false)
+
+      expect(instance.update_attributes ActionController::Parameters.new(params)).to be false
     end # it
 
     context 'with permitted params' do
       before(:each) { allow(instance).to receive(:permitted_params).and_return([:evil]) }
 
-      it 'calls update on the resource with the permitted params' do
-        expect(resource).to receive(:update_attributes).with(params.fetch('resource'))
+      it 'assigns attributes with the permitted params and saves the resource' do
+        expect(resource).to receive(:assign_attributes).with(params.fetch('resource'))
+        expect(resource).to receive(:save).and_return(true)
 
-        instance.update ActionController::Parameters.new(params)
+        expect(instance.update_attributes ActionController::Parameters.new(params)).to be true
       end # it
     end # context
   end # describe

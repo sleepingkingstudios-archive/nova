@@ -17,12 +17,15 @@ class Appleseed.Layouts.Settings.NavigationListSettings.FormLayout extends Apple
 
     @get('createItemButton').bind 'click', @createItem
 
+    @get('list.template').find('input').attr('disabled', 'disabled')
+
   createItem: (event) =>
     event.preventDefault()
 
     console.log 'NavigationListSettings.FormLayout#createItem()'
 
     $item = @get('list.template').clone()
+    $item.find('input').removeAttr('disabled')
     @get('list.items').last().after($item)
 
     @_updateItemOrderingKeys()

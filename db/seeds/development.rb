@@ -17,7 +17,12 @@ begin
     raise Mongoid::Errors::Validations.new(user.tap &:destroy) unless user.valid?
   end # if
 
-  sprig [Setting, Directory, Page, Blog, BlogPost]
+  sprig_models = [Setting, Directory, Page, Blog, BlogPost]
+  sprig_models.each do |model_class|
+    model_class.destroy_all
+  end # each
+
+  sprig sprig_models
 rescue StandardError
   puts "error!\n"
 

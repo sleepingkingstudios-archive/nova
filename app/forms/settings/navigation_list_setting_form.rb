@@ -5,21 +5,23 @@ class NavigationListSettingForm < SettingForm
     # Store the list.
     list_was = resource.list
 
-    if (value = params.fetch(resource_key, {}).fetch('value', nil)).blank?
-      resource.list = nil
-    else
-      resource.list ||= resource.build_list
-      resource.list.value = value
-    end # if
+    update_list(params)
 
     return true if super
 
     # Revert the list if validation failed.
     resource.list = list_was
-    resource.list.save
-
-    byebug
+    resource.list.save if resource.list
 
     false
   end # method update
+
+  private
+
+  def update_list params
+    value = params.fetch(resource_key, {}).fetch('value', nil)
+
+    resource.list       = resource.build_list
+    resource.list.value = value unless value.blank?
+  end # method update_list
 end # class
