@@ -24,11 +24,24 @@
     = yield :javascripts
 
   %body
-    .container
-      = render 'common/header'
+    #content-wrapper
+      .row
+        = render 'common/header'
 
-      = render 'common/session'
+        = render 'common/session'
 
-      = render 'common/messages'
+        #sidebar
+          %hr
 
-      = yield
+          = render 'common/navigation'
+
+          %hr
+
+        #content
+          %hr
+
+          = render 'common/messages'
+
+          = yield
+
+    = render 'common/footer'

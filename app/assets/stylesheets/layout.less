@@ -1,0 +1,87 @@
+// app/assets/stylesheets/layout.less
+
+@import 'layout/divisible_columns.less';
+
+@footer-height: 6em;
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  padding-bottom: @footer-height;
+}
+
+#content-wrapper {
+  .container;
+
+  min-height: 100%;
+}
+
+/* Header */
+
+header {
+  padding-left: 15px;
+  padding-right: 15px;
+
+  &> h1.title {
+    margin-top: 10px;
+
+    text-align: center;
+  }
+}
+
+/* Navigation */
+
+nav#primary-nav ul {
+  padding-left: 0px;
+
+  text-align: center;
+
+  li {
+    list-style: none;
+    padding-top: 0.25em;
+
+    &:first-child { padding-top: 0px; }
+
+    @media (min-width: @screen-sm-min) {
+      text-align: left;
+    }
+  }
+}
+
+/* Sidebar */
+
+#sidebar {
+  .make-sm-column(3);
+
+  &> hr {
+    .hidden-xs;
+
+    &:first-child {
+      margin-top: 0px;
+    }
+  }
+}
+
+/* Content */
+
+#content {
+  .make-sm-column(9);
+
+  &> hr:first-child {
+    margin-top: 0px;
+    margin-right: 0px;
+  }
+}
+
+/* Footer */
+
+#footer {
+  position: absolute;
+  bottom: 0px;
+
+  width: 100%;
+  height: @footer-height;
+}

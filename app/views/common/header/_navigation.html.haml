@@ -1,8 +1,0 @@
-- # app/views/common/header/_navigation.html.haml
-
-- navigation = Setting.fetch('site.navigation', {})
-- unless navigation.blank?
-  %nav.row
-    - navigation.each do |item|
-      .col-sm-divisible{ :class => "col-sm-divisible-by-#{navigation.count}" }
-        = render :partial => 'common/header/navigation_item', :locals => { :label => item['label'], :url => item['url'] }
