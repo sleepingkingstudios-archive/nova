@@ -2,8 +2,9 @@
 
 - presenter = DirectoryPresenter.new @current_directory
 
-%h2
-  = presenter.label
-  %small Create Blog
+- content_for :content_header do
+  = render_component 'common/content_header', :title => presenter.label
+
+%h3 Create Blog
 
 = render :partial => 'admin/features/blogs/form', :locals => { :directories => @directories, :blog => @resource }

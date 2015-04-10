@@ -1,6 +1,9 @@
 - # app/views/admin/settings/index.html.haml
 
-%h2 Site Settings
+- content_for :content_header do
+  = render_component 'common/content_header', :title => 'Site Settings'
+
+%h3.clearfix Edit Settings
 
 %div{ :data => { :'backbone-layout' => 'Settings.ListLayout' } }
   = render :partial => 'admin/settings/modals/edit_setting'

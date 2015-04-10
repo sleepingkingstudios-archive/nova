@@ -2,14 +2,18 @@
 
 .setting{ :data => { :label => presenter.label } }
   .row
-    %p.col-sm-2.text-right
+    %p.col-sm-4.text-right
       %strong= presenter.label
-    .col-sm-10
+    .col-sm-20
       .row
-        %p.col-sm-10= setting.value
-        %p.col-sm-2{ :style => 'padding-left:5px' }
+        %p.col-sm-18
+          - if setting.value.blank?
+            %span.text-muted (none)
+          - else
+            = setting.value
+        %p.col-sm-6{ :style => 'padding-left:5px' }
           = link_to '#', :class => 'btn btn-primary edit-setting-link', :style => 'width:100%' do
-            = edit_icon
+            = icon(icon_name :edit, :setting)
             Edit Setting
 
   .form-container.hidden

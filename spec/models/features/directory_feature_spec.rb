@@ -24,11 +24,13 @@ RSpec.describe DirectoryFeature, :type => :model do
   ### Class Methods ###
 
   describe '::roots' do
+    let(:classes) { FeaturesEnumerator.directory_features.map { |_, hsh| hsh[:class] } << 'DirectoryFeature' }
+
     it { expect(described_class).to have_reader(:roots) }
 
     it { expect(described_class.roots).to be_a Mongoid::Criteria }
 
-    it { expect(described_class.roots.selector).to be == { 'directory_id' => nil } }
+    it { expect(described_class.roots.selector).to be == { 'directory_id' => nil, '_type' => { '$in' => classes } } }
   end # describe
 
   ### Relations ###

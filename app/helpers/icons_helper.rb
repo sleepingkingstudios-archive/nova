@@ -1,15 +1,13 @@
 # app/helpers/icons_helper.rb
 
 module IconsHelper
-  def edit_icon options = {}
-    icon :edit, options
-  end # method edit_icon
-
   def icon name, options = {}
     icon_name = name.to_s.split(/[-_\s]+/).join('-')
 
+    attributes = %w()
+
     classes = %w(fa)
-    classes << "fa-#{icon_name}"
+    classes << (icon_name.blank? ? 'fa-bug' : "fa-#{icon_name}")
 
     if klass = options.fetch(:class, false)
       classes.concat klass.strip.split(/\s+/)
@@ -45,6 +43,45 @@ module IconsHelper
 
     classes << 'fa-spin' if options.fetch(:spin, false)
 
-    %{<span class="#{classes.join(' ')}"></span>}.html_safe
+    attributes << %{class="#{classes.join(' ')}"}
+
+    attributes << 'style="color:#F00;"' if icon_name.blank?
+
+    %{<span #{attributes.join(' ')}></span>}.html_safe
   end # method icon
+
+  def icon_name action, resource = nil, default: nil
+    scopes = []
+    scopes << "features.#{resource.to_s.underscore.pluralize}.icons" unless resource.blank?
+    scopes << 'icons'
+
+    scopes.each do |scope|
+      begin
+        name = I18n.t(action, :scope => scope)
+
+        return name unless name.blank? || name =~ /^translation missing/
+      rescue I18n::MissingTranslationData
+      end # begin-rescue
+    end # each
+
+    default
+  end # method icon_name
+
+  private
+
+  def method_missing method, *args, &block
+    if method.to_s =~ /_icon$/
+      action, *resource = method[0...-5].split '_'
+
+      resource = resource.blank? ? nil : resource.join('_')
+
+      IconsHelper.send :define_method, method do |options = {}|
+        icon(icon_name(action.try(:intern), resource.try(:intern)), options)
+      end # method
+
+      send method, *args
+    else
+      super
+    end # if-else
+  end # method method_missing
 end # module

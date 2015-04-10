@@ -1,0 +1,10 @@
+- # app/views/common/components/_message.html.haml
+
+- type ||= 'info'
+
+.alert.alert-dismissable{ :class => "alert-#{type}" }
+  %button.close{ :type => 'button', :'data-dismiss' => 'alert' }
+    %span{ :'aria-hidden' => true } &times;
+    %span.sr-only Close
+  %strong= type.capitalize
+  = message

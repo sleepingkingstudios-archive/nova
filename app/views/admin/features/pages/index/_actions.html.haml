@@ -1,0 +1,4 @@
+- # app/views/admin/features/pages/_actions.html.haml
+
+= render_component 'admin/common/components/button_bar' do
+  = render_component 'admin/common/components/button', :text => 'Create Page', :url => new_page_path(@directory), :options => { :icon => icon_name(:create, :page) }

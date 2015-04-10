@@ -1,0 +1,11 @@
+- # app/views/admin/features/pages/show/_actions.html.haml
+
+= render_component 'admin/common/components/button_bar', :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this page?' } } do
+  - if presenter.index?
+    = render_component 'admin/common/components/button', :text => 'Dashboard', :url => dashboard_directory_path(@directories.last), :options => { :icon => icon_name(:dashboard, :directory) }
+  - if presenter.published?
+    = render_component 'admin/common/components/button', :text => 'Unpublish Page', :url => unpublish_resource_path(@resource), :options => { :icon => icon_name(:unpublish, :page), :text_color => :warning, :method => :put }
+  - else
+    = render_component 'admin/common/components/button', :text => 'Publish Page', :url => publish_resource_path(@resource), :options => { :icon => icon_name(:publish, :page), :text_color => :success, :method => :put }
+  = render_component 'admin/common/components/button', :text => 'Edit Page', :url => edit_resource_path(@resource), :options => { :icon => icon_name(:edit, :page), :text_color => :warning }
+  = render_component 'admin/common/components/button', :text => 'Delete Page', :url => resource_path(@resource), :options => { :icon => icon_name(:delete, :page), :text_color => :danger, :method => :delete, :class => 'delete-link' }

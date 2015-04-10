@@ -1,0 +1,10 @@
+- # app/views/common/_content_header.html.haml
+
+- subtitle ||= nil
+
+.page-content-header.clearfix
+  = title
+  - unless subtitle.blank?
+    %small= subtitle
+
+  = yield

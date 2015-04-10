@@ -3,8 +3,22 @@
 require 'validators/unique_within_siblings_validator'
 
 class DirectoryFeature < Feature
+  def self.inherited subclass
+    super
+
+    subclass.scope :roots, ->() {
+      where(:directory_id => nil, :_type => subclass.name)
+    } # end lambda
+  end # class method inherited
+
   ### Class Methods ###
-  scope :roots, ->() { where(:directory_id => nil) }
+  scope :roots, ->() {
+    classes = FeaturesEnumerator.directory_features.map { |_, hsh| hsh[:class] }
+
+    classes << 'DirectoryFeature'
+
+    where(:directory_id => nil, :_type.in => classes)
+  } # end lambda
 
   ### Relations ###
   belongs_to :directory, :inverse_of => :features

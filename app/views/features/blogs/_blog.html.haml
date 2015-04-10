@@ -2,17 +2,14 @@
 
 - presenter = present blog
 
-= render :partial => 'admin/common/modals/confirm_delete'
-
-%h2
-  = presenter.label
-
+- content_for :content_header do
   - if user_signed_in?
-    = render :layout => 'admin/common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this blog?<br><br><strong>This will destroy all posts in this blog.</strong>'.html_safe } } } do
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Create Post', :url => new_blog_post_path(blog), :options => { :icon => :file_o, :text_color => :primary } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'View Posts', :url => index_blog_posts_path(blog), :options => { :icon => :files_o, :text_color => :info } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Edit Blog', :url => edit_resource_path(blog), :options => { :icon => :edit, :text_color => :warning } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Delete Blog', :url => resource_path(blog), :options => { :icon => :trash, :text_color => :danger, :method => :delete, :class => 'delete-link' } }
+    = render_component 'common/content_header', :title => presenter.label do
+      = render_component 'admin/features/blogs/show/actions', :blog => blog, :presenter => presenter
+  - else
+    = render_component 'common/content_header', :title => presenter.label
+
+= render :partial => 'admin/common/modals/confirm_delete'
 
 - if post.nil?
   %p This blog does not currently have any posts to display.
@@ -22,9 +19,3 @@
   = render :partial => 'features/blog_posts/post', :locals => { :post => post }
 
   = render :partial => 'features/blogs/navigation', :locals => { :blog => blog, :post => post }
-
-%p{ :style => 'margin-top:1em;' }
-  = link_to directory_path(blog.directory) do
-    = icon(:arrow_circle_left)
-    Back to
-    = DirectoryPresenter.new(blog.directory).label

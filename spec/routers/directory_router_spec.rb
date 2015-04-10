@@ -8,6 +8,19 @@ RSpec.describe DirectoryRouter, :type => :decorator do
   let(:directory) { build(:directory) }
   let(:instance)  { described_class.new directory }
 
+  shared_context 'with the root directory' do
+    let(:directories) { [] }
+    let(:directory)   { nil }
+  end # shared_context
+
+  shared_context 'with nested directories' do
+    let(:directory_names) { %w(weapons swords japanese) }
+    let(:directories)     { directory_names.each.with_index.with_object([]) { |(name, index), ary| ary << create(:directory, :parent => ary[index - 1]) } }
+    let(:directory)       { directories.last }
+
+    before(:each) { search.concat(directory_names) }
+  end # shared_context
+
   shared_context 'with many features' do
     let(:directory) { super().tap { |dir| dir.try(:save!) } }
     let(:feature_slugs) { %w(katana wakizashi tachi) }
@@ -17,19 +30,19 @@ RSpec.describe DirectoryRouter, :type => :decorator do
   end # shared_context
 
   shared_context 'with one missing routing parameter' do
-    let(:search)  { 'weapons/swords/japanese/tachi'.split('/') }
-    let(:found) do
-      search[0..2].map { |slug| double('directory', :slug => slug) }
-    end # let
-    let(:missing) { search[3..3] }
+    before(:each) do
+      search << 'tachi'
+      found.concat directories
+      missing << 'tachi'
+    end # before each
   end # shared_context
 
   shared_context 'with many missing routing parameters' do
-    let(:search)  { 'weapons/swords/japanese/tachi'.split('/') }
-    let(:found) do
-      search[0..0].map { |slug| double('directory', :slug => slug) }
-    end # let
-    let(:missing) { search[1..3] }
+    before(:each) do
+      search << 'tachi' << 'nakago' << 'mei'
+      found.concat(directories)
+      missing << 'tachi' << 'nakago' << 'mei'
+    end # before each
   end # shared_context
 
   shared_examples 'delegates to a subfeature router' do
@@ -45,6 +58,11 @@ RSpec.describe DirectoryRouter, :type => :decorator do
     end # it
   end # shared_examples
 
+  let(:features) { [] }
+  let(:search)   { [] }
+  let(:found)    { [] }
+  let(:missing)  { [] }
+
   describe '#directory' do
     it { expect(instance).to have_reader(:directory).with(directory) }
   end # describe
@@ -54,51 +72,8 @@ RSpec.describe DirectoryRouter, :type => :decorator do
       instance.route_to search, found, missing
     end # method perform_action
 
-    context 'with no features' do
-      context 'with one missing routing parameter' do
-        include_context 'with one missing routing parameter'
-
-        it { expect(perform_action).to be nil }
-      end # context
-
-      context 'with many missing routing parameters' do
-        include_context 'with many missing routing parameters'
-
-        it { expect(perform_action).to be nil }
-      end # context
-    end # context
-
-    context 'with many features' do
-      include_context 'with many features'
-
-      context 'with one missing routing parameter' do
-        include_context 'with one missing routing parameter'
-
-        it { expect(perform_action).to be == features.last }
-      end # context
-
-      context 'with many missing routing parameters' do
-        let(:feature_slugs) { %w(bows polearms swords) }
-        let(:feature)       { features.select { |feature| feature.slug == search[1] }.first }
-
-        include_context 'with many missing routing parameters'
-
-        it { expect(perform_action).to be nil }
-
-        it 'updates the routing parameters' do
-          perform_action
-
-          expect(instance.search).to be  == search
-          expect(instance.found).to be   == found + [feature]
-          expect(instance.missing).to be == missing[1..-1]
-        end # it
-
-        expect_behavior 'delegates to a subfeature router'
-      end # context
-    end # context
-
-    context 'with the root directory' do
-      let(:directory) { nil }
+    context 'with nested directories' do
+      include_context 'with nested directories'
 
       context 'with no features' do
         context 'with one missing routing parameter' do
@@ -124,9 +99,6 @@ RSpec.describe DirectoryRouter, :type => :decorator do
         end # context
 
         context 'with many missing routing parameters' do
-          let(:feature_slugs) { %w(bows polearms swords) }
-          let(:feature)       { features.select { |feature| feature.slug == search[1] }.first }
-
           include_context 'with many missing routing parameters'
 
           it { expect(perform_action).to be nil }
@@ -135,7 +107,51 @@ RSpec.describe DirectoryRouter, :type => :decorator do
             perform_action
 
             expect(instance.search).to be  == search
-            expect(instance.found).to be   == found + [feature]
+            expect(instance.found).to be   == found + [features.last]
+            expect(instance.missing).to be == missing[1..-1]
+          end # it
+
+          expect_behavior 'delegates to a subfeature router'
+        end # context
+      end # context
+    end # context
+
+    context 'with the root directory' do
+      include_context 'with the root directory'
+
+      context 'with no features' do
+        context 'with one missing routing parameter' do
+          include_context 'with one missing routing parameter'
+
+          it { expect(perform_action).to be nil }
+        end # context
+
+        context 'with many missing routing parameters' do
+          include_context 'with many missing routing parameters'
+
+          it { expect(perform_action).to be nil }
+        end # context
+      end # context
+
+      context 'with many features' do
+        include_context 'with many features'
+
+        context 'with one missing routing parameter' do
+          include_context 'with one missing routing parameter'
+
+          it { expect(perform_action).to be == features.last }
+        end # context
+
+        context 'with many missing routing parameters' do
+          include_context 'with many missing routing parameters'
+
+          it { expect(perform_action).to be nil }
+
+          it 'updates the routing parameters' do
+            perform_action
+
+            expect(instance.search).to be  == search
+            expect(instance.found).to be   == found + [features.last]
             expect(instance.missing).to be == missing[1..-1]
           end # it
 
@@ -150,59 +166,60 @@ RSpec.describe DirectoryRouter, :type => :decorator do
       instance.route_to! search, found, missing
     end # method perform_action
 
-    context 'with no features' do
-      shared_examples 'raises an error' do
-        it 'raises an error' do
-          expect { perform_action }.to raise_error Appleseed::ResourcesNotFoundError do |exception|
-            expect(exception.search).to be  == search
-            expect(exception.found).to be   == found
-            expect(exception.missing).to be == missing
-          end # raise_error
-        end # it
-      end # shared examples
+    context 'with nested directories' do
+      context 'with no features' do
+        shared_examples 'raises an error' do
+          it 'raises an error' do
+            expect { perform_action }.to raise_error Appleseed::ResourcesNotFoundError do |exception|
+              expect(exception.search).to be  == search
+              expect(exception.found).to be   == found
+              expect(exception.missing).to be == missing
+            end # raise_error
+          end # it
+        end # shared examples
 
-      context 'with one missing routing parameter' do
-        include_context 'with one missing routing parameter'
+        context 'with one missing routing parameter' do
+          include_context 'with one missing routing parameter'
 
-        expect_behavior 'raises an error'
+          expect_behavior 'raises an error'
+        end # context
+
+        context 'with many missing routing parameters' do
+          include_context 'with many missing routing parameters'
+
+          expect_behavior 'raises an error'
+        end # context
       end # context
 
-      context 'with many missing routing parameters' do
-        include_context 'with many missing routing parameters'
+      include_context 'with nested directories'
 
-        expect_behavior 'raises an error'
-      end # context
-    end # context
+      context 'with many features' do
+        include_context 'with many features'
 
-    context 'with many features' do
-      include_context 'with many features'
+        context 'with one missing routing parameter' do
+          include_context 'with one missing routing parameter'
 
-      context 'with one missing routing parameter' do
-        include_context 'with one missing routing parameter'
+          it { expect(perform_action).to be == features.last }
+        end # context
 
-        it { expect(perform_action).to be == features.last }
-      end # context
+        context 'with many missing routing parameters' do
+          include_context 'with many missing routing parameters'
 
-      context 'with many missing routing parameters' do
-        let(:feature_slugs) { %w(bows polearms swords) }
-        let(:feature)       { features.select { |feature| feature.slug == search[1] }.first }
+          it 'raises an error' do
+            expect { perform_action }.to raise_error Appleseed::ResourcesNotFoundError do |exception|
+              expect(exception.search).to be  == search
+              expect(exception.found).to be   == found + [features.last]
+              expect(exception.missing).to be == missing[1..-1]
+            end # raise_error
+          end # it
 
-        include_context 'with many missing routing parameters'
-
-        it 'raises an error' do
-          expect { perform_action }.to raise_error Appleseed::ResourcesNotFoundError do |exception|
-            expect(exception.search).to be  == search
-            expect(exception.found).to be   == found + [feature]
-            expect(exception.missing).to be == missing[1..-1]
-          end # raise_error
-        end # it
-
-        expect_behavior 'delegates to a subfeature router'
+          expect_behavior 'delegates to a subfeature router'
+        end # context
       end # context
     end # context
 
     context 'with the root directory' do
-      let(:directory) { nil }
+      include_context 'with the root directory'
 
       context 'with no features' do
         shared_examples 'raises an error' do
@@ -238,15 +255,12 @@ RSpec.describe DirectoryRouter, :type => :decorator do
         end # context
 
         context 'with many missing routing parameters' do
-          let(:feature_slugs) { %w(bows polearms swords) }
-          let(:feature)       { features.select { |feature| feature.slug == search[1] }.first }
-
           include_context 'with many missing routing parameters'
 
           it 'raises an error' do
             expect { perform_action }.to raise_error Appleseed::ResourcesNotFoundError do |exception|
               expect(exception.search).to be  == search
-              expect(exception.found).to be   == found + [feature]
+              expect(exception.found).to be   == found + [features.last]
               expect(exception.missing).to be == missing[1..-1]
             end # raise_error
           end # it

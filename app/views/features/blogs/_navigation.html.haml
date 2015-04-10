@@ -1,41 +1,49 @@
 - # app/views/features/blogs/_navigation.html.haml
 
 %div.row
-  .col-xs-2.text-center
+  .col-xs-6.col-lg-4.text-left
     - if post.first_published.blank? || post == post.first_published
       %span.text-muted
-        = icon :mail_reply
-        First Post
+        = icon :mail_reply, :class => 'hidden-xs'
+        First
+        %span.hidden-xs.hidden-sm Post
     - else
       = link_to blog_post_path(post.first_published) do
-        = icon :mail_reply
-        First Post
-  .col-xs-2.text-center
+        = icon :mail_reply, :class => 'hidden-xs'
+        First
+        %span.hidden-xs.hidden-sm Post
+  .col-xs-6.col-lg-4.text-left
     - if post.prev_published.blank?
       %span.text-muted
-        = icon :arrow_left
-        Previous Post
+        = icon :arrow_left, :class => 'hidden-xs'
+        Previous
+        %span.hidden-xs.hidden-sm Post
     - else
       = link_to blog_post_path(post.prev_published) do
-        = icon :arrow_left
-        Previous Post
-  .col-xs-4.text-center
+        = icon :arrow_left, :class => 'hidden-xs'
+        Previous
+        %span.hidden-xs.hidden-sm Post
+  .col-lg-8.visible-lg.text-center
     &nbsp;
-  .col-xs-2.text-center
+  .col-xs-6.col-lg-4.text-right
     - if post.next_published.blank?
       %span.text-muted
-        Next Post
-        = icon :arrow_right
+        Next
+        %span.hidden-xs.hidden-sm Post
+        = icon :arrow_right, :class => 'hidden-xs'
     - else
       = link_to blog_post_path(post.next_published) do
-        Next Post
-        = icon :arrow_right
-  .col-xs-2.text-center
+        Next
+        %span.hidden-xs.hidden-sm Post
+        = icon :arrow_right, :class => 'hidden-xs'
+  .col-xs-6.col-lg-4.text-right
     - if post.last_published.blank? || post == post.last_published
       %span.text-muted
-        Last Post
-        = icon :mail_forward
+        Last
+        %span.hidden-xs.hidden-sm Post
+        = icon :mail_forward, :class => 'hidden-xs'
     - else
       = link_to blog_post_path(post.last_published) do
-        Last Post
-        = icon :mail_forward
+        Last
+        %span.hidden-xs.hidden-sm Post
+        = icon :mail_forward, :class => 'hidden-xs'

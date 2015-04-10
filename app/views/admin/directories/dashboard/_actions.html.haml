@@ -1,0 +1,7 @@
+- # app/views/admin/directories/dashboard/_actions.html.haml
+
+= render_component 'admin/common/components/button_bar', :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => "Are you sure you want to delete this directory?<br><br><strong>This will destroy all child directories and features in this directory.</strong>".html_safe } } do
+  = render_component 'admin/common/components/button', :text => 'Show Directory', :url => directory_path(directory), :options => { :icon => icon_name(:show, :directory), :text_color => :info }
+  - if directory
+    = render_component 'admin/common/components/button', :text => 'Edit Directory', :url => edit_directory_path(directory), :options => { :icon => icon_name(:edit, :directory), :text_color => :warning }
+    = render_component 'admin/common/components/button', :text => 'Delete Directory', :url => directory_path(directory), :options => { :icon => icon_name(:delete, :directory), :text_color => :danger, :method => 'delete', :class => 'delete-link' }

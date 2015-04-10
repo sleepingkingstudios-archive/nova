@@ -1,45 +1,17 @@
 - # app/views/features/pages/show.html.haml
 
 - directory_presenter = DirectoryPresenter.new @directories.last
-
-- presenter = present(@resource)
-
-- content_presenter = present(@resource.content)
+- presenter           = present(@resource)
+- content_presenter   = present(@resource.content)
 
 = render :partial => 'admin/common/modals/confirm_delete'
 
-%h2
-  = presenter.label
-  - if presenter.index?
-    %small Index
-
-  - if user_signed_in?
-    = render :layout => 'admin/common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } } } do
-      - if presenter.index?
-        = render :partial => 'admin/common/components/button', :locals => { :text => 'Dashboard', :url => dashboard_directory_path(@directories.last), :options => { :icon => :cubes } }
-      - if presenter.published?
-        = render :partial => 'admin/common/components/button', :locals => { :text => 'Unpublish Page', :url => unpublish_resource_path(@resource), :options => { :icon => :reply, :text_color => :warning, :method => :put } }
-      - else
-        = render :partial => 'admin/common/components/button', :locals => { :text => 'Publish Page', :url => publish_resource_path(@resource), :options => { :icon => :share, :text_color => :success, :method => :put } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Edit Page', :url => edit_resource_path(@resource), :options => { :icon => :edit, :text_color => :warning } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Delete Page', :url => resource_path(@resource), :options => { :icon => :trash, :text_color => :danger, :method => :delete, :class => 'delete-link' } }
+- if user_signed_in?
+  - content_for :content_header do
+    = render_component 'common/content_header', :title => presenter.label, :subtitle => presenter.index? ? 'Index' : '' do
+      = render_component 'admin/features/pages/show/actions', :presenter => presenter, :resource => @resource
 
 - if !presenter.published? && !current_user.blank?
-  .alert.alert-warning.alert-dismissable
-    %button.close{ :type => 'button', :'data-dismiss' => 'alert' }
-      %span{ :'aria-hidden' => true } &times;
-      %span.sr-only Close
-    %strong Warning
-    This page is not yet published. It is not visible to other users.
+  = render_component 'common/components/message', :type => :info, :message => 'This page is not yet published. It is not visible to other users.'
 
 - content_presenter.render_content(self)
-
-- if presenter.index?
-  - unless directory_presenter.root?
-    %p= directory_presenter.parent_link :icon => :arrow_circle_left, :prefix => 'Back to'
-- else
-  %p
-    = link_to directory_path(@directories.last) do
-      = icon(:arrow_circle_left)
-      Back to
-      = directory_presenter.label

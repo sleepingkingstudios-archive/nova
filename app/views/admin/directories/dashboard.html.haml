@@ -4,46 +4,37 @@
 
 = render :partial => 'admin/common/modals/confirm_delete'
 
-%h2
-  = presenter.label
-  %small Dashboard
-
-  = render :layout => 'admin/common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => "Are you sure you want to delete this directory?<br><br><strong>This will destroy all child directories and features in this directory.</strong>".html_safe } } } do
-    = render :partial => 'admin/common/components/button', :locals => { :text => 'Show Directory', :url => directory_path(@current_directory), :options => { :icon => :eye, :text_color => :info } }
-    - if @current_directory
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Edit Directory', :url => edit_directory_path(@current_directory), :options => { :icon => :edit, :text_color => :warning } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Delete Directory', :url => directory_path(@current_directory), :options => { :icon => :trash, :text_color => :danger, :method => 'delete', :class => 'delete-link' } }
+- content_for :content_header do
+  = render_component 'common/content_header', :title => presenter.label, :subtitle => 'Dashboard' do
+    = render_component 'admin/directories/dashboard/actions', :directory => @current_directory, :presenter => presenter
 
 %h3 Properties
-%p
-  %strong Parent:
-  = presenter.parent_link :action => :dashboard
-%p
-  %strong Title:
-  = presenter.title
-%p
-  %strong Slug:
-  = presenter.slug
+.row
+  .col-sm-3
+    %strong Parent:
+  .col-sm-21= presenter.parent_link :action => :dashboard
+.row
+  .col-sm-3
+    %strong Title:
+  .col-sm-21= presenter.title
+.row
+  .col-sm-3
+    %strong Slug:
+  .col-sm-21= presenter.slug
 
-%h3
+%h3.no-margin-bottom.clearfix
   Directories
 
-  = render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
+  = render_component 'admin/directories/index/actions', :directory => @current_directory, :presenter => presenter
 
-= render :partial => 'admin/directories/table', :locals => { :directories => presenter.children }
+= render_component 'admin/directories/table', :directories => presenter.children
 
-%h3
+%h3.no-margin-bottom.clearfix
   Features
 
-  = render :layout => 'admin/common/components/button_bar' do
+  = render_component 'admin/common/components/button_bar' do
     - FeaturesEnumerator.directory_features.each do |name, options|
       - feature_presenter = present(options[:class])
-      = render :partial => 'admin/common/components/button', :locals => { :text => "Create #{feature_presenter.type}", :url => new_resource_path(@directories.last, name), :options => { :icon => feature_presenter.send(:icon_name), :text_color => :primary } }
+      = render_component 'admin/common/components/button', :text => "Create #{feature_presenter.type}", :url => new_resource_path(@directories.last, name), :options => { :icon => feature_presenter.send(:icon_name), :text_color => :primary }
 
 = render :partial => 'admin/features/table', :locals => { :features => presenter.features }
-
-%p
-  = link_to directory_path(@directories.last) do
-    = icon(:arrow_circle_left)
-    Back to
-    = presenter.label

@@ -24,11 +24,9 @@
     = yield :javascripts
 
   %body
-    #content-wrapper
+    #page-content-wrapper
       .row
         = render 'common/header'
-
-        = render 'common/session'
 
         #sidebar
           %hr
@@ -37,11 +35,17 @@
 
           %hr
 
-        #content
+        %main#page-content
           %hr
+
+          = yield :content_header
+
+          = render 'common/session'
 
           = render 'common/messages'
 
           = yield
+
+          = render 'common/breadcrumbs'
 
     = render 'common/footer'
