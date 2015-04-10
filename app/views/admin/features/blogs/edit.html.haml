@@ -1,7 +1,8 @@
 - # app/views/admin/features/blogs/edit.html.haml
 
-%h2
-  = @resource.title
-  %small Edit Page
+- content_for :content_header do
+  = render_component 'common/content_header', :title => @resource.title
+
+%h3 Edit Blog
 
 = render :partial => 'admin/features/blogs/form', :locals => { :directories => @directories, :blog => @resource }

@@ -2,8 +2,9 @@
 
 - presenter = DirectoryPresenter.new @current_directory
 
-%h2
-  = presenter.label
-  %small Edit Directory
+- content_for :content_header do
+  = render_component 'common/content_header', :title => presenter.label
 
-= render :partial => 'admin/directories/form', :locals => { :directory => @resource }
+%h3 Edit Directory
+
+= render :partial => 'admin/directories/form', :locals => { :directory => @current_directory }

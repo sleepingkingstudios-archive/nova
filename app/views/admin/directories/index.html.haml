@@ -4,20 +4,12 @@
 
 = render :partial => 'admin/common/modals/confirm_delete'
 
-%h2
-  = presenter.label
-  %small Directories
+- content_for :content_header do
+  = render_component 'common/content_header', :title => presenter.label
 
-  = render :partial => 'admin/directories/actions', :locals => { :directory => @current_directory }
+%h3.clearfix.no-margin-bottom
+  Directories
+
+  = render_component 'admin/directories/index/actions', :directory => @current_directory, :presenter => presenter
 
 = render :partial => 'admin/directories/table', :locals => { :directories => presenter.children }
-
-%p
-  = link_to dashboard_directory_path(@current_directory) do
-    = icon(:arrow_circle_left)
-    Back to Dashboard
-%p
-  = link_to directory_path(@current_directory) do
-    = icon(:arrow_circle_left)
-    Back to
-    = presenter.label

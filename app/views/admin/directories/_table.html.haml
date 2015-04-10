@@ -3,9 +3,10 @@
 %table.table
   %thead
     %tr
-      %th Title
-      %th Slug
-      %th &nbsp;
+      %th.col-xs-1 &nbsp;
+      %th.col-xs-5 Title
+      %th.col-xs-5 Slug
+      %th.col-xs-13 &nbsp;
   %tbody
     - if directories.blank?
       %tr
@@ -14,21 +15,22 @@
       - directories.each do |directory|
         - presenter = present(directory)
         %tr{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => "Are you sure you want to delete this directory?<br><br><strong>This will destroy all child directories and features in this directory.</strong>".html_safe } }
+          %td= icon icon_name(:show, :directory), :width => :fixed
           %td= presenter.title
           %td= presenter.slug
-          %td
-            = link_to directory_path(directory), :class => 'text-info' do
-              = icon :cube, :fixed => true
-              Show
-            &nbsp;
+          %td.text-right
             = link_to dashboard_directory_path(directory), :class => 'text-info' do
-              = icon :cubes, :fixed => true
+              = icon icon_name(:dashboard, :directory), :fixed => true, :class => 'hidden-xs hidden-sm'
               Dashboard
             &nbsp;
+            = link_to directory_path(directory), :class => 'text-info' do
+              = icon icon_name(:show), :fixed => true, :class => 'hidden-xs hidden-sm'
+              Show
+            &nbsp;
             = link_to edit_directory_path(directory), :class => 'text-warning' do
-              = icon :edit, :fixed => true
+              = icon icon_name(:edit), :fixed => true, :class => 'hidden-xs hidden-sm'
               Edit
             &nbsp;
             = link_to directory_path(directory), :class => 'text-danger delete-link', :method => :delete do
-              = icon :trash, :fixed => true
+              = icon icon_name(:delete), :fixed => true, :class => 'hidden-xs hidden-sm'
               Delete

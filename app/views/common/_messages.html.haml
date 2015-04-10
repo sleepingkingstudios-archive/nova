@@ -6,9 +6,4 @@
 
 - %w(success info warning danger).each do |flash_type|
   - if flash.key?(flash_type)
-    .alert.alert-dismissable{ :class => "alert-#{flash_type}" }
-      %button.close{ :type => 'button', :'data-dismiss' => 'alert' }
-        %span{ :'aria-hidden' => true } &times;
-        %span.sr-only Close
-      %strong= flash_type.capitalize
-      = flash[flash_type]
+    = render_component 'common/components/message', :type => flash_type, :message => flash[flash_type]

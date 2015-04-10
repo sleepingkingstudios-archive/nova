@@ -20,6 +20,5 @@ class TextContentPresenter < ContentPresenter
 
       template.concat '</p>'.html_safe
     end # each
-    # template.concat(text_content)
   end # method render_content
 end # class

@@ -19,13 +19,13 @@ class BootstrapHorizontalFormBuilder < BootstrapFormBuilder
   private
 
   def build_input method, options = {}, &block
-    @template.concat content_tag('div', :class => 'col-sm-10') {
+    @template.concat content_tag('div', :class => 'col-sm-20') {
       yield if block_given?
     } # content_tag
   end # method build_input
 
   def build_label method, options = nil, &block
-    return content_tag 'div', '&nbsp;'.html_safe, :class => 'col-sm-2' if method.blank?
+    return content_tag 'div', '&nbsp;'.html_safe, :class => 'col-sm-4' if method.blank?
 
     case options
     when Hash
@@ -36,7 +36,7 @@ class BootstrapHorizontalFormBuilder < BootstrapFormBuilder
       hsh = {}
     end # case
 
-    hsh[:class] = concat_class hsh.fetch(:class, ''), 'col-sm-2'
+    hsh[:class] = concat_class hsh.fetch(:class, ''), 'col-sm-4'
 
     super method, hsh, &block
   end # method build_label

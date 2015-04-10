@@ -20,5 +20,5 @@ class BlogRouter < Router
     return post if missing.empty?
 
     nil
-  end # method route_to_feature
+  end # method route_to_post
 end # class

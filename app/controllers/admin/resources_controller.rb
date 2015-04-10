@@ -13,7 +13,7 @@ class Admin::ResourcesController < Admin::AdminController
   before_action :authenticate_user!
   before_action :initialize_delegate
 
-  rescue_from Directory::NotFoundError,  :with => :handle_missing_directory
+  rescue_from Directory::NotFoundError, :with => :handle_missing_directory
 
   rescue_from Appleseed::AuthenticationError, :with => :handle_unauthorized_user
 

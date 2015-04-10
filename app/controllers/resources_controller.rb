@@ -17,7 +17,7 @@ class ResourcesController < ApplicationController
   private
 
   attr_reader :delegate
-  
+
   def handle_missing_resource exception = nil
     exception ||= $! # Last exception raised.
 

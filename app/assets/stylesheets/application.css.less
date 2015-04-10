@@ -4,57 +4,10 @@
 
 @import 'custom_bootstrap/custom_bootstrap.less';
 
-.fa-sm {
-  font-size: 0.66666667em;
-  line-height: 2.25em;
-  vertical-align: -15%;
-}
-
-.text-plain {
-  color: #333;
-
-  &:hover, &:focus {
-    color: #000;
-    text-decoration: none;
-  }
-}
-
 // Fix broken modal dialog overlay.
 .modal .modal-dialog { z-index: @zindex-modal; }
 
-.col-xs-divisible,
-.col-sm-divisible,
-.col-md-divisible,
-.col-lg-divisible {
-    position: relative;
-    min-height: 1px;
-    padding-right: 10px;
-    padding-left: 10px;
-    float: left;
-}
-
-@media (min-width: 768px) {
-    .col-sm-divisible {
-        float: left;
-    }
-}
-@media (min-width: 992px) {
-    .col-md-divisible {
-        float: left;
-    }
-}
-@media (min-width: 1200px) {
-    .col-lg-divisible {
-        float: left;
-    }
-}
-
-.generate-divisible-columns(@n, @i: 2) when (@i =< @n) {
-  .col-sm-divisible-by-@{i} {
-    width: round(100% / @i, 1);
-  }
-
-  .generate-divisible-columns(@n, (@i + 1));
-}
-
-.generate-divisible-columns(6);
+@import 'decoration.less';
+@import 'fonts.less';
+@import 'layout.less';
+@import 'text.less';

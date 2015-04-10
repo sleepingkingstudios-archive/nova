@@ -29,8 +29,6 @@ module FeaturesEnumerator
   end # method feature
 
   def features
-    FeaturesEnumerator.instance_variable_set(:@features,
-      FeaturesEnumerator.instance_variable_get(:@features) || {}
-    ).dup
+    (FeaturesEnumerator.instance_variable_get(:@features) || {}).dup
   end # method feature
 end # module

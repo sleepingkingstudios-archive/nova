@@ -2,10 +2,10 @@
 
 = form.fields_for index.to_s, item do |fields|
   .row.navigation-list-item{ :style => 'margin-left:0px;margin-right:0px;margin-bottom:10px;' }
-    .col-sm-1{ :style => 'padding:0px' }= fields.label :label
-    .col-sm-3{ :style => 'padding:0px' }= fields.text_field :label
-    .col-sm-1{ :style => 'padding-right:0px' }= fields.label :url, 'URL'
-    .col-sm-3{ :style => 'padding:0px' }= fields.text_field :url
-    .col-sm-1{ :style => 'padding-right:0px' }= fields.button 'Up', '#', :class => 'btn-info move-item-up-button', :style => 'width:100%'
-    .col-sm-1{ :style => 'padding-right:0px' }= fields.button 'Down', '#', :class => 'btn-info move-item-down-button', :style => 'width:100%;padding:6px;'
-    .col-sm-2{ :style => 'padding-right:0px' }= fields.button 'Delete Item', '#', :class => 'btn-danger delete-item-button', :style => 'width:100%'
+    .col-sm-2{ :style => 'padding:0px' }= fields.label :label
+    .col-sm-6{ :style => 'padding:0px' }= fields.text_field :label
+    .col-sm-2{ :style => 'padding-right:0px' }= fields.label :url, 'URL'
+    .col-sm-6{ :style => 'padding:0px' }= fields.text_field :url
+    .col-sm-2{ :style => 'padding-right:0px' }= fields.button 'Up', '#', :class => 'btn-info move-item-up-button', :style => 'width:100%'
+    .col-sm-2{ :style => 'padding-right:0px' }= fields.button 'Down', '#', :class => 'btn-info move-item-down-button', :style => 'width:100%;padding:6px;'
+    .col-sm-4{ :style => 'padding-right:0px' }= fields.button 'Delete Item', '#', :class => 'btn-danger delete-item-button', :style => 'width:100%'

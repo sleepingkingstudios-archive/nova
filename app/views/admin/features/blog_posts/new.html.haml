@@ -1,7 +1,10 @@
 - # app/views/admin/features/blog_posts/new.html.haml
 
-%h2
-  = present(@resource.blog).label
-  %small Create Post
+- presenter = present(@resource.blog)
+
+- content_for :content_header do
+  = render_component 'common/content_header', :title => presenter.label
+
+%h3 Create Post
 
 = render :partial => 'admin/features/blog_posts/form', :locals => { :directories => @directories, :blog => @blog, :post => @resource }

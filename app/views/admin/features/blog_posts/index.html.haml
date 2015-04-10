@@ -6,21 +6,12 @@
 
 = render :partial => 'admin/common/modals/confirm_delete'
 
-%h2
-  = presenter.label
-  %small Posts
+- content_for :content_header do
+  = render_component 'common/content_header', :title => presenter.label
 
-  = render :partial => 'admin/features/blog_posts/actions', :locals => { :blog => @blog }
+%h3.clearfix.no-margin-bottom
+  Posts
+
+  = render :partial => 'admin/features/blog_posts/index/actions', :locals => { :blog => @blog }
 
 = render :partial => 'admin/features/table', :locals => { :features => @blog.posts }
-
-%p
-  = link_to blog_path(@blog) do
-    = icon(:arrow_circle_left)
-    Back to
-    = presenter.title
-%p
-  = link_to directory_path(@current_directory) do
-    = icon(:arrow_circle_left)
-    Back to
-    = directory_presenter.label

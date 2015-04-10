@@ -17,6 +17,8 @@ records:
     items:
       - label: Home
         url: '/'
+      - label: Classes
+        url: '/classes'
       - label: Weapons
         url: '/weapons'
       - label: Potent Potables

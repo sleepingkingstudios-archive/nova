@@ -1,0 +1,11 @@
+- # app/views/common/header/_navigation.html.haml
+
+%h3.hidden-xs Site Navigation
+
+- navigation = Setting.fetch('site.navigation', {})
+- unless navigation.blank?
+  %nav#primary-nav
+    %ul
+      - navigation.each do |item|
+        %li
+          %h4{ :style => 'margin:0px;' }= link_to item['label'], item['url'], :class => :'text-plain'

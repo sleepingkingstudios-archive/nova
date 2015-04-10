@@ -1,0 +1,4 @@
+- # app/views/admin/features/blog_posts/index/_actions.html.haml
+
+= render_component 'admin/common/components/button_bar' do
+  = render_component 'admin/common/components/button', :text => 'Create Post', :url => new_blog_post_path(blog), :options => { :icon => :file_o, :text_color => :primary }

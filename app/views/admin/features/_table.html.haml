@@ -3,34 +3,35 @@
 %table.table
   %thead
     %tr
-      %th &nbsp;
-      %th Title
-      %th Slug
-      %th Type
-      %th Published?
-      %th &nbsp;
+      %th.col-xs-1 &nbsp;
+      %th.col-xs-5 Title
+      %th.col-xs-5 Slug
+      %th.col-xs-2 Type
+      %th.col-xs-3 Published?
+      %th.col-xs-7 &nbsp;
   %tbody
     - if features.blank?
       %tr
-        %td(colspan=3) There are no features.
+        %td(colspan=6) There are no features.
     - else
       - features.each do |feature|
-        - presenter = present(feature)
+        - presenter    = present(feature)
+        - feature_type = presenter.type.underscore
         %tr{ :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => "Are you sure you want to delete this #{presenter.type.downcase}?" } }
-          %td= presenter.icon :width => :fixed
+          %td= icon icon_name(:show, feature_type), :width => :fixed
           %td= presenter.title
           %td= presenter.slug
           %td= presenter.type
           %td= presenter.published_status
-          %td
+          %td.text-right
             = link_to resource_path(feature), :class => 'text-info' do
-              = icon :cube, :width => :fixed
+              = icon icon_name(:show), :width => :fixed, :class => 'hidden-xs hidden-sm'
               Show
             &nbsp;
             = link_to edit_resource_path(feature), :class => 'text-warning' do
-              = icon :edit, :width => :fixed
+              = icon icon_name(:edit), :width => :fixed, :class => 'hidden-xs hidden-sm'
               Edit
             &nbsp;
             = link_to resource_path(feature), :class => 'text-danger delete-link', :method => :delete do
-              = icon :trash, :width => :fixed
+              = icon icon_name(:delete), :width => :fixed, :class => 'hidden-xs hidden-sm'
               Delete

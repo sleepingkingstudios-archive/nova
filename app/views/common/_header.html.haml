@@ -1,13 +1,10 @@
 - # app/views/common/_header.html.haml
 
 %header
-  %h1
+  .title
     = link_to Setting.fetch_with_i18n_fallback('site.heading'), root_path, :class => 'text-plain'
 
     - subhead = Setting.fetch_with_i18n_fallback('site.subheading', '')
     - unless subhead.blank?
+      %br
       %small= subhead
-
-  = render 'common/header/navigation'
-
-  %hr
