@@ -1,8 +1,8 @@
 - # app/views/common/_session.html.haml
 
-%p.clearfix
-  = icon(:user)
-  - if current_user
+- if current_user
+  %p.clearfix
+    = icon(:user)
     You are currently signed in as
     = succeed('.') do
       %em= current_user.email
@@ -10,9 +10,3 @@
       = link_to destroy_user_session_path, :method => :delete do
         = icon(:exclamation_circle)
         Sign Out
-  - else
-    You are not currently signed in.
-    %span.pull-right
-      = link_to new_user_session_path do
-        = icon(:arrow_circle_right)
-        Sign In
