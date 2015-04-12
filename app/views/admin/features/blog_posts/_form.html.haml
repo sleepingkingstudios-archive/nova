@@ -17,4 +17,5 @@
 
   = form.form_group do
     = form.submit post.persisted? ? 'Update Post' : 'Create Post'
+    = form.button 'Preview Post', preview_blog_post_path(blog), :class => 'btn-info preview-button'
     = form.button 'Cancel', post.persisted? ? blog_post_path(post) : index_blog_posts_path(blog)

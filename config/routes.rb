@@ -76,6 +76,9 @@ Rails.application.routes.draw do
     get ':blog/posts/new',              :to => "features/blog_posts#new"
     get "*directories/:blog/posts/new", :to => "features/blog_posts#new"
 
+    post ':blog/posts/preview',              :to => "features/blog_posts#preview"
+    post "*directories/:blog/posts/preview", :to => "features/blog_posts#preview"
+
     post ':blog/posts',              :to => "features/blog_posts#create"
     post "*directories/:blog/posts", :to => "features/blog_posts#create"
   end # namespace

@@ -2,6 +2,7 @@
 
 class Appleseed.Layouts.Features.BlogPosts.FormLayout extends Appleseed.Layouts.BaseLayout
   @include Appleseed.Layouts.Concerns.ContentSelection
+  @include Appleseed.Layouts.Concerns.Previewing
   @include Appleseed.Layouts.Concerns.SlugFieldAutomation
 
   @selectors: {
@@ -15,9 +16,14 @@ class Appleseed.Layouts.Features.BlogPosts.FormLayout extends Appleseed.Layouts.
       loading:  '#content-loading-notice'
       selector: 'select#content_type'
     }
+    previewButton: '.preview-button'
   }
 
   initialize: (root, options) ->
     super(root, options)
+
+    @$form = root.el
+
+  $form = null
 
   _resourceType: 'blog_post'

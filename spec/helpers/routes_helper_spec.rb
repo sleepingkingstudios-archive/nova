@@ -612,6 +612,22 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#preview_blog_post_path' do
+    it { expect(instance).to respond_to(:preview_blog_post_path).with(1).arguments }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      it { expect(instance.preview_blog_post_path feature).to be == "/#{slug}/posts/preview" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      it { expect(instance.preview_blog_post_path feature).to be == "/#{slugs.join '/'}/posts/preview" }
+    end # describe
+  end # describe
+
   describe '#preview_page_path' do
     it { expect(instance).to respond_to(:preview_page_path).with(1).arguments }
 

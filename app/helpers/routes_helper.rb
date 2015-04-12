@@ -122,6 +122,10 @@ module RoutesHelper
     new_resource_path blog, 'posts'
   end # method new_blog_post_path
 
+  def preview_blog_post_path blog
+    preview_resource_path blog, 'posts'
+  end # method preview_page_path
+
   def publish_blog_post_path resource
     publish_resource_path resource
   end # method publish_blog_post_path
