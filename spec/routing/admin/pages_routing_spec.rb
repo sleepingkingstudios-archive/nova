@@ -73,4 +73,27 @@ RSpec.describe 'admin routing for pages', :type => :routing do
       }) # end hash
     end # it
   end # describe
+
+  describe 'POST /pages/preview' do
+    let(:path) { 'pages/preview' }
+
+    it 'routes to Admin::Features::PagesController#preview' do
+      expect(:post => "/#{path}").to route_to({
+        :controller  => pages_controller,
+        :action      => 'preview'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'POST /path/to/directory/pages/preview' do
+    let(:path) { 'weapons/bows/arbalests/pages/preview' }
+
+    it 'routes to Admin::Features::PagesController#preview' do
+      expect(:post => "/#{path}").to route_to({
+        :controller  => pages_controller,
+        :action      => 'preview',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
 end # describe

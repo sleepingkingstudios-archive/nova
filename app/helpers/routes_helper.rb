@@ -62,6 +62,10 @@ module RoutesHelper
     Directory.join index_resources_path(directory, resource), 'new'
   end # method new_resource_path
 
+  def preview_resource_path directory, resource
+    Directory.join index_resources_path(directory, resource), 'preview'
+  end # method preview_resource_path
+
   def publish_resource_path resource
     Directory.join resource_path(resource), 'publish'
   end # method edit_resource_path
@@ -147,6 +151,10 @@ module RoutesHelper
   def page_path resource
     resource_path resource
   end # method page_path
+
+  def preview_page_path directory
+    preview_resource_path directory, 'pages'
+  end # method preview_page_path
 
   def publish_page_path resource
     publish_resource_path resource

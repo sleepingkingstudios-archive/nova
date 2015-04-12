@@ -2,6 +2,8 @@
 
 Rails.application.routes.draw do
   def features *names
+    options = names.last.is_a?(Hash) ? names.pop : {}
+
     names.each do |name|
       scope_name = name.to_s.underscore.pluralize
 
@@ -16,6 +18,12 @@ Rails.application.routes.draw do
       # Generate #create routes.
       post "#{scope_name}",              :to => "features/#{scope_name}#create"
       post "*directories/#{scope_name}", :to => "features/#{scope_name}#create"
+
+      # Generate #preview routes.
+      if options[:preview]
+        post "#{scope_name}/preview",              :to => "features/#{scope_name}#preview"
+        post "*directories/#{scope_name}/preview", :to => "features/#{scope_name}#preview"
+      end # if
     end # each
   end # method features
 
@@ -59,7 +67,8 @@ Rails.application.routes.draw do
 
     delete '*directories',              :to => 'resources#destroy'
 
-    features :blogs, :pages
+    features :blogs
+    features :pages, :preview => true
 
     get ':blog/posts',              :to => "features/blog_posts#index"
     get "*directories/:blog/posts", :to => "features/blog_posts#index"

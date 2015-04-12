@@ -87,6 +87,15 @@ class ResourcesDelegate
     controller.render new_template_path
   end # action new
 
+  def preview request
+    self.request = request
+
+    params = ActionController::Parameters.new(request.params)
+    assign :resource, build_resource(build_resource_params params)
+
+    controller.render show_template_path
+  end # action preview
+
   def create request
     self.request = request
 

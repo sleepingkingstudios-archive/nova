@@ -144,6 +144,24 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # it
   end # describe
 
+  describe '#preview', :controller => true do
+    let(:object)     { Page }
+    let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
+
+    it 'assigns resource with attributes and content' do
+      instance.preview request
+
+      resource = assigns.fetch(:resource)
+      expect(resource).to be_a Page
+
+      expect(resource.title).to be == attributes.fetch(:title)
+      expect(resource.slug).to  be == attributes.fetch(:slug)
+
+      expect(resource.content).to be_a Content
+    end # it
+  end # describe
+
   describe '#create', :controller => true do
     let(:object)     { Page }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }

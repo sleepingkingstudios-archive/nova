@@ -17,4 +17,5 @@
 
   = form.form_group do
     = form.submit page.persisted? ? 'Update Page' : 'Create Page'
+    = form.button 'Preview Page', preview_page_path(directories.last), :class => 'btn-info preview-button'
     = form.button 'Cancel', page.persisted? ? page_path(page) : dashboard_directory_path(directories.last)

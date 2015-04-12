@@ -33,6 +33,7 @@ en:
     directories:
       icons:
         dashboard: 'cubes'
+        show:      'folder-o'
     pages:
       icons:
         create: 'file-o'
