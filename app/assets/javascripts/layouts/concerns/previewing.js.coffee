@@ -5,8 +5,6 @@ Appleseed.Layouts.Concerns.Previewing = {
     @addInitializer ->
       console.log 'Previewing#initialize()'
 
-      console.log @get('previewButton')
-
       @get('previewButton').on 'click', @_previewButtonClickedHandler()
 
   ### Private Methods ###
@@ -17,16 +15,21 @@ Appleseed.Layouts.Concerns.Previewing = {
     (event) =>
       event.preventDefault()
 
-      $form = layout.$form
+      $form        = layout.$form
+      $button      = $(event.target)
+      $methodField = $form.find('input[name="_method"]')
 
+      method = $methodField.val()
       action = $form.attr('action')
       target = $form.attr('target')
 
-      $form.attr('action', action + '/preview')
+      $methodField.val('post')
+      $form.attr('action', $button.attr('href'))
       $form.attr('target', '_blank')
 
       $form.submit();
 
+      $methodField.val(method)
       $form.attr('action', action)
       $form.attr('target', target)
 }
