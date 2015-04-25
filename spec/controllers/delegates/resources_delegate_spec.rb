@@ -290,23 +290,70 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   end # describe
 
   describe '#new', :controller => true do
-    let(:object)  { Feature }
-    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+    let(:object)     { Feature }
+    let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
 
     def perform_action
       instance.new request
     end # method perform_action
 
+    before(:each) do
+      allow(instance).to receive(:build_resource_params) do |params|
+        params.fetch(:feature).permit(:title, :slug)
+      end # allow
+    end # before each
+
     it { expect(instance).to respond_to(:new).with(1).arguments }
 
-    it 'assigns resource' do
+    it 'assigns @resource with attributes' do
       perform_action
 
-      expect(assigns.fetch(:resource)).to be_a Feature
+      resource = assigns.fetch(:resource)
+      expect(resource).to be_a Feature
+
+      expect(resource.title).to be == attributes.fetch(:title)
+      expect(resource.slug).to  be == attributes.fetch(:slug)
     end # it
 
     it 'renders the new template' do
       expect(controller).to receive(:render).with(instance.new_template_path)
+
+      perform_action
+    end # it
+
+    expect_behavior 'sets the request'
+  end # describe
+
+  describe '#preview', :controller => true do
+    let(:object)     { Feature }
+    let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
+
+    def perform_action
+      instance.preview request
+    end # method perform_action
+
+    before(:each) do
+      allow(instance).to receive(:build_resource_params) do |params|
+        params.fetch(:feature).permit(:title, :slug)
+      end # allow
+    end # before each
+
+    it { expect(instance).to respond_to(:preview).with(1).arguments }
+
+    it 'assigns @resource with attributes' do
+      perform_action
+
+      resource = assigns.fetch(:resource)
+      expect(resource).to be_a Feature
+
+      expect(resource.title).to be == attributes.fetch(:title)
+      expect(resource.slug).to  be == attributes.fetch(:slug)
+    end # it
+
+    it 'renders the show template' do
+      expect(controller).to receive(:render).with(instance.show_template_path)
 
       perform_action
     end # it

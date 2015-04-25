@@ -165,6 +165,29 @@ RSpec.describe BlogPostsDelegate, :type => :decorator do
     end # it
   end # describe
 
+  describe '#preview', :controller => true do
+    let(:blog)       { create(:blog) }
+    let(:object)     { BlogPost }
+    let(:attributes) { { :title => 'Blog Post Title', :slug => 'blog-post-slug', :evil => 'malicious' } }
+    let(:request)    { double('request', :params => ActionController::Parameters.new(:post => attributes)) }
+
+    before(:each) { instance.blog = blog }
+
+    it 'assigns resource with attributes and content' do
+      instance.preview request
+
+      resource = assigns.fetch(:resource)
+      expect(resource).to be_a BlogPost
+
+      expect(resource.blog).to  be == blog
+
+      expect(resource.title).to be == attributes.fetch(:title)
+      expect(resource.slug).to  be == attributes.fetch(:slug)
+
+      expect(resource.content).to be_a Content
+    end # it
+  end # describe
+
   describe '#create', :controller => true do
     let(:blog)       { create(:blog) }
     let(:object)     { BlogPost }

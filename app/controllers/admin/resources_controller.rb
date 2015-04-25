@@ -8,7 +8,7 @@ class Admin::ResourcesController < Admin::AdminController
   include Delegation
   include DirectoryLookup
 
-  before_action :lookup_directories, :only => %i(index new create)
+  before_action :lookup_directories, :only => %i(index new preview create)
   before_action :lookup_resource,    :only => %i(edit update destroy publish unpublish)
   before_action :authenticate_user!
   before_action :initialize_delegate
@@ -28,6 +28,11 @@ class Admin::ResourcesController < Admin::AdminController
   def new
     delegate.new(request)
   end # action new
+
+  # POST /path/to/directory/resources/preview
+  def preview
+    delegate.preview(request)
+  end # action preview
 
   # POST /path/to/directory/resources
   def create

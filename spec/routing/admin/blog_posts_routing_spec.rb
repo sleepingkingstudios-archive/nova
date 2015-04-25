@@ -55,6 +55,31 @@ RSpec.describe 'admin routing for blogs', :type => :routing do
     end # it
   end # describe
 
+  describe 'POST /blog/posts/preview' do
+    let(:path) { '/blog/posts/preview' }
+
+    it 'routes to Admin::Features::BlogPostsController#preview' do
+      expect(:post => "/#{path}").to route_to({
+        :controller  => blog_posts_controller,
+        :action      => 'preview',
+        :blog        => 'blog'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'POST /path/to/directory/blog/posts/preview' do
+    let(:path) { 'weapons/bows/arbalests/blog/posts/preview' }
+
+    it 'routes to Admin::Features::BlogPostsController#preview' do
+      expect(:post => "/#{path}").to route_to({
+        :controller  => blog_posts_controller,
+        :action      => 'preview',
+        :blog        => 'blog',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
+
   describe 'POST /blog/posts' do
     let(:path) { '/blog/posts' }
 

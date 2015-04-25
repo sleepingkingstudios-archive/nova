@@ -612,6 +612,102 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#preview_blog_post_path' do
+    it { expect(instance).to respond_to(:preview_blog_post_path).with(1).arguments }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      it { expect(instance.preview_blog_post_path feature).to be == "/#{slug}/posts/preview" }
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      it { expect(instance.preview_blog_post_path feature).to be == "/#{slugs.join '/'}/posts/preview" }
+    end # describe
+  end # describe
+
+  describe '#preview_page_path' do
+    it { expect(instance).to respond_to(:preview_page_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.preview_page_path nil).to be == '/pages/preview' }
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      it { expect(instance.preview_page_path directory).to be == "/#{slug}/pages/preview" }
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      it { expect(instance.preview_page_path directories.last).to be == "/#{slugs.join '/'}/pages/preview" }
+    end # describe
+  end # describe
+
+  describe '#preview_resource_path' do
+    it { expect(instance).to respond_to(:preview_resource_path).with(2).arguments }
+
+    describe 'with nil' do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.preview_resource_path nil, resource_name).to be == "/#{resource_name.tableize}/preview" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.preview_resource_path nil, resource_class).to be == "/#{resource_class.to_s.tableize}/preview" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:directory_feature) }
+
+        it { expect(instance.preview_resource_path nil, resource).to be == "/#{resource.class.to_s.tableize}/preview" }
+      end # describe
+    end # describe
+
+    describe 'with a root directory', :directories => :one do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.preview_resource_path directory, resource_name).to be == "/#{slug}/#{resource_name.tableize}/preview" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.preview_resource_path directory, resource_class).to be == "/#{slug}/#{resource_class.to_s.tableize}/preview" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:directory_feature) }
+
+        it { expect(instance.preview_resource_path directory, resource).to be == "/#{slug}/#{resource.class.to_s.tableize}/preview" }
+      end # describe
+    end # describe
+
+    describe 'with a non-root directory', :directories => :many do
+      describe 'with a resource name' do
+        let(:resource_name) { 'features' }
+
+        it { expect(instance.preview_resource_path directories.last, resource_name).to be == "/#{slugs.join '/'}/#{resource_name.tableize}/preview" }
+      end # describe
+
+      describe 'with a resource class' do
+        let(:resource_class) { Feature }
+
+        it { expect(instance.preview_resource_path directories.last, resource_class).to be == "/#{slugs.join '/'}/#{resource_class.to_s.tableize}/preview" }
+      end # describe
+
+      describe 'with a resource instance' do
+        let(:resource) { build(:directory_feature) }
+
+        it { expect(instance.preview_resource_path directories.last, resource).to be == "/#{slugs.join '/'}/#{resource.class.to_s.tableize}/preview" }
+      end # describe
+    end # describe
+  end # describe
+
   describe '#publish_blog_post_path' do
     it { expect(instance).to respond_to(:publish_blog_post_path).with(1).argument }
 

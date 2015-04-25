@@ -54,7 +54,7 @@ class Appleseed.Layouts.Settings.FormLayout extends Appleseed.Layouts.BaseLayout
     request.fail @submitFormFailure
 
   _formData: () =>
-    data  = @$form.serialize()
+    data = @$form.serialize()
 
   ### Event Handlers ###
 
