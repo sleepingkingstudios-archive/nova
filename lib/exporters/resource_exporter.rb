@@ -180,7 +180,7 @@ module ResourceExporter
 
   def serialize_relation relation, relation_name, relation_params, relations:
     if relation_params[:plurality] == :one
-      return nil if relation.nil
+      return nil if relation.nil?
 
       exporter = decorator_class(relation, 'Exporter')
       exporter.serialize(relation, :relations => relations)

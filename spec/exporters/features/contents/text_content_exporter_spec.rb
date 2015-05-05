@@ -5,7 +5,7 @@ require 'rails_helper'
 require 'exporters/features/contents/text_content_exporter'
 
 RSpec.describe TextContentExporter do
-  let(:blacklisted_attributes) { %w(_id) }
+  let(:blacklisted_attributes) { %w(_id _type) }
 
   it { expect(described_class).to be_constructible.with(0).arguments }
 
@@ -28,11 +28,11 @@ RSpec.describe TextContentExporter do
 
       deserialized = resource.attributes.reject { |key, _| blacklisted_attributes.include?(key.to_s) }
 
-      attributes.each do |key, value|
-        expect(deserialized[key.to_s]).to be == value
+      deserialized.each do |key, value|
+        expect(attributes[key]).to be == value
       end # each
 
-      expect(deserialized.keys).to contain_exactly '_type', *attributes.keys
+      expect(deserialized.keys).to contain_exactly *(attributes.keys - blacklisted_attributes)
     end # it
   end # describe
 
@@ -50,7 +50,7 @@ RSpec.describe TextContentExporter do
         expect(serialized[key]).to be == resource.send(key)
       end # each
 
-      expect(serialized.keys).to contain_exactly *attributes.keys
+      expect(serialized.keys).to contain_exactly '_type', *attributes.keys
     end # it
   end # describe
 end # describe

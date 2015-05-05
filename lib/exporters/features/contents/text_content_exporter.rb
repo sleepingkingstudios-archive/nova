@@ -3,5 +3,5 @@
 require 'exporters/resource_exporter'
 
 class TextContentExporter < ResourceExporter.new(TextContent)
-  attributes :_type, :text_content
+  attribute :text_content
 end # class
