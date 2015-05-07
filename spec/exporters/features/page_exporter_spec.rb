@@ -1,10 +1,10 @@
-# spec/exporters/features/blog_post_exporter_spec.rb
+# spec/exporters/features/page_exporter_spec.rb
 
 require 'rails_helper'
 
-require 'exporters/features/blog_post_exporter'
+require 'exporters/features/page_exporter'
 
-RSpec.describe BlogPostExporter do
+RSpec.describe PageExporter do
   let(:blacklisted_attributes) { %w(_id _type content) }
 
   it { expect(described_class).to be_constructible.with(0).arguments }
@@ -14,13 +14,13 @@ RSpec.describe BlogPostExporter do
   end # describe
 
   describe '::resource_class' do
-    it { expect(described_class).to have_reader(:resource_class).with(BlogPost) }
+    it { expect(described_class).to have_reader(:resource_class).with(Page) }
   end # describe
 
   describe '::deserialize' do
-    shared_examples 'should return a post' do
-      it 'should return a post' do
-        expect(resource).to be_a BlogPost
+    shared_examples 'should return a page' do
+      it 'should return a page' do
+        expect(resource).to be_a Page
 
         deserialized.each do |key, value|
           expect(attributes[key]).to be == value
@@ -30,16 +30,16 @@ RSpec.describe BlogPostExporter do
       end # it
     end # shared_examples
 
-    let(:attributes)   { build(:blog_post).attributes.stringify_keys }
+    let(:attributes)   { build(:page).attributes.stringify_keys }
     let(:resource)     { described_class.deserialize attributes }
     let(:deserialized) { resource.attributes.reject { |key, _| blacklisted_attributes.include?(key.to_s) } }
 
     it { expect(described_class).to respond_to(:deserialize).with(1).argument }
 
-    include_examples 'should return a post'
+    include_examples 'should return a page'
 
-    it 'should not create a post' do
-      expect { described_class.deserialize attributes }.not_to change(BlogPost, :count)
+    it 'should not create a page' do
+      expect { described_class.deserialize attributes }.not_to change(Page, :count)
     end # it
 
     describe 'with attributes for a content' do
@@ -47,13 +47,13 @@ RSpec.describe BlogPostExporter do
 
       before(:each) { attributes['content'] = content_attributes.merge :_type => 'TextContent' }
 
-      include_examples 'should return a post'
+      include_examples 'should return a page'
 
-      it 'should not create a post' do
+      it 'should not create a page' do
         expect { described_class.deserialize attributes }.not_to change(BlogPost, :count)
       end # it
 
-      it 'should return a post with a content' do
+      it 'should return a page with a content' do
         expect(resource.content).to be_a TextContent
 
         deserialized = resource.content.attributes.reject { |key, _| ['_id', '_type'].include?(key.to_s) }
@@ -68,8 +68,8 @@ RSpec.describe BlogPostExporter do
   end # describe
 
   describe '::serialize' do
-    shared_examples 'should return the post attributes' do
-      it 'should return the post attributes' do
+    shared_examples 'should return the page attributes' do
+      it 'should return the page attributes' do
         expect(serialized).to be_a Hash
 
         attributes.each do |key, value|
@@ -78,7 +78,7 @@ RSpec.describe BlogPostExporter do
       end # it
     end # shared_examples
 
-    let(:resource)   { build(:blog_post) }
+    let(:resource)   { build(:page) }
     let(:attributes) { resource.attributes.reject { |key, _| blacklisted_attributes.include?(key.to_s) } }
     let(:serialized) { described_class.serialize(resource) }
 
@@ -86,12 +86,12 @@ RSpec.describe BlogPostExporter do
 
     it { expect(described_class.serialize(resource).keys).to contain_exactly '_type', 'content', *attributes.keys }
 
-    include_examples 'should return the post attributes'
+    include_examples 'should return the page attributes'
 
-    describe 'with a published post' do
+    describe 'with a published page' do
       before(:each) { resource.published_at = 1.day.ago }
 
-      include_examples 'should return the post attributes'
+      include_examples 'should return the page attributes'
     end # describe
 
     describe 'with a content' do
@@ -104,7 +104,7 @@ RSpec.describe BlogPostExporter do
 
       it { expect(serialized.fetch('content')).to be == expected }
 
-      include_examples 'should return the post attributes'
+      include_examples 'should return the page attributes'
     end # describe
   end # describe
 end # describe

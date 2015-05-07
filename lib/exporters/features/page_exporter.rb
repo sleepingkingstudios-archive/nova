@@ -1,9 +1,9 @@
-# lib/exporters/features/blog_post_exporter.rb
+# lib/exporters/features/page_exporter.rb
 
 require 'exporters/features/feature_exporter'
 require 'exporters/resource_exporter'
 
-class BlogPostExporter < ResourceExporter.new(BlogPost)
+class PageExporter < ResourceExporter.new(Page)
   include FeatureExporter
 
   attribute :published_at
