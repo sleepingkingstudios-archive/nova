@@ -13,11 +13,14 @@ RSpec.describe ResourceExporter do
     end # before each
   end # shared_context
 
-  let(:concern)         { ResourceExporter }
   let(:resource_class)  { Feature }
-  let(:described_class) { concern.new(resource_class) }
+  let(:described_class) do
+    klass = Class.new(ResourceExporter)
+    klass.send :resource_class=, resource_class
+    klass
+  end # let
 
-  describe described_class::DSL::Attributes do
+  describe ResourceExporter::DSL::Attributes do
     describe '::attribute' do
       it { expect(described_class).to respond_to(:attribute).with(1).argument }
     end # describe
@@ -27,7 +30,7 @@ RSpec.describe ResourceExporter do
     end # describe
   end # describe
 
-  describe described_class::DSL::Relations do
+  describe ResourceExporter::DSL::Relations do
     describe '::embeds_many' do
       let(:relation_name) { :relation }
 
@@ -77,7 +80,7 @@ RSpec.describe ResourceExporter do
     end # describe
 
     describe '::relates' do
-      before(:each) { described_class::DSL::Relations.send :public, :relates }
+      before(:each) { described_class::DSL::Relations::ClassMethods.send :public, :relates }
 
       it { expect(described_class).to respond_to(:relates, true).with(1, :embedded, :plurality).arguments }
 
@@ -100,12 +103,6 @@ RSpec.describe ResourceExporter do
       end # describe
     end # describe
   end # describe
-
-  describe '::new' do
-    it { expect(concern).to respond_to(:new).with(1).argument }
-  end # describe
-
-  it { expect(described_class).to be < Exporter }
 
   it { expect(described_class).to be_constructible.with(0).arguments }
 
@@ -161,12 +158,6 @@ RSpec.describe ResourceExporter do
     it { expect(described_class).to respond_to(:serialize).with(1, :relations).arguments }
 
     let(:resource) { resource_class.new(attributes_for :feature) }
-
-    it 'should return the resource attributes' do
-      attributes = described_class.serialize resource
-
-      expect(attributes).to be == { '_type' => resource_class.name }
-    end # it
 
     context 'with defined attributes' do
       include_context 'with defined attributes'

@@ -1,7 +1,7 @@
 # lib/exporters/features/contents/markdown_content_exporter.rb
 
-require 'exporters/resource_exporter'
+require 'exporters/features/contents/content_exporter'
 
-class MarkdownContentExporter < ResourceExporter.new(MarkdownContent)
+class MarkdownContentExporter < ContentExporter
   attribute :text_content
 end # class

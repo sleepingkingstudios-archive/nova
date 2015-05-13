@@ -27,12 +27,13 @@ RSpec.describe MarkdownContentExporter do
       expect(resource).to be_a MarkdownContent
 
       deserialized = resource.attributes.reject { |key, _| blacklisted_attributes.include?(key.to_s) }
+      expect(deserialized.delete '_type').to be == resource.class.name
 
-      attributes.each do |key, value|
-        expect(deserialized[key.to_s]).to be == value
+      deserialized.each do |key, value|
+        expect(attributes[key]).to be == value
       end # each
 
-      expect(deserialized.keys).to contain_exactly '_type', *attributes.keys
+      expect(deserialized.keys).to contain_exactly *(attributes.keys - blacklisted_attributes)
     end # it
   end # describe
 
