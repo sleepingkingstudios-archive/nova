@@ -2,6 +2,8 @@
 
 require 'form_builders/bootstrap_horizontal_form_builder'
 
+Dir[Rails.root.join *%w(lib serializers settings ** *.rb)].each { |file_name| require file_name }
+
 class Admin::SettingsController < Admin::AdminController
   include DecoratorsHelper
 
@@ -17,16 +19,16 @@ class Admin::SettingsController < Admin::AdminController
 
   def update
     form       = decorate(@setting, 'Form')
-    serializer = decorate(@setting, :Serializer)
+    serializer = decorator_class(@setting, :Serializer)
 
     if form.update(params)
       render :json => {
-        :setting => serializer.to_json
+        :setting => serializer.serialize(@setting)
       } # end hash
     else
       render :status => :unprocessable_entity, :json => {
         :error   => 'Unable to update setting.',
-        :setting => serializer.to_json
+        :setting => serializer.serialize(@setting)
       } # end hash
     end # if-else
   end # action update
