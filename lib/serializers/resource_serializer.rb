@@ -78,11 +78,11 @@ class ResourceSerializer < Serializer
         self.class.send :permitted_relations
       end # method permitted_relations
     end # module
-
   end # module
 
   include ResourceSerializer::DSL::Attributes
   include ResourceSerializer::DSL::Relations
+  include DecoratorsHelper
 
   class << self
     attr_accessor :resource_class
@@ -103,7 +103,11 @@ class ResourceSerializer < Serializer
   end # eigenclass
 
   def deserialize attributes, type: nil, **options
-    super attributes, :type => type || resource_class, **options
+    resource = super attributes, :type => type || resource_class, **options
+
+    deserialize_relations(resource, attributes, **options)
+
+    resource
   end # method deserialize
 
   def serialize resource, relations: :embedded, **options
@@ -120,7 +124,31 @@ class ResourceSerializer < Serializer
 
   private
 
-  def has_errors?(resource)
+  def deserialize_relation resource, relation_name, relation_params, relation_attrs, **options
+    return if relation_attrs.blank?
+
+    if relation_params[:plurality] == :one
+      relation_attrs = relation_attrs.stringify_keys
+      serializer     = decorator_class(relation_attrs.fetch('_type'), 'Serializer')
+
+      resource.send :"#{relation_name}=", serializer.deserialize(relation_attrs, **options)
+    else
+      relation = resource.send(relation_name)
+
+      relation_attrs.each do |hsh|
+        serializer = decorator_class(hsh.stringify_keys.fetch('_type'), 'Serializer')
+        relation << serializer.deserialize(hsh, **options)
+      end # each
+    end # if-else
+  end # method deserialize_relation
+
+  def deserialize_relations resource, attributes, **options
+    permitted_relations.each do |relation_name, relation_params|
+      deserialize_relation resource, relation_name, relation_params, attributes[relation_name], **options
+    end # each
+  end # method deserialize_relations
+
+  def has_errors? resource
     resource.respond_to?(:errors) && !resource.errors.blank?
   end # method has_errors?
 
@@ -128,7 +156,7 @@ class ResourceSerializer < Serializer
     self.class.resource_class
   end # method resource_class
 
-  def serializable_relations(relations:, **options)
+  def serializable_relations relations:, **options
     if !relations || relations == :none
       relations = []
     elsif relations == :embedded
@@ -138,31 +166,31 @@ class ResourceSerializer < Serializer
     end # if-elsif-else
   end # method serializable_relations
 
-  def serialize_errors(resource, **options)
+  def serialize_errors resource, **options
     resource.errors.full_messages
   end # method serialize_errors
 
-  def serialize_relation relation, relation_name, relation_params, relations:
+  def serialize_relation relation, relation_name, relation_params, relations:, **options
     if relation_params[:plurality] == :one
       return nil if relation.nil?
 
-      exporter = decorator_class(relation, 'Exporter')
-      exporter.serialize(relation, :relations => relations)
+      serializer = decorator_class(relation, 'Serializer')
+      serializer.serialize(relation, :relations => relations, **options)
     else
       return [] if relation.empty?
 
       relation.map do |obj|
-        exporter = decorator_class(obj, 'Exporter')
-        exporter.serialize(obj, :relations => relations)
+        serializer = decorator_class(obj, 'Serializer')
+        serializer.serialize(obj, :relations => relations, **options)
       end # map
     end # if-else
   end # method serialize_relation
 
-  def serialize_relations(resource, relations:, **options)
+  def serialize_relations resource, relations:, **options
     serializable_relations(:relations => relations, **options).each.with_object({}) do |(relation_name, relation_params), hsh|
       relation = resource.send(relation_name)
 
-      hsh[relation_name.to_s] = serialize_relation(relation, relation_name, relation_params, :relations => relations)
+      hsh[relation_name.to_s] = serialize_relation(relation, relation_name, relation_params, :relations => relations, **options)
     end # each
   end # method serialize_relations
 end # class

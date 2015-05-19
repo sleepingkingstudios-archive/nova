@@ -8,6 +8,7 @@ require 'validators/unique_within_siblings_validator'
 
 class Directory
   include Mongoid::Document
+  include Mongoid::Timestamps
   include Mongoid::SleepingKingStudios::HasTree
   include Mongoid::SleepingKingStudios::Sluggable
 
@@ -86,6 +87,10 @@ class Directory
 
   ### Relations ###
   has_many :features, :class_name => "DirectoryFeature", :dependent => :destroy
+
+  def directories
+    children
+  end # method directories
 
   ### Validations ###
   validates :title, :presence => true

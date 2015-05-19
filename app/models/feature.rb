@@ -4,6 +4,7 @@ require 'mongoid/sleeping_king_studios/sluggable'
 
 class Feature
   include Mongoid::Document
+  include Mongoid::Timestamps
   include Mongoid::SleepingKingStudios::Sluggable
 
   ### Class Methods ###

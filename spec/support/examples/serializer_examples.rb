@@ -31,7 +31,8 @@ module Spec
       shared_examples 'should return the resource attributes' do |proc|
         let(:resource)   { build(resource_class) }
         let(:attributes) { resource.attributes.reject { |key, _| blacklisted_attributes.include?(key.to_s) } }
-        let(:serialized) { described_class.serialize(resource) }
+        let(:options)    { {} }
+        let(:serialized) { described_class.serialize(resource, **options) }
 
         it 'should return the resource attributes' do
           expect(serialized).to be_a Hash
