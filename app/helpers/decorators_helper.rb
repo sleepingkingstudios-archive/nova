@@ -1,9 +1,5 @@
 # app/helpers/decorators_helper.rb
 
-Dir[Rails.root.join 'lib', 'presenters', '**', '*presenter.rb'].each do |file|
-  require file
-end # each
-
 module DecoratorsHelper
   def decorate object, decorator_type, options = {}
     object = case object
@@ -49,8 +45,4 @@ module DecoratorsHelper
 
     options.fetch(:default, decorator_name).to_s.constantize
   end # method decorator_class
-
-  def present object
-    decorate object, :presenter
-  end # method present
 end # module

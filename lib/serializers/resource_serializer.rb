@@ -140,6 +140,22 @@ class ResourceSerializer < Serializer
     resource.errors.full_messages
   end # method serialize_errors
 
+  def serialize_relation relation, relation_name, relation_params, relations:
+    if relation_params[:plurality] == :one
+      return nil if relation.nil?
+
+      exporter = decorator_class(relation, 'Exporter')
+      exporter.serialize(relation, :relations => relations)
+    else
+      return [] if relation.empty?
+
+      relation.map do |obj|
+        exporter = decorator_class(obj, 'Exporter')
+        exporter.serialize(obj, :relations => relations)
+      end # map
+    end # if-else
+  end # method serialize_relation
+
   def serialize_relations(resource, relations:, **options)
     serializable_relations(:relations => relations, **options).each.with_object({}) do |(relation_name, relation_params), hsh|
       relation = resource.send(relation_name)

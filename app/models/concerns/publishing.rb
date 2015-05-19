@@ -1,4 +1,4 @@
-# subl app/models/concerns/publishing.rb
+# app/models/concerns/publishing.rb
 
 module Publishing
   class << self
