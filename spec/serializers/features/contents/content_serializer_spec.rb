@@ -1,18 +1,16 @@
-# spec/serializers/settings/setting_serializer_spec.rb
+# spec/serializers/features/contents/content_serializer_spec.rb
 
 require 'rails_helper'
 
-require 'serializers/settings/setting_serializer'
+require 'serializers/features/contents/content_serializer'
 
-RSpec.describe SettingSerializer do
+RSpec.describe ContentSerializer do
   include Spec::Contexts::SerializerContexts
   include Spec::Examples::SerializerExamples
 
-  include_context 'with a serializer for', Setting
+  include_context 'with a serializer for', Content
 
   describe '#deserialize' do
-    let(:attributes) { { 'key' => 'to.the.city' } }
-
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
 
     include_examples 'should return an instance of the resource'

@@ -79,7 +79,7 @@ RSpec.describe Decorators::SerializersHelper, :type => :helper do
       include_context 'with a custom serializer'
 
       let(:serialized) { instance.serialize(resource) }
-      let(:expected)   { { 'value' => 'value' } }
+      let(:expected)   { { 'value' => 'value', '_type' => resource_class.name } }
 
       it { expect(serialized).to be == expected }
     end # context

@@ -190,7 +190,7 @@ RSpec.describe ResourceSerializer do
 
     it { expect(instance).to respond_to(:serialize).with(1, :relations, :arbitrary, :keywords) }
 
-    it { expect(serialized).to be == {} }
+    it { expect(serialized).to be == { '_type' => resource_class.name } }
 
     context 'with errors on the resource' do
       let(:resource) { resource_class.new(attributes_for :feature, :title => nil).tap &:valid? }
@@ -198,7 +198,9 @@ RSpec.describe ResourceSerializer do
       it 'should return the resource error messages' do
         expect(serialized).to be_a Hash
 
-        expect(serialized.keys).to contain_exactly 'errors'
+        expect(serialized.keys).to contain_exactly 'errors', '_type'
+
+        expect(serialized.fetch('_type')).to be == resource_class.name
 
         expect(serialized.fetch('errors')).to contain_exactly *resource.errors.full_messages
       end # it
@@ -210,7 +212,9 @@ RSpec.describe ResourceSerializer do
       it 'should return the resource attributes' do
         expect(serialized).to be_a Hash
 
-        expect(serialized.keys).to contain_exactly *permitted_attributes
+        expect(serialized.keys).to contain_exactly '_type', *permitted_attributes
+
+        expect(serialized.fetch('_type')).to be == resource_class.name
 
         permitted_attributes.each do |attribute_name|
           expect(resource.send attribute_name).to be == serialized[attribute_name]

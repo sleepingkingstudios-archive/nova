@@ -113,6 +113,8 @@ class ResourceSerializer < Serializer
 
     hsh['errors'] = serialize_errors(resource, **options) if has_errors?(resource)
 
+    hsh['_type'] ||= (resource.try(:_type) || resource.class.name)
+
     hsh
   end # method serialize
 
