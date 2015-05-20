@@ -160,7 +160,7 @@ RSpec.describe ResourceSerializer do
     let(:options)      { {} }
     let(:deserialized) { instance.deserialize attributes, **options }
 
-    it { expect(instance).to respond_to(:deserialize).with(1, :type, :arbitrary, :keywords) }
+    it { expect(instance).to respond_to(:deserialize).with(1, :persist, :type, :arbitrary, :keywords) }
 
     it 'should return an instance of the resource' do
       expect(deserialized).to be_a resource_class
@@ -168,6 +168,10 @@ RSpec.describe ResourceSerializer do
       attributes.keys.each do |attribute_name|
         expect(deserialized.send attribute_name).to be nil
       end # each
+    end # it
+
+    it 'should not persist the resource' do
+      expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
     end # it
 
     context 'with permitted attributes' do
@@ -180,6 +184,14 @@ RSpec.describe ResourceSerializer do
           expect(deserialized.send attribute_name).to be == attributes[attribute_name]
         end # each
       end # it
+
+      describe 'with :persist => true' do
+        let(:options) { super().merge :persist => true }
+
+        it 'should persist the resource' do
+          expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1)
+        end # it
+      end # describe
     end # context
   end # describe
 

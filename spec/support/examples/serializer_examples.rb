@@ -10,16 +10,17 @@ module Spec
       include Spec::Contexts::SerializerContexts
 
       shared_examples 'should return an instance of the resource' do |proc|
-        let(:attributes)   { {} }
+        let(:attributes)   { attributes_for(resource_class).with_indifferent_access }
         let(:options)      { {} }
         let(:resource)     { instance.deserialize attributes, **options }
         let(:deserialized) { resource.attributes.reject { |key, _| blacklisted_attributes.include?(key.to_s) } }
+        let(:expected)     { attributes.dup }
 
         it 'should return an instance of the resource' do
           expect(resource).to be_a resource_class
 
           deserialized.each do |key, value|
-            expect(attributes[key]).to be == value
+            expect(value).to be == expected[key]
           end # each
 
           expect(deserialized.keys).to include *(attributes.keys - blacklisted_attributes)

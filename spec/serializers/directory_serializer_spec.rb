@@ -15,7 +15,21 @@ RSpec.describe DirectorySerializer do
   describe '#deserialize' do
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
 
+    before(:each) { expected.merge! 'slug' => attributes[:title].parameterize, 'slug_lock' => false }
+
     include_examples 'should return an instance of the resource'
+
+    it 'should not persist the directory' do
+      expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
+    end # it
+
+    describe 'with :persist => true' do
+      before(:each) { options[:persist] = true }
+
+      it 'should persist the directory' do
+        expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1)
+      end # it
+    end # describe
 
     describe 'with attributes for many descendant directories' do
       let(:children_attributes)      { Array.new(3) { attributes_for(:directory, :_type => 'Directory') } }
@@ -36,6 +50,18 @@ RSpec.describe DirectorySerializer do
         expect(directories.count).to be == grandchildren_attributes.count
         expect(directories.map &:title).to contain_exactly *grandchildren_attributes.map { |hsh| hsh[:title] }
       } # end examples
+
+      it 'should not persist the directory' do
+        expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
+      end # it
+
+      describe 'with :persist => true' do
+        before(:each) { options[:persist] = true }
+
+        it 'should persist the directories' do
+          expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1 + children_attributes.count + grandchildren_attributes.count)
+        end # it
+      end # describe
 
       describe 'with attributes for many features' do
         before(:each) do
@@ -67,6 +93,26 @@ RSpec.describe DirectorySerializer do
             expect(directory.features.to_a.count).to be == 3
           end # each
         } # end examples
+
+        it 'should not persist the directory' do
+          expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
+        end # it
+
+        it 'should not persist the features' do
+          expect { instance.deserialize attributes, **options }.not_to change(Feature, :count)
+        end # it
+
+        describe 'with :persist => true' do
+          before(:each) { options[:persist] = true }
+
+          it 'should persist the directories' do
+            expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1 + children_attributes.count + grandchildren_attributes.count)
+          end # it
+
+          it 'should persist the features' do
+            expect { instance.deserialize attributes, **options }.to change(Feature, :count).by(3 * (1 + children_attributes.count + grandchildren_attributes.count))
+          end # it
+        end # describe
       end # describe
     end # describe
 
@@ -87,6 +133,26 @@ RSpec.describe DirectorySerializer do
         expect(features.count).to be == pages_attributes.count
         expect(features.map &:title).to contain_exactly *pages_attributes.map { |hsh| hsh[:title] }
       } # end examples
+
+      it 'should not persist the directory' do
+        expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
+      end # it
+
+      it 'should not persist the features' do
+        expect { instance.deserialize attributes, **options }.not_to change(Feature, :count)
+      end # it
+
+      describe 'with :persist => true' do
+        before(:each) { options[:persist] = true }
+
+        it 'should persist the directory' do
+          expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1)
+        end # it
+
+        it 'should persist the features' do
+          expect { instance.deserialize attributes, **options }.to change(Feature, :count).by(pages_attributes.count)
+        end # it
+      end # describe
     end # describe
   end # describe
 

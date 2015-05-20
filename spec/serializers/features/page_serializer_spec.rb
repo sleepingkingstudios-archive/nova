@@ -17,6 +17,12 @@ RSpec.describe PageSerializer do
 
     include_examples 'should return an instance of the resource'
 
+    before(:each) { expected.merge! 'slug' => attributes[:title].parameterize, 'slug_lock' => false }
+
+    it 'should not persist the page' do
+      expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
+    end # it
+
     describe 'with attributes for a content' do
       let(:content_attributes) { attributes_for(:text_content, :_type => 'TextContent').with_indifferent_access }
 
@@ -36,10 +42,18 @@ RSpec.describe PageSerializer do
 
         expect(deserialized.keys).to include *(content_attributes.keys - blacklisted_attributes)
       } # end examples
+
+      describe 'with :persist => true' do
+        before(:each) { options[:persist] = true }
+
+        it 'should persist the page' do
+          expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1)
+        end # it
+      end # describe
     end # describe
 
     describe 'with attributes for a published page' do
-      before(:each) { attributes['published_at'] = 1.day.ago }
+      before(:each) { attributes['published_at'] = expected['published_at'] = 1.day.ago }
 
       include_examples 'should return an instance of the resource', ->() {
         expect(resource.published_at).to be == attributes['published_at']

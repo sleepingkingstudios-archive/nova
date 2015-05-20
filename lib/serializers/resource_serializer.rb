@@ -87,6 +87,10 @@ class ResourceSerializer < Serializer
   class << self
     attr_accessor :resource_class
 
+    def persist_resource *args, **kwargs, &block
+      new.send(:persist_resource, *args, **kwargs, &block)
+    end # class method persist_resource
+
     protected
 
     attr_writer :resource_class
@@ -102,10 +106,10 @@ class ResourceSerializer < Serializer
     end # method inherited
   end # eigenclass
 
-  def deserialize attributes, type: nil, **options
+  def deserialize attributes, persist: false, type: nil, **options
     resource = super attributes, :type => type || resource_class, **options
 
-    deserialize_relations(resource, attributes, **options)
+    deserialize_relations(resource, attributes.with_indifferent_access, :persist => persist, **options)
 
     resource
   end # method deserialize
@@ -122,29 +126,50 @@ class ResourceSerializer < Serializer
     hsh
   end # method serialize
 
+  protected
+
+  def persist_resource resource, **options
+    resource.save!
+  end # method persist_resource
+
   private
 
-  def deserialize_relation resource, relation_name, relation_params, relation_attrs, **options
+  def deserialize_relation resource, relation_name, relation_params, relation_attrs, persist: false, **options
     return if relation_attrs.blank?
 
     if relation_params[:plurality] == :one
       relation_attrs = relation_attrs.stringify_keys
       serializer     = decorator_class(relation_attrs.fetch('_type'), 'Serializer')
+      relation       = serializer.deserialize(relation_attrs, **options)
 
-      resource.send :"#{relation_name}=", serializer.deserialize(relation_attrs, **options)
+      resource.send :"#{relation_name}=", relation
+
+      serializer.persist_resource(relation) if persist
     else
-      relation = resource.send(relation_name)
+      collection = resource.send(relation_name)
 
-      relation_attrs.each do |hsh|
-        serializer = decorator_class(hsh.stringify_keys.fetch('_type'), 'Serializer')
-        relation << serializer.deserialize(hsh, **options)
+      relation_attrs.each do |relation_attrs|
+        serializer = decorator_class(relation_attrs.stringify_keys.fetch('_type'), 'Serializer')
+        relation   = serializer.deserialize(relation_attrs, **options)
+
+        collection << relation
+
+        serializer.persist_resource(relation) if persist
       end # each
     end # if-else
   end # method deserialize_relation
 
-  def deserialize_relations resource, attributes, **options
-    permitted_relations.each do |relation_name, relation_params|
-      deserialize_relation resource, relation_name, relation_params, attributes[relation_name], **options
+  def deserialize_relations resource, attributes, persist: false, **options
+    embedded_relations = permitted_relations.select { |_, relation_params| relation_params[:embedded] == true }
+    embedded_relations.each do |relation_name, relation_params|
+      deserialize_relation resource, relation_name, relation_params, attributes[relation_name], :persist => false, **options
+    end # each
+
+    persist_resource(resource) if persist
+
+    referenced_relations = permitted_relations.reject { |_, relation_params| relation_params[:embedded] == true }
+    referenced_relations.each do |relation_name, relation_params|
+      deserialize_relation resource, relation_name, relation_params, attributes[relation_name], :persist => persist, **options
     end # each
   end # method deserialize_relations
 

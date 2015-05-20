@@ -11,6 +11,8 @@ RSpec.describe FeatureSerializer do
   include_context 'with a serializer for', Feature
 
   describe '#deserialize' do
+    before(:each) { expected.merge! 'slug' => attributes[:title].parameterize, 'slug_lock' => false }
+
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
 
     include_examples 'should return an instance of the resource'

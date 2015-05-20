@@ -24,9 +24,7 @@ class Serializer
 
     @resource = build_resource(:type => type, **options)
 
-    permitted_attributes.each do |attribute_name|
-      deserialize_attribute resource, attribute_name, attributes[attribute_name]
-    end # each with object
+    deserialize_attributes resource, attributes, :type => type, **options
 
     resource
   end # method deserialize
@@ -34,9 +32,7 @@ class Serializer
   def serialize resource, **options
     @resource = resource
 
-    permitted_attributes.each.with_object({}) do |attribute_name, hsh|
-      hsh[attribute_name] = serialize_attribute(resource, attribute_name)
-    end # each with object
+    serialize_attributes(resource, **options)
   end # method serialize
 
   def permitted_attributes
@@ -57,6 +53,8 @@ class Serializer
   end # method build_resource
 
   def deserialize_attribute resource, attribute_name, attribute_value
+    return if attribute_value.nil?
+
     writer_name = attribute_name.to_s.sub(/=?\z/, '=')
 
     if self.respond_to?(writer_name)
@@ -68,6 +66,12 @@ class Serializer
     end # if-elsif-else
   end # method deserialize_attribute
 
+  def deserialize_attributes resource, attributes, **options
+    permitted_attributes.each do |attribute_name|
+      deserialize_attribute resource, attribute_name, attributes[attribute_name]
+    end # each with object
+  end # method deserialize_attributes
+
   def serialize_attribute resource, attribute_name
     if self.respond_to?(attribute_name)
       self.send(attribute_name)
@@ -77,4 +81,10 @@ class Serializer
       resource[attribute_name]
     end # if-elsif-else
   end # method serialize_attribute
+
+  def serialize_attributes resource, **options
+    permitted_attributes.each.with_object({}) do |attribute_name, hsh|
+      hsh[attribute_name] = serialize_attribute(resource, attribute_name)
+    end # each with object
+  end # method serialize_attributes
 end # class

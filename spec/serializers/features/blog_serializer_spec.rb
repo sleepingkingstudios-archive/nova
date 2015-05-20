@@ -15,7 +15,21 @@ RSpec.describe BlogSerializer do
   describe '#deserialize' do
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
 
+    before(:each) { expected.merge! 'slug' => attributes[:title].parameterize, 'slug_lock' => false }
+
     include_examples 'should return an instance of the resource'
+
+    it 'should not persist the blog' do
+      expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
+    end # it
+
+    describe 'with :persist => true' do
+      before(:each) { options[:persist] = true }
+
+      it 'should persist the blog' do
+        expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1)
+      end # it
+    end # describe
 
     describe 'with attributes for many posts' do
       let(:blog_posts_attributes) do
@@ -34,6 +48,26 @@ RSpec.describe BlogSerializer do
         expect(posts.count).to be == blog_posts_attributes.count
         expect(posts.map &:title).to contain_exactly *blog_posts_attributes.map { |hsh| hsh[:title] }
       } # end examples
+
+      it 'should not persist the blog' do
+        expect { instance.deserialize attributes, **options }.not_to change(resource_class, :count)
+      end # it
+
+      it 'should not persist the posts' do
+        expect { instance.deserialize attributes, **options }.not_to change(BlogPost, :count)
+      end # it
+
+      describe 'with :persist => true' do
+        before(:each) { options[:persist] = true }
+
+        it 'should persist the blog' do
+          expect { instance.deserialize attributes, **options }.to change(resource_class, :count).by(1)
+        end # it
+
+        it 'should persist the posts' do
+          expect { instance.deserialize attributes, **options }.to change(BlogPost, :count).by(blog_posts_attributes.count)
+        end # it
+      end # describe
     end # describe
   end # describe
 
