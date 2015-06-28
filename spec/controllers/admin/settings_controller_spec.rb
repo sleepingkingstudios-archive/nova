@@ -83,7 +83,7 @@ RSpec.describe Admin::SettingsController, :type => :controller do
 
     describe 'with a string setting' do
       let(:setting)      { create(:string_setting) }
-      let(:setting_keys) { %w(options value) }
+      let(:setting_keys) { %w(key value options) }
 
       describe 'with invalid params' do
         let(:attributes) { super().merge :value => nil, :options => { 'validate_presence' => true } }
@@ -96,7 +96,7 @@ RSpec.describe Admin::SettingsController, :type => :controller do
           expect(json.fetch 'error').to be == 'Unable to update setting.'
 
           setting_data = json.fetch('setting')
-          expect(setting_data.keys).to contain_exactly 'errors', *setting_keys
+          expect(setting_data.keys).to contain_exactly 'errors', '_type', *setting_keys
 
           expect(setting_data.fetch 'errors').to be_a Array
           expect(setting_data.fetch 'errors').to contain_exactly "Value can't be blank"
@@ -116,7 +116,7 @@ RSpec.describe Admin::SettingsController, :type => :controller do
           expect(response.status).to be == 200
 
           setting_data = json.fetch('setting')
-          expect(setting_data.keys).to contain_exactly *setting_keys
+          expect(setting_data.keys).to contain_exactly '_type', *setting_keys
 
           attributes.each do |attribute, value|
             expect(setting_data.fetch attribute.to_s).to be == value

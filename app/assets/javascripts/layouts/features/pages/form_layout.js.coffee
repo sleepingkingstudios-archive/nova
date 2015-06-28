@@ -1,4 +1,4 @@
-# subl app/assets/javascripts/layouts/features/pages/form_layout.js.coffee
+# app/assets/javascripts/layouts/features/pages/form_layout.js.coffee
 
 class Appleseed.Layouts.Features.Pages.FormLayout extends Appleseed.Layouts.BaseLayout
   @include Appleseed.Layouts.Concerns.ContentSelection

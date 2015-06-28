@@ -1,17 +1,17 @@
-# spec/serializers/settings/setting_serializer_spec.rb
+# spec/serializers/features/feature_serializer_spec.rb
 
 require 'rails_helper'
 
-require 'serializers/settings/setting_serializer'
+require 'serializers/features/feature_serializer'
 
-RSpec.describe SettingSerializer do
+RSpec.describe FeatureSerializer do
   include Spec::Contexts::SerializerContexts
   include Spec::Examples::SerializerExamples
 
-  include_context 'with a serializer for', Setting
+  include_context 'with a serializer for', Feature
 
   describe '#deserialize' do
-    let(:attributes) { { 'key' => 'to.the.city' } }
+    before(:each) { expected.merge! 'slug' => attributes[:title].parameterize, 'slug_lock' => false }
 
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
 

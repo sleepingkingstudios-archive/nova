@@ -351,6 +351,14 @@ RSpec.describe Directory, :type => :model do
     end # context
   end # describe
 
+  describe '#directories' do
+    it { expect(instance).to have_reader(:directories).with([]) }
+
+    context 'with many child directories', :children => :one do
+      it { expect(instance.directories).to be == children }
+    end # context
+  end # describe
+
   describe '#features' do
     it { expect(instance).to have_reader(:features).with([]) }
 
