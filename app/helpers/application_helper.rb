@@ -4,6 +4,7 @@ module ApplicationHelper
   include DecoratorsHelper
   include Decorators::PresentersHelper
   include Decorators::SerializersHelper
+  include ExportersHelper
   include IconsHelper
   include RenderingHelper
 end # module

@@ -39,13 +39,30 @@ RSpec.describe Decorators::SerializersHelper, :type => :helper do
   let(:instance) { Object.new.extend described_class }
 
   describe '#deserialize' do
+    let(:attributes) { { 'value' => 'value' } }
+    let(:options)    { {} }
+
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
+
+    context 'with a custom class' do
+      include_context 'with a custom class'
+
+      it 'should raise an error' do
+        expect { instance.deserialize attributes, **options }.to raise_error ArgumentError, 'must specify a type'
+      end # it
+
+      describe 'with a specified type' do
+        let(:options) { super().merge :type => resource_class }
+
+        it 'should raise an error' do
+          expect { instance.deserialize attributes, **options }.to raise_error StandardError, "undefined serializer for type #{resource_class}"
+        end
+      end
+    end
 
     context 'with a custom serializer' do
       include_context 'with a custom serializer'
 
-      let(:attributes)   { { 'value' => 'value' } }
-      let(:options)      { {} }
       let(:deserialized) { instance.deserialize(attributes, **options) }
 
       it 'should raise an error' do
@@ -74,6 +91,14 @@ RSpec.describe Decorators::SerializersHelper, :type => :helper do
 
   describe '#serialize' do
     it { expect(instance).to respond_to(:serialize).with(1, :arbitrary, :keywords) }
+
+    context 'with a custom class' do
+      include_context 'with a custom class'
+
+      it 'should raise an error' do
+        expect { instance.serialize(resource) }.to raise_error StandardError, "undefined serializer for type #{resource_class}"
+      end
+    end
 
     context 'with a custom serializer' do
       include_context 'with a custom serializer'
