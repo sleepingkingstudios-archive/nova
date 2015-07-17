@@ -8,15 +8,27 @@ module ExportersHelper
   include Decorators::SerializersHelper
 
   def export obj, format:, **options
-    hsh = obj.is_a?(Hash) ? obj : serialize(obj, **options)
+    case obj
+    when Hash
+      serialized = obj
+    when Array
+      serialized = obj.map { |item| serialize(item, **options) }
+    else
+      serialized = serialize(obj, **options)
+    end # case
 
-    exporter(format).export(hsh)
+    exporter(format).export(serialized)
   end # method export
 
   def import str, format:, type: nil, **options
-    hsh = exporter(format).import(str)
+    obj = exporter(format).import(str)
 
-    deserialize(hsh, :type => type, **options)
+    case obj
+    when Array
+      obj.map { |item| deserialize(item, :type => type, **options) }
+    else
+      deserialize(obj, :type => type, **options)
+    end # case
   end # method import
 
   private
