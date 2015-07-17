@@ -5,6 +5,10 @@ require 'rails_helper'
 require 'presenters/directory_presenter'
 
 RSpec.describe DirectoryPresenter, :type => :decorator do
+  shared_context 'with the root directory' do
+    let(:directory) { RootDirectory.instance }
+  end # shared_context
+
   let(:attributes)  { {} }
   let(:directory)   { build(:directory, attributes) }
   let(:instance)    { described_class.new directory }
@@ -33,6 +37,16 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
       it { expect(instance.children).to be == children }
     end # context
+
+    wrap_context 'with the root directory' do
+      let(:roots) do
+        %w(weapons potions spells).map { |slug| double(:directory, :slug => slug) }
+      end # let
+
+      before(:each) { allow(Directory).to receive(:roots).and_return(roots) }
+
+      it { expect(instance.children).to be == roots }
+    end # context
   end # describe
 
   describe '#features' do
@@ -57,6 +71,16 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
       before(:each) { allow(directory).to receive(:features).and_return(features) }
 
       it { expect(instance.features).to be == features }
+    end # context
+
+    wrap_context 'with the root directory' do
+      let(:roots) do
+        %w(about contact help).map { |slug| double(:feature, :slug => slug) }
+      end # let
+
+      before(:each) { allow(DirectoryFeature).to receive(:roots).and_return(roots) }
+
+      it { expect(instance.features).to be == roots }
     end # context
   end # describe
 
@@ -85,6 +109,10 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
         it { expect(instance.label).to be == directory.title_was }
       end # context
     end # context
+
+    wrap_context 'with the root directory' do
+      it { expect(instance.label).to be == 'Root Directory' }
+    end # context
   end # describe
 
   describe '#parent' do
@@ -107,6 +135,10 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
         it { expect(instance.parent).to be == parent }
       end # context
+    end # context
+
+    wrap_context 'with the root directory' do
+      it { expect(instance.parent).to be nil }
     end # context
   end # describe
 
@@ -190,6 +222,18 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
         end # context
       end # context
     end # context
+
+    wrap_context 'with the root directory' do
+      it { expect(instance.parent_link).to be == empty_value }
+
+      context 'with action => dashboard' do
+        it { expect(instance.parent_link :dashboard).to be == empty_value }
+      end # context
+
+      context 'with action => index' do
+        it { expect(instance.parent_link :index).to be == empty_value }
+      end # context
+    end # context
   end # describe
 
   describe '#root?' do
@@ -213,6 +257,10 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
       it { expect(instance.root?).to be false }
     end # context
+
+    wrap_context 'with the root directory' do
+      it { expect(instance.root?).to be true }
+    end # context
   end # describe
 
   describe '#slug' do
@@ -227,6 +275,10 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
     context 'with a directory' do
       it { expect(instance.slug).to be == instance.slug }
     end # context
+
+    wrap_context 'with the root directory' do
+      it { expect(instance.slug).to be == empty_value }
+    end # context
   end # describe
 
   describe '#title' do
@@ -240,6 +292,10 @@ RSpec.describe DirectoryPresenter, :type => :decorator do
 
     context 'with a directory' do
       it { expect(instance.title).to be == directory.title }
+    end # context
+
+    wrap_context 'with the root directory' do
+      it { expect(instance.title).to be == empty_value }
     end # context
   end # describe
 end # describe
