@@ -10,7 +10,7 @@ RSpec.describe PageSerializer do
 
   include_context 'with a serializer for', Page
 
-  before(:each) { blacklisted_attributes << 'content' }
+  before(:each) { blacklisted_attributes << 'content' << 'directory' << 'directory_id' }
 
   describe '#deserialize' do
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
@@ -59,6 +59,37 @@ RSpec.describe PageSerializer do
         expect(resource.published_at).to be == attributes['published_at']
       } # end examples
     end # describe
+
+    describe 'with a valid directory' do
+      let(:directory) { create(:directory) }
+
+      before(:each) { attributes[:directory] = directory.to_partial_path }
+
+      include_examples 'should return an instance of the resource', ->() {
+        expect(resource.directory).to be == directory
+      } # end examples
+
+      context 'with many ancestors' do
+        let(:ancestors) { ary = Array.new(3).tap { |ary| ary.each_index { |index| ary[index] = create(:directory, :parent => ary[index - 1]) } } }
+        let(:directory) { create(:directory, :parent => ancestors.last) }
+
+        include_examples 'should return an instance of the resource', ->() {
+          expect(resource.directory).to be == directory
+        } # end examples
+      end # context
+    end # describe
+
+    describe 'with an invalid directory' do
+      before(:each) { attributes[:directory] = 'not/a/directory' }
+
+      it 'should raise an error' do
+        expect { instance.deserialize attributes }.to raise_error Directory::NotFoundError
+      end # it
+
+      it 'should not create a feature' do
+        expect { begin; instance.deserialize attributes; rescue Directory::NotFoundError; end }.not_to change(DirectoryFeature, :count)
+      end # it
+    end # describe
   end # describe
 
   describe '#serialize' do
@@ -91,6 +122,27 @@ RSpec.describe PageSerializer do
         expect(serialized).to have_key 'published_at'
         expect(serialized.fetch('published_at')).to be == resource.published_at
       } # end examples
+    end # context
+
+    context 'with a directory' do
+      let(:directory) { create(:directory) }
+
+      before(:each) { resource.directory = directory }
+
+      include_examples 'should return the resource attributes', ->() {
+        expect(serialized).to have_key 'directory'
+        expect(serialized['directory']).to be == directory.to_partial_path
+      } # end examples
+
+      context 'with many ancestors' do
+        let(:ancestors) { ary = Array.new(3).tap { |ary| ary.each_index { |index| ary[index] = create(:directory, :parent => ary[index - 1]) } } }
+        let(:directory) { create(:directory, :parent => ancestors.last) }
+
+        include_examples 'should return the resource attributes', ->() {
+          expect(serialized).to have_key 'directory'
+          expect(serialized['directory']).to be == directory.to_partial_path
+        } # end examples
+      end # context
     end # context
   end # describe
 end # describe

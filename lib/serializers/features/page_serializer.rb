@@ -1,8 +1,8 @@
 # lib/serializers/features/page_serializer.rb
 
-require 'serializers/features/feature_serializer'
+require 'serializers/features/directory_feature_serializer'
 
-class PageSerializer < FeatureSerializer
+class PageSerializer < DirectoryFeatureSerializer
   attribute :published_at
 
   embeds_one :content

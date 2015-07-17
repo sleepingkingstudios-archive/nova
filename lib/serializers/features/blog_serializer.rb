@@ -1,7 +1,7 @@
 # lib/serializers/features/blog_serializer.rb
 
-require 'serializers/features/feature_serializer'
+require 'serializers/features/directory_feature_serializer'
 
-class BlogSerializer < FeatureSerializer
+class BlogSerializer < DirectoryFeatureSerializer
   has_many :posts
 end # class
