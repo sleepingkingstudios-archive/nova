@@ -45,7 +45,7 @@ RSpec.describe Content, :type => :model do
   describe '#container' do
     it { expect(instance).to have_reader(:container).with(nil) }
 
-    context 'with a container', :container => :one do
+    wrap_context 'with a container' do
       it { expect(instance.container).to be == container }
     end # context
   end # describe
@@ -53,7 +53,7 @@ RSpec.describe Content, :type => :model do
   ### Validation ###
 
   describe 'validation' do
-    context 'with a container', :container => :one do
+    wrap_context 'with a container' do
       it { expect(instance).to be_valid }
     end # context
 

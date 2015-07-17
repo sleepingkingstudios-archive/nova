@@ -15,17 +15,19 @@ RSpec.describe ResourcesController, :type => :controller do
       get :show, :directories => path
     end # method perform_action
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       expect_behavior 'renders template', :show
 
       expect_behavior 'assigns directories'
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory'
     end # describe
 
-    describe 'with a valid path to a blog', :path => :valid_feature do
+    describe 'with a valid path to a blog' do
+      include_context 'with a valid path to a feature'
+
       let(:resource) { create(:blog, :directory => directories.last) }
 
       expect_behavior 'renders template', :show
@@ -35,7 +37,9 @@ RSpec.describe ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
-    describe 'with a valid path to a blog post', :path => :valid_feature do
+    describe 'with a valid path to a blog post' do
+      include_context 'with a valid path to a feature'
+
       let(:blog)     { create(:blog, :directory => directories.last) }
       let(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
       let(:path)     { segments.push(blog.slug, resource.slug).join('/') }
@@ -68,7 +72,7 @@ RSpec.describe ResourcesController, :type => :controller do
       end # context
     end # describe
 
-    describe 'with a valid path to a directory', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       let(:resource) { directories.last }
 
       expect_behavior 'assigns directories'
@@ -102,7 +106,9 @@ RSpec.describe ResourcesController, :type => :controller do
       end # describe
     end # describe
 
-    describe 'with a valid path to a page', :path => :valid_feature do
+    describe 'with a valid path to a page' do
+      include_context 'with a valid path to a feature'
+
       let(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
 
       expect_behavior 'assigns directories'

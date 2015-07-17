@@ -6,7 +6,7 @@ RSpec.describe Page, :type => :model do
   let(:attributes) { attributes_for(:page) }
   let(:instance)   { described_class.new attributes }
 
-  shared_context 'with generic content', :content => :one do
+  shared_context 'with generic content' do
     let(:content)    { build :content }
     let(:attributes) { super().merge :content => content }
   end # shared_context
@@ -56,7 +56,7 @@ RSpec.describe Page, :type => :model do
   describe '#content' do
     it { expect(instance).to have_reader(:content).with(nil) }
 
-    context 'with generic content', :content => :one do
+    wrap_context 'with generic content' do
       it { expect(instance.content).to be == content }
     end # context
   end # describe
@@ -64,7 +64,7 @@ RSpec.describe Page, :type => :model do
   ### Validation ###
 
   describe 'validation' do
-    context 'with generic content', :content => :one do
+    wrap_context 'with generic content' do
       it { expect(instance).to be_valid }
     end # context
 

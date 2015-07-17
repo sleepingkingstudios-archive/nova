@@ -8,7 +8,7 @@ RSpec.describe FeaturesDelegate, :type => :decorator do
   include Spec::Contexts::Controllers::ResourcesContexts
   include Spec::Contexts::Delegates::DelegateContexts
 
-  shared_context 'with request params', :params => true do
+  shared_context 'with request params' do
     let(:params) do
       ActionController::Parameters.new(
         :feature => {
@@ -48,13 +48,17 @@ RSpec.describe FeaturesDelegate, :type => :decorator do
 
   ### Instance Methods ###
 
-  describe '#build_resource_params', :params => true do
-    let(:sanitized)   { instance.build_resource_params params }
+  describe '#build_resource_params' do
+    include_examples 'with request params'
+
+    let(:sanitized) { instance.build_resource_params params }
 
     expect_behavior 'sanitizes feature attributes'
   end # describe
 
-  describe '#resource_params', :params => true do
+  describe '#resource_params' do
+    include_examples 'with request params'
+
     let(:sanitized) { instance.resource_params params }
 
     expect_behavior 'sanitizes feature attributes'

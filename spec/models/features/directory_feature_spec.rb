@@ -40,7 +40,7 @@ RSpec.describe DirectoryFeature, :type => :model do
 
     it { expect(instance).to have_reader(:directory).with(nil) }
 
-    context 'with a directory', :directories => :one do
+    wrap_context 'with a directory' do
       it { expect(instance.directory_id).to be == directory.id }
     end # context
   end # describe
@@ -63,9 +63,7 @@ RSpec.describe DirectoryFeature, :type => :model do
         it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
       end # context
 
-      context 'with a directory' do
-        include_context 'with a directory'
-
+      wrap_context 'with a directory' do
         before(:each) { create :directory, :slug => instance.slug }
 
         it { expect(instance).not_to have_errors.on(:slug) }
@@ -92,9 +90,7 @@ RSpec.describe DirectoryFeature, :type => :model do
 
     it { expect(instance.to_partial_path).to be == instance.slug }
 
-    describe 'with a directory' do
-      include_context 'with a directory'
-
+    wrap_context 'with a directory' do
       let(:slugs) { [directory.slug, instance.slug] }
 
       it { expect(instance.to_partial_path).to be == slugs.join('/') }
@@ -107,9 +103,7 @@ RSpec.describe DirectoryFeature, :type => :model do
       end # context
     end # describe
 
-    describe 'with many ancestor directories' do
-      include_context 'with many ancestor directories'
-
+    wrap_context 'with many ancestor directories' do
       let(:slugs) { directories.map(&:slug).push(instance.slug) }
 
       it { expect(instance.to_partial_path).to be == slugs.join('/') }

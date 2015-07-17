@@ -8,7 +8,7 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
   include Spec::Contexts::Controllers::ResourcesContexts
   include Spec::Contexts::Delegates::DelegateContexts
 
-  shared_context 'with request params', :params => true do
+  shared_context 'with request params' do
     let(:params) do
       ActionController::Parameters.new(
         :directory => {
@@ -49,7 +49,9 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
 
   ### Instance Methods ###
 
-  describe '#build_resource_params', :params => true do
+  describe '#build_resource_params' do
+    include_context 'with request params'
+
     let(:directories) { [] }
     let(:sanitized)   { instance.build_resource_params params }
 
@@ -63,20 +65,26 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
       expect(sanitized[:parent]).to be nil
     end # it
 
-    context 'with many directories', :path => :valid_directory do
+    context 'with many directories' do
+      include_context 'with a valid path to a directory'
+
       it 'assigns parent => directories.last' do
         expect(sanitized[:parent]).to be == directories.last
       end # it
     end # context
   end # describe
 
-  describe '#resource_params', :params => true do
+  describe '#resource_params' do
+    include_context 'with request params'
+
     let(:sanitized) { instance.resource_params params }
 
     expect_behavior 'sanitizes directory attributes'
   end # describe
 
-  describe '#update_resource_params', :params => true do
+  describe '#update_resource_params' do
+    include_context 'with request params'
+
     let(:directories) { [] }
     let(:sanitized)   { instance.update_resource_params params }
 
@@ -141,7 +149,9 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
         instance.create request
       end # it
 
-      context 'with many directories', :path => :valid_directory do
+      context 'with many directories' do
+        include_context 'with a valid path to a directory'
+
         it 'sets the directory parent' do
           instance.create request
 
@@ -213,7 +223,9 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
       it { expect(instance.send :_dashboard_resource_path).to be == "/#{directory.slug}/dashboard" }
     end # pending
 
-    context 'with many directories', :path => :valid_directory do
+    context 'with many directories' do
+      include_context 'with a valid path to a directory'
+
       let(:directory)  { build(:directory, :parent => directories.last) }
 
       before(:each) do
@@ -229,7 +241,9 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
   describe '#_resources_path' do
     it { expect(instance.send :_resources_path).to be == '/directories' }
 
-    context 'with many directories', :path => :valid_directory do
+    context 'with many directories' do
+      include_context 'with a valid path to a directory'
+
       before(:each) do
         instance.directories = directories
       end # before each

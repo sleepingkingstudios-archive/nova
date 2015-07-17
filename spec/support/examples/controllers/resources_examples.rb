@@ -97,7 +97,7 @@ module Spec
         shared_examples 'requires authentication' do
           before(:each) { sign_out :user }
 
-          describe 'with an invalid path', :path => :invalid_directory do
+          wrap_context 'with an invalid path' do
             it 'redirects to the last found directory' do
               perform_action
 
@@ -108,7 +108,9 @@ module Spec
             end # it
           end # describe
 
-          describe 'with a valid path', :path => :valid_directory do
+          describe 'with a valid path' do
+            include_context 'with a valid path to a directory'
+
             it 'redirects to the last found directory' do
               perform_action
 
@@ -123,7 +125,7 @@ module Spec
         shared_examples 'requires authentication for root directory' do
           before(:each) { sign_out :user }
 
-          describe 'with an empty path', :path => :empty do
+          wrap_context 'with an empty path' do
             it 'redirects to root' do
               perform_action
 

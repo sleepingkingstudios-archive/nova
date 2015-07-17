@@ -5,7 +5,7 @@ require 'rails_helper'
 require 'content_builders/content_builder'
 
 RSpec.describe ContentBuilder, :type => :decorator do
-  shared_context 'with a class object', :object => :class do
+  shared_context 'with a class object' do
     let(:object) { Content }
   end # shared_context
 
@@ -16,7 +16,9 @@ RSpec.describe ContentBuilder, :type => :decorator do
     it { expect(described_class).to construct.with(1).arguments }
   end # describe
 
-  describe '#build_content', :object => :class do
+  describe '#build_content' do
+    include_examples 'with a class object'
+
     let(:params) { ActionController::Parameters.new(:evil => 'malicious') }
 
     it { expect(instance).to respond_to(:build_content).with(1).argument }
@@ -37,7 +39,7 @@ RSpec.describe ContentBuilder, :type => :decorator do
   describe '#content' do
     it { expect(instance).to have_reader(:content).with(object) }
 
-    context 'with a class object', :object => :class do
+    wrap_context 'with a class object' do
       it { expect(instance.content).to be nil }
     end # context
   end # describe
@@ -45,7 +47,7 @@ RSpec.describe ContentBuilder, :type => :decorator do
   describe '#content_class' do
     it { expect(instance).to have_reader(:content_class).with(object.class) }
 
-    context 'with a class object', :object => :class do
+    wrap_context 'with a class object' do
       it { expect(instance.content_class).to be object }
     end # context
   end # describe

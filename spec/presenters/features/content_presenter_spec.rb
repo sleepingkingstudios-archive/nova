@@ -5,7 +5,7 @@ require 'rails_helper'
 require 'presenters/features/content_presenter'
 
 RSpec.describe ContentPresenter, :type => :decorator do
-  shared_context 'with a text content', :content => :text do
+  shared_context 'with a text content' do
     let(:content) { build(:text_content) }
   end # shared_context
 
@@ -29,7 +29,7 @@ RSpec.describe ContentPresenter, :type => :decorator do
   describe '#form_partial_path' do
     it { expect(instance).to have_reader(:form_partial_path).with('admin/features/contents/fields') }
 
-    context 'with a text content', :content => :text do
+    wrap_context 'with a text content' do
       it { expect(instance.form_partial_path).to be == 'admin/features/contents/text_contents/fields' }
     end # context
   end # describe
@@ -41,7 +41,7 @@ RSpec.describe ContentPresenter, :type => :decorator do
   describe '#type' do
     it { expect(instance).to have_reader(:type).with('content') }
 
-    context 'with a text content', :content => :text do
+    wrap_context 'with a text content' do
       it { expect(instance.type).to be == 'text_content' }
     end # context
 

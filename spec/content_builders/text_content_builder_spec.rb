@@ -5,10 +5,6 @@ require 'rails_helper'
 require 'content_builders/text_content_builder'
 
 RSpec.describe TextContentBuilder, :type => :decorator do
-  shared_context 'with a class object', :object => :class do
-    let(:object) { TextContent }
-  end # shared_context
-
   let(:object)   { build(:text_content) }
   let(:instance) { described_class.new object }
 

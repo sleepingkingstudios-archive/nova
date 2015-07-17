@@ -19,11 +19,13 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog', :path => :valid_feature do
+    describe 'with a valid path to a blog' do
+      include_context 'with a valid path to a feature'
+
       let(:resource) { create(:blog, :directory => directories.last) }
 
       expect_behavior 'renders template', :edit
@@ -33,7 +35,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
-    describe 'with a valid path to a blog post', :path => :valid_feature do
+    describe 'with a valid path to a blog post' do
+      include_context 'with a valid path to a feature'
+
       let(:blog)     { create(:blog, :directory => directories.last) }
       let(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
       let(:path)     { segments.push(blog.slug, resource.slug).join('/') }
@@ -45,7 +49,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
-    describe 'with a valid path to a directory', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       let(:resource) { directories.last }
 
       expect_behavior 'renders template', :edit
@@ -55,7 +59,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
-    describe 'with a valid path to a page', :path => :valid_feature do
+    describe 'with a valid path to a page' do
+      include_context 'with a valid path to a feature'
+
       let(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
 
       expect_behavior 'renders template', :edit
@@ -78,11 +84,13 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog', :path => :valid_feature do
+    describe 'with a valid path to a blog' do
+      include_context 'with a valid path to a feature'
+
       let(:resource_name) { :blog }
       let(:resource)      { create(:blog, :directory => directories.last) }
 
@@ -118,7 +126,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # describe
     end # describe
 
-    describe 'with a valid path to a blog post', :path => :valid_feature do
+    describe 'with a valid path to a blog post' do
+      include_context 'with a valid path to a feature'
+
       let(:resource_name) { :post }
       let(:blog)          { create(:blog, :directory => directories.last) }
       let(:resource)      { create(:blog_post, :blog => blog, :content => build(:content)) }
@@ -156,7 +166,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # describe
     end # describe
 
-    describe 'with a valid path to a directory', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       let(:resource_name) { :directory }
       let(:resource)      { directories.last }
 
@@ -192,7 +202,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # describe
     end # describe
 
-    describe 'with a valid path to a page', :path => :valid_feature do
+    describe 'with a valid path to a page' do
+      include_context 'with a valid path to a feature'
+
       let(:resource_name) { :page }
       let(:resource)      { create(:page, :directory => directories.last, :content => build(:content)) }
 
@@ -238,11 +250,13 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog', :path => :valid_feature do
+    describe 'with a valid path to a blog' do
+      include_context 'with a valid path to a feature'
+
       let!(:resource) { create(:blog, :directory => directories.last) }
 
       it 'redirects to the parent directory' do
@@ -261,7 +275,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a blog post', :path => :valid_feature do
+    describe 'with a valid path to a blog post' do
+      include_context 'with a valid path to a feature'
+
       let(:blog)      { create(:blog, :directory => directories.last) }
       let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
       let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
@@ -280,7 +296,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a directory', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       it 'redirects to the parent directory' do
         parent_directory = directories.last.parent
 
@@ -297,7 +313,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a page', :path => :valid_feature do
+    describe 'with a valid path to a page' do
+      include_context 'with a valid path to a feature'
+
       let!(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
 
       it 'redirects to the parent directory' do
@@ -326,11 +344,13 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog', :path => :valid_feature do
+    describe 'with a valid path to a blog' do
+      include_context 'with a valid path to a feature'
+
       let!(:resource) { create(:blog, :directory => directories.last) }
 
       it 'redirects to the resource' do
@@ -343,7 +363,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a blog post', :path => :valid_feature do
+    describe 'with a valid path to a blog post' do
+      include_context 'with a valid path to a feature'
+
       let(:blog)      { create(:blog, :directory => directories.last) }
       let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
       let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
@@ -362,7 +384,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a directory', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       it 'redirects to the directory' do
         perform_action
 
@@ -373,7 +395,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a page', :path => :valid_feature do
+    describe 'with a valid path to a page' do
+      include_context 'with a valid path to a feature'
+
       let!(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
 
       it 'redirects to the page' do
@@ -400,11 +424,13 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog', :path => :valid_feature do
+    describe 'with a valid path to a blog' do
+      include_context 'with a valid path to a feature'
+
       let!(:resource) { create(:blog, :directory => directories.last) }
 
       it 'redirects to the resource' do
@@ -417,7 +443,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a blog post', :path => :valid_feature do
+    describe 'with a valid path to a blog post' do
+      include_context 'with a valid path to a feature'
+
       let(:blog)      { create(:blog, :directory => directories.last) }
       let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content), :published_at => 1.day.ago) }
       let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
@@ -440,7 +468,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a directory', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       it 'redirects to the directory' do
         perform_action
 
@@ -451,7 +479,9 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a page', :path => :valid_feature do
+    describe 'with a valid path to a page' do
+      include_context 'with a valid path to a feature'
+
       let!(:resource) { create(:page, :directory => directories.last, :content => build(:content), :published_at => 1.day.ago) }
 
       it 'redirects to the page' do

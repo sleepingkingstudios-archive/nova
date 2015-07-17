@@ -38,10 +38,10 @@ gem 'quiet_assets', :group => :development # Silence logging of asset requests. 
 group :development, :test do
   gem 'rake', '~> 10.3.2' # Required for Travis-CI.
 
-  gem 'rspec',                       '~> 3.1'
-  gem 'rspec-rails',                 '~> 3.1'
+  gem 'rspec',                       '~> 3.3'
+  gem 'rspec-rails',                 '~> 3.3'
   gem 'rspec-collection_matchers',   '~> 1.1.2'
-  gem 'rspec-sleeping_king_studios', '~> 2.0', '>= 2.0.1'
+  gem 'rspec-sleeping_king_studios', :git => 'https://github.com/sleepingkingstudios/rspec-sleeping_king_studios' # '~> 2.0', '>= 2.0.3'
 
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'database_cleaner',   '~> 1.3.0'
@@ -55,4 +55,4 @@ group :production do
   gem 'rails_12factor', '~> 0.0.3' # Required for Heroku deployment.
 end # group
 
-ruby "2.2.1"
+ruby "2.2.2"

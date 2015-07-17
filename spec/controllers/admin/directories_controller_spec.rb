@@ -21,17 +21,17 @@ RSpec.describe Admin::DirectoriesController do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       expect_behavior 'renders template', :dashboard
 
       expect_behavior 'assigns directories'
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       expect_behavior 'renders template', :dashboard
 
       expect_behavior 'assigns directories'
@@ -49,17 +49,17 @@ RSpec.describe Admin::DirectoriesController do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       expect_behavior 'renders template', :index
 
       expect_behavior 'assigns directories'
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       expect_behavior 'renders template', :index
 
       expect_behavior 'assigns directories'
@@ -77,7 +77,7 @@ RSpec.describe Admin::DirectoriesController do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       expect_behavior 'renders template', :new
 
       expect_behavior 'assigns directories'
@@ -85,11 +85,11 @@ RSpec.describe Admin::DirectoriesController do
       expect_behavior 'assigns new directory'
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       expect_behavior 'renders template', :new
 
       expect_behavior 'assigns directories'
@@ -111,7 +111,7 @@ RSpec.describe Admin::DirectoriesController do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       describe 'with invalid params' do
         let(:attributes) { super().merge :title => nil }
 
@@ -144,11 +144,11 @@ RSpec.describe Admin::DirectoriesController do
       end # describe
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       describe 'with invalid params' do
         let(:attributes) { super().merge :title => nil }
 

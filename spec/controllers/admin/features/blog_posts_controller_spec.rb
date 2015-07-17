@@ -31,7 +31,7 @@ RSpec.describe Admin::Features::BlogPostsController do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       expect_behavior 'assigns directories'
 
       describe 'with an invalid blog' do
@@ -47,11 +47,11 @@ RSpec.describe Admin::Features::BlogPostsController do
       end # describe
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       expect_behavior 'assigns directories'
 
       describe 'with an invalid blog' do
@@ -81,7 +81,7 @@ RSpec.describe Admin::Features::BlogPostsController do
 
     before(:each) { sign_in :user, user }
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       expect_behavior 'assigns directories'
 
       describe 'with an invalid blog' do
@@ -105,11 +105,11 @@ RSpec.describe Admin::Features::BlogPostsController do
       end # describe
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       expect_behavior 'assigns directories'
 
       describe 'with an invalid blog' do
@@ -149,7 +149,7 @@ RSpec.describe Admin::Features::BlogPostsController do
 
     let(:params) { { :blog => blog.slug, :directories => path, :post => attributes } }
 
-    describe 'with an empty path', :path => :empty do
+    wrap_context 'with an empty path' do
       describe 'with an invalid blog' do
         expect_behavior 'redirects to the last found directory dashboard'
       end # describe
@@ -190,11 +190,11 @@ RSpec.describe Admin::Features::BlogPostsController do
       end # describe
     end # describe
 
-    describe 'with an invalid path', :path => :invalid_directory do
+    wrap_context 'with an invalid path' do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path', :path => :valid_directory do
+    wrap_context 'with a valid path to a directory' do
       describe 'with an invalid blog' do
         expect_behavior 'redirects to the last found directory dashboard'
       end # describe

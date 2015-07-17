@@ -6,12 +6,12 @@ RSpec.describe Directory, :type => :model do
   let(:attributes) { attributes_for :directory }
   let(:instance)   { described_class.new attributes }
 
-  shared_context 'with a parent directory', :parent => :one do
+  shared_context 'with a parent directory' do
     let(:parent)     { build :directory }
     let(:attributes) { super().merge :parent => parent }
   end # shared_context
 
-  shared_context 'with many ancestor directories', :ancestors => :many do
+  shared_context 'with many ancestor directories' do
     let(:ancestors) do
       [].tap do |ary|
         3.times { |index| ary << create(:directory, :parent => ary[index - 1]) }
@@ -21,7 +21,7 @@ RSpec.describe Directory, :type => :model do
     let(:attributes) { super().merge :parent => parent }
   end # shared_context
 
-  shared_context 'with many child directories', :children => :one do
+  shared_context 'with many child directories' do
     let!(:children) do
       Array.new(3).map do
         instance.children.build attributes_for(:directory)
@@ -29,7 +29,7 @@ RSpec.describe Directory, :type => :model do
     end # let!
   end # shared_context
 
-  shared_context 'with many features', :features => :many do
+  shared_context 'with many features' do
     let!(:features) do
       Array.new(3).map do
         instance.features.build attributes_for(:feature)
@@ -37,7 +37,7 @@ RSpec.describe Directory, :type => :model do
     end # let!
   end # shared_context
 
-  shared_context 'with many example features', :example_features => :many do
+  shared_context 'with many example features' do
     let!(:example_features) do
       Array.new(3).map do
         create :example_feature, :directory => instance
@@ -92,7 +92,10 @@ RSpec.describe Directory, :type => :model do
 
         it { expect(criteria.selector.fetch('_type')).to be == model_class.to_s }
 
-        context 'with many example features', :features => :many, :example_features => :many do
+        context 'with many example features' do
+          include_context 'with many features'
+          include_context 'with many example features'
+
           it 'returns the example features' do
             expect(criteria.to_a).to contain_exactly *example_features
           end # it
@@ -198,7 +201,9 @@ RSpec.describe Directory, :type => :model do
       end # it
     end # describe
 
-    describe 'with an invalid path with many values', :ancestors => :many do
+    describe 'with an invalid path with many values' do
+      include_context 'with many ancestor directories'
+
       let(:values) { ancestors.map(&:slug).push('missing-child') }
 
       it 'raises an error' do
@@ -219,7 +224,9 @@ RSpec.describe Directory, :type => :model do
       end # it
     end # describe
 
-    describe 'with a valid path with many values', :ancestors => :many do
+    describe 'with a valid path with many values' do
+      include_context 'with many ancestor directories'
+
       let!(:directory) { create :directory, attributes }
       let(:values)     { ancestors.dup.push(directory).map(&:slug) }
 
@@ -331,7 +338,7 @@ RSpec.describe Directory, :type => :model do
 
     it { expect(instance).to have_reader(:parent).with(nil) }
 
-    context 'with a parent directory', :parent => :one do
+    wrap_context 'with a parent directory' do
       it { expect(instance.parent_id).to be == parent.id }
     end # context
   end # describe
@@ -339,7 +346,7 @@ RSpec.describe Directory, :type => :model do
   describe '#children' do
     it { expect(instance).to have_reader(:children).with([]) }
 
-    context 'with many child directories', :children => :one do
+    wrap_context 'with many child directories' do
       it { expect(instance.children).to be == children }
 
       it 'destroys the children on destroy' do
@@ -354,7 +361,7 @@ RSpec.describe Directory, :type => :model do
   describe '#directories' do
     it { expect(instance).to have_reader(:directories).with([]) }
 
-    context 'with many child directories', :children => :one do
+    wrap_context 'with many child directories' do
       it { expect(instance.directories).to be == children }
     end # context
   end # describe
@@ -362,7 +369,7 @@ RSpec.describe Directory, :type => :model do
   describe '#features' do
     it { expect(instance).to have_reader(:features).with([]) }
 
-    context 'with many features', :features => :many do
+    wrap_context 'with many features' do
       it { expect(instance.features).to be == features }
 
       it 'destroys the features on destroy' do
@@ -430,7 +437,7 @@ RSpec.describe Directory, :type => :model do
         it { expect(instance).to have_errors.on(:slug).with_message("is already taken") }
       end # context
 
-      context 'with a parent directory', :parent => :one do
+      wrap_context 'with a parent directory' do
         before(:each) { create :directory, :slug => instance.slug }
 
         it { expect(instance).not_to have_errors.on(:slug) }
@@ -457,11 +464,11 @@ RSpec.describe Directory, :type => :model do
 
     it { expect(instance.ancestors).to be == [] }
 
-    describe 'with a parent directory', :parent => :one do
+    wrap_context 'with a parent directory' do
       it { expect(instance.ancestors).to be == [parent] }
     end # describe
 
-    describe 'with many ancestor directories', :ancestors => :many do
+    wrap_context 'with many ancestor directories' do
       it { expect(instance.ancestors).to be == ancestors }
     end # describe
   end # describe
@@ -471,7 +478,7 @@ RSpec.describe Directory, :type => :model do
 
     it { expect(instance.root?).to be true }
 
-    describe 'with a parent directory', :parent => :one do
+    wrap_context 'with a parent directory' do
       it { expect(instance.root?).to be false }
     end # describe
   end # describe
@@ -494,7 +501,7 @@ RSpec.describe Directory, :type => :model do
       end # context
     end # describe
 
-    describe 'with many ancestor directories', :ancestors => :many do
+    wrap_context 'with many ancestor directories' do
       let(:slugs) { instance.ancestors.map(&:slug).push(instance.slug) }
 
       it { expect(instance.to_partial_path).to be == slugs.join('/') }

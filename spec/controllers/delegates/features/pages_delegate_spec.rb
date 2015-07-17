@@ -8,7 +8,7 @@ RSpec.describe PagesDelegate, :type => :decorator do
   include Spec::Contexts::Controllers::ResourcesContexts
   include Spec::Contexts::Delegates::DelegateContexts
 
-  shared_context 'with request params', :params => true do
+  shared_context 'with request params' do
     let(:params) do
       ActionController::Parameters.new(
         :page => {
@@ -101,7 +101,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # context
   end # describe
 
-  describe '#build_resource_params', :params => true do
+  describe '#build_resource_params' do
+    include_context 'with request params'
+
     let(:directories) { [] }
     let(:sanitized)   { instance.build_resource_params params }
 
@@ -115,7 +117,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
       expect(sanitized[:directory]).to be nil
     end # it
 
-    context 'with many directories', :path => :valid_directory do
+    context 'with many directories' do
+      include_context 'with a valid path to a directory'
+
       it 'assigns directory => directories.last' do
         expect(sanitized[:directory]).to be == directories.last
       end # it
@@ -210,7 +214,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
         expect(flash_messages[:success]).to be == "Page successfully created."
       end # it
 
-      describe 'with a directory', :path => :valid_directory do
+      describe 'with a directory' do
+        include_context 'with a valid path to a directory'
+
         before(:each) do
           instance.directories = directories
         end # before each

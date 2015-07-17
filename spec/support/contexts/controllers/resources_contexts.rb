@@ -6,12 +6,12 @@ module Spec
       module ResourcesContexts
         extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
 
-        shared_context 'with an empty path', :path => :empty do
+        shared_context 'with an empty path' do
           let(:path)        { nil }
           let(:directories) { [] }
         end # shared_context
 
-        shared_context 'with an invalid path to a directory', :path => :invalid_directory do
+        shared_context 'with an invalid path' do
           let(:segments) { %w(weapons swords japanese) }
           let(:path)     { segments.join('/') }
           let!(:directories) do
@@ -23,7 +23,7 @@ module Spec
           end # let!
         end # shared_context
 
-        shared_context 'with a valid path to a directory', :path => :valid_directory do
+        shared_context 'with a valid path to a directory' do
           let(:segments) { %w(weapons swords japanese) }
           let(:path)     { segments.join('/') }
           let!(:directories) do
@@ -35,11 +35,10 @@ module Spec
           end # let!
         end # shared_context
 
-        shared_context 'with a valid path to a feature', :path => :valid_feature do |feature_type = :feature|
+        shared_context 'with a valid path to a feature' do
           include_context 'with a valid path to a directory'
 
-          let(:resource) { create(feature_type) }
-          let(:path)     { segments.push(resource.slug).join('/') }
+          let(:path) { segments.push(resource.slug).join('/') }
         end # shared_context
       end # module
     end # module

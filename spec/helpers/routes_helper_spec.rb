@@ -5,17 +5,17 @@ require 'rails_helper'
 RSpec.describe RoutesHelper, :type => :helper do
   let(:instance) { Object.new.extend described_class }
 
-  shared_context 'with a root directory', :directories => :one do
+  shared_context 'with a root directory' do
     let(:slug)      { 'weapons' }
     let(:directory) { build(:directory, :slug => slug) }
   end # shared_context
 
-  shared_context 'with a root feature', :feature => :root do |feature_type = :directory_feature|
+  shared_context 'with a root feature' do |feature_type|
     let(:slug)    { 'character-creation' }
     let(:feature) { build(feature_type, :slug => slug) }
   end # shared_context
 
-  shared_context 'with a non-root directory', :directories => :many do
+  shared_context 'with a non-root directory' do
     let(:slugs) { %w(weapons swords japanese) }
     let(:directories) do
       [].tap do |ary|
@@ -26,7 +26,7 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # let
   end # shared_context
 
-  shared_context 'with a non-root feature', :feature => :leaf do |feature_type = :directory_feature|
+  shared_context 'with a non-root feature' do |feature_type|
     let(:slugs) { %w(weapons swords japanese tachi) }
     let(:directories) do
       [].tap do |ary|
@@ -45,14 +45,14 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.blog_path nil).to be == '/' }
     end # describe
 
-    describe 'with a root feature' do
-      include_context 'with a root feature', :page
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
 
       it { expect(instance.blog_path feature).to be == "/#{slug}" }
     end # describe
 
-    describe 'with a non-root feature' do
-      include_context 'with a non-root feature', :page
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
 
       it { expect(instance.blog_path feature).to be == "/#{slugs.join '/'}" }
 
@@ -91,11 +91,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.create_blog_path nil).to be == '/blogs' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.create_blog_path directory).to be == "/#{slug}/blogs" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.create_blog_path directories.last).to be == "/#{slugs.join '/'}/blogs" }
     end # describe
   end # describe
@@ -123,11 +123,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.create_directory_path nil).to be == '/directories' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.create_directory_path directory).to be == "/#{slug}/directories" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.create_directory_path directories.last).to be == "/#{slugs.join '/'}/directories" }
     end # describe
   end # describe
@@ -139,11 +139,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.create_page_path nil).to be == '/pages' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.create_page_path directory).to be == "/#{slug}/pages" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.create_page_path directories.last).to be == "/#{slugs.join '/'}/pages" }
     end # describe
   end # describe
@@ -171,7 +171,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -191,7 +191,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -219,11 +219,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.dashboard_directory_path nil).to be == '/dashboard' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.dashboard_directory_path directory).to be == "/#{slug}/dashboard" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.dashboard_directory_path directories.last).to be == "/#{slugs.join '/'}/dashboard" }
     end # describe
   end # describe
@@ -235,11 +235,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.directory_path nil).to be == '/' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.directory_path directory).to be == "/#{slug}" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.directory_path directories.last).to be == "/#{slugs.join '/'}" }
 
       context 'with empty slug' do
@@ -293,11 +293,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.edit_directory_path nil).to be == '/edit' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.edit_directory_path directory).to be == "/#{slug}/edit" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.edit_directory_path directories.last).to be == "/#{slugs.join '/'}/edit" }
     end # describe
   end # describe
@@ -321,11 +321,15 @@ RSpec.describe RoutesHelper, :type => :helper do
   describe '#edit_resource_path' do
     it { expect(instance).to respond_to(:edit_resource_path).with(1).argument }
 
-    describe 'with a root feature', :feature => :root do
+    describe 'with a root feature' do
+      include_context 'with a root feature', :directory_feature
+
       it { expect(instance.edit_resource_path feature).to be == "/#{slug}/edit" }
     end # describe
 
-    describe 'with a non-root directory', :feature => :leaf do
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :directory_feature
+
       it { expect(instance.edit_resource_path feature).to be == "/#{slugs.join '/'}/edit" }
     end # describe
   end # describe
@@ -337,11 +341,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.index_blogs_path nil).to be == '/blogs' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.index_blogs_path directory).to be == "/#{slug}/blogs" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.index_blogs_path directories.last).to be == "/#{slugs.join '/'}/blogs" }
     end # describe
   end # describe
@@ -369,11 +373,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.index_directories_path nil).to be == '/directories' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.index_directories_path directory).to be == "/#{slug}/directories" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.index_directories_path directories.last).to be == "/#{slugs.join '/'}/directories" }
     end # describe
   end # describe
@@ -385,11 +389,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.index_pages_path nil).to be == '/pages' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.index_pages_path directory).to be == "/#{slug}/pages" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.index_pages_path directories.last).to be == "/#{slugs.join '/'}/pages" }
     end # describe
   end # describe
@@ -417,7 +421,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -437,7 +441,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -465,11 +469,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.new_blog_path nil).to be == '/blogs/new' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.new_blog_path directory).to be == "/#{slug}/blogs/new" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.new_blog_path directories.last).to be == "/#{slugs.join '/'}/blogs/new" }
     end # describe
   end # describe
@@ -497,11 +501,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.new_directory_path nil).to be == '/directories/new' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.new_directory_path directory).to be == "/#{slug}/directories/new" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.new_directory_path directories.last).to be == "/#{slugs.join '/'}/directories/new" }
     end # describe
   end # describe
@@ -513,11 +517,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.new_page_path nil).to be == '/pages/new' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.new_page_path directory).to be == "/#{slug}/pages/new" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.new_page_path directories.last).to be == "/#{slugs.join '/'}/pages/new" }
     end # describe
   end # describe
@@ -545,7 +549,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -565,7 +569,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -635,11 +639,11 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.preview_page_path nil).to be == '/pages/preview' }
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       it { expect(instance.preview_page_path directory).to be == "/#{slug}/pages/preview" }
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       it { expect(instance.preview_page_path directories.last).to be == "/#{slugs.join '/'}/pages/preview" }
     end # describe
   end # describe
@@ -667,7 +671,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a root directory', :directories => :one do
+    wrap_context 'with a root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -687,7 +691,7 @@ RSpec.describe RoutesHelper, :type => :helper do
       end # describe
     end # describe
 
-    describe 'with a non-root directory', :directories => :many do
+    wrap_context 'with a non-root directory' do
       describe 'with a resource name' do
         let(:resource_name) { 'features' }
 
@@ -751,11 +755,15 @@ RSpec.describe RoutesHelper, :type => :helper do
       it { expect(instance.resource_path nil).to be == '/' }
     end # describe
 
-    describe 'with a root feature', :feature => :root do
+    describe 'with a root feature' do
+      include_context 'with a root feature', :directory_feature
+
       it { expect(instance.resource_path feature).to be == "/#{slug}" }
     end # describe
 
-    describe 'with a non-root feature', :feature => :leaf do
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :directory_feature
+
       it { expect(instance.resource_path feature).to be == "/#{slugs.join '/'}" }
 
       context 'with empty slug' do

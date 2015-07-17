@@ -25,7 +25,7 @@ RSpec.describe MarkdownContent, :type => :model do
   ### Validation ###
 
   describe 'validation' do
-    context 'with a container', :container => :one do
+    wrap_context 'with a container' do
       it { expect(instance).to be_valid }
     end # context
 

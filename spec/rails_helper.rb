@@ -11,6 +11,8 @@ require 'rspec/sleeping_king_studios/all'
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
+  config.extend RSpec::SleepingKingStudios::Concerns::WrapExamples
+
   # Automatically mix in different behaviours to your tests based on their file
   # location.
   config.infer_spec_type_from_file_location!

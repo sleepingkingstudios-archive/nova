@@ -7,11 +7,11 @@ require 'delegates/resources_delegate'
 RSpec.describe ResourcesDelegate, :type => :decorator do
   include Spec::Contexts::Delegates::DelegateContexts
 
-  shared_context 'with an array of objects', :object => :array do
+  shared_context 'with an array of objects' do
     let(:object) { Array.new(3).map { Object.new } }
   end # shared_context
 
-  shared_context 'with a class object', :object => :class do
+  shared_context 'with a class object' do
     let(:object) { String }
   end # shared_context
 
@@ -123,11 +123,11 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   describe '#resource' do
     it { expect(instance).to have_reader(:resource).with(object) }
 
-    context 'with an array of objects', :object => :array do
+    wrap_context 'with an array of objects' do
       it { expect(instance.resource).to be nil }
     end # context
 
-    context 'with a class object', :object => :class do
+    wrap_context 'with a class object' do
       it { expect(instance.resource).to be nil }
     end # context
   end # describe
@@ -135,11 +135,11 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   describe '#resources' do
     it { expect(instance).to have_reader(:resources).with(nil) }
 
-    context 'with an array of objects', :object => :array do
+    wrap_context 'with an array of objects' do
       it { expect(instance.resources).to be == object }
     end # context
 
-    context 'with a class object', :object => :class do
+    wrap_context 'with a class object' do
       it { expect(instance.resources).to be nil }
     end # context
   end # describe

@@ -6,21 +6,6 @@ RSpec.describe Feature, :type => :model do
   let(:attributes) { attributes_for :feature }
   let(:instance)   { described_class.new attributes }
 
-  shared_context 'with a directory', :directories => :one do
-    let(:directory)  { build :directory }
-    let(:attributes) { super().merge :directory => directory }
-  end # shared_context
-
-  shared_context 'with many ancestor directories', :directories => :many do
-    let(:directories) do
-      [].tap do |ary|
-        3.times { |index| ary << create(:directory, :parent => ary[index - 1]) }
-      end # tap
-    end # let
-    let(:directory)  { directories.last }
-    let(:attributes) { super().merge :directory => directory }
-  end # shared_context
-
   ### Class Methods ###
 
   describe '::default_content_type' do
