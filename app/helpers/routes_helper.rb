@@ -23,6 +23,10 @@ module RoutesHelper
     Directory.join directory_path(directory), 'edit'
   end # method edit_directory_path
 
+  def export_directory_path directory, pretty: false
+    "#{directory.blank? ? '/export' : Directory.join(directory_path(directory), 'export')}#{pretty ? '?pretty=true' : ''}"
+  end # method export_directory_path
+
   def index_directories_path directory
     return '/directories' if directory.blank?
 
@@ -44,6 +48,10 @@ module RoutesHelper
   def edit_resource_path resource
     Directory.join resource_path(resource), 'edit'
   end # method edit_resource_path
+
+  def export_resource_path resource, pretty: false
+    "#{Directory.join resource_path(resource), 'export'}#{pretty ? '?pretty=true' : ''}"
+  end # method export_directory_path
 
   def index_resources_path directory, resource
     resource_name = case resource
@@ -114,6 +122,10 @@ module RoutesHelper
     edit_resource_path resource
   end # method edit_blog_post_path
 
+  def export_blog_post_path resource, pretty: false
+    export_resource_path resource, :pretty => pretty
+  end # method export_blog_post_path
+
   def index_blog_posts_path blog
     index_resources_path blog, 'posts'
   end # method index_blog_posts_path
@@ -143,6 +155,10 @@ module RoutesHelper
   def edit_page_path resource
     edit_resource_path resource
   end # method edit_page_path
+
+  def export_page_path resource, pretty: false
+    export_resource_path resource, :pretty => pretty
+  end # method export_page_path
 
   def index_pages_path directory
     index_resources_path directory, 'pages'

@@ -6,13 +6,7 @@
   = presenter.label
 
   - if user_signed_in?
-    = render :layout => 'admin/common/components/button_bar', :locals => { :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } } } do
-      - if presenter.published?
-        = render :partial => 'admin/common/components/button', :locals => { :text => 'Unpublish Post', :url => unpublish_resource_path(post), :options => { :icon => :reply, :text_color => :warning, :method => :put } }
-      - else
-        = render :partial => 'admin/common/components/button', :locals => { :text => 'Publish Post', :url => publish_resource_path(post), :options => { :icon => :share, :text_color => :success, :method => :put } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Edit Post', :url => edit_resource_path(post), :options => { :icon => :edit, :text_color => :warning } }
-      = render :partial => 'admin/common/components/button', :locals => { :text => 'Delete Post', :url => resource_path(post), :options => { :icon => :trash, :text_color => :danger, :method => :delete, :class => 'delete-link' } }
+    = render_component 'admin/features/blog_posts/show/actions', :directory => @current_directory, :post => post, :presenter => presenter
 
 - if presenter.published? || current_user.blank?
   %p.text-muted= presenter.published_message

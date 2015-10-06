@@ -179,7 +179,7 @@ class ResourcesDelegate
 
     serialized = resources.blank? ? serialize(resource, **options) : resources.map { |resource| serialize(resource, **options) }
 
-    controller.render :json => JsonExporter.export(serialized)
+    controller.render :json => JsonExporter.export(serialized, :pretty => request.params[:pretty] == 'true')
   end # action show
 
   ### Partial Methods ###

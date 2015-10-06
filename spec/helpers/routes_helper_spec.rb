@@ -334,6 +334,110 @@ RSpec.describe RoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#export_blog_post_path' do
+    it { expect(instance).to respond_to(:export_blog_post_path).with(1).argument.and_keywords(:pretty) }
+
+    describe 'with a root blog' do
+      include_context 'with a root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.export_blog_post_path post).to be == "/#{slug}/#{post.slug}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_blog_post_path post, :pretty => true).to be == "/#{slug}/#{post.slug}/export?pretty=true" }
+      end # describe
+    end # describe
+
+    describe 'with a non-root blog' do
+      include_context 'with a non-root feature', :blog
+
+      let(:post) { build(:blog_post, :blog => feature) }
+
+      it { expect(instance.export_blog_post_path post).to be == "/#{slugs.join '/'}/#{post.slug}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_blog_post_path post, :pretty => true).to be == "/#{slugs.join '/'}/#{post.slug}/export?pretty=true" }
+      end # describe
+    end # describe
+  end # describe
+
+  describe '#export_directory_path' do
+    it { expect(instance).to respond_to(:export_directory_path).with(1).arguments.and_keywords(:pretty) }
+
+    describe 'with nil' do
+      it { expect(instance.export_directory_path nil).to be == '/export' }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_directory_path nil, :pretty => true).to be == '/export?pretty=true' }
+      end # describe
+    end # describe
+
+    wrap_context 'with a root directory' do
+      it { expect(instance.export_directory_path directory).to be == "/#{slug}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_directory_path directory, :pretty => true).to be == "/#{slug}/export?pretty=true" }
+      end # describe
+    end # describe
+
+    wrap_context 'with a non-root directory' do
+      it { expect(instance.export_directory_path directories.last).to be == "/#{slugs.join '/'}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_directory_path directories.last, :pretty => true).to be == "/#{slugs.join '/'}/export?pretty=true" }
+      end # describe
+    end # describe
+  end # describe
+
+  describe '#export_page_path' do
+    it { expect(instance).to respond_to(:export_page_path).with(1).argument.and_keywords(:pretty) }
+
+    describe 'with a root feature' do
+      include_context 'with a root feature', :directory_feature
+
+      it { expect(instance.export_page_path feature).to be == "/#{slug}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_page_path feature, :pretty => true).to be == "/#{slug}/export?pretty=true" }
+      end # describe
+    end # describe
+
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :directory_feature
+
+      it { expect(instance.export_page_path feature).to be == "/#{slugs.join '/'}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_page_path feature, :pretty => true).to be == "/#{slugs.join '/'}/export?pretty=true" }
+      end # describe
+    end # describe
+  end # describe
+
+  describe '#export_resource_path' do
+    it { expect(instance).to respond_to(:export_resource_path).with(1).argument.and_keywords(:pretty) }
+
+    describe 'with a root feature' do
+      include_context 'with a root feature', :directory_feature
+
+      it { expect(instance.export_resource_path feature).to be == "/#{slug}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_resource_path feature, :pretty => true).to be == "/#{slug}/export?pretty=true" }
+      end # describe
+    end # describe
+
+    describe 'with a non-root feature' do
+      include_context 'with a non-root feature', :directory_feature
+
+      it { expect(instance.export_resource_path feature).to be == "/#{slugs.join '/'}/export" }
+
+      describe 'with :pretty => true' do
+        it { expect(instance.export_resource_path feature, :pretty => true).to be == "/#{slugs.join '/'}/export?pretty=true" }
+      end # describe
+    end # describe
+  end # describe
+
   describe '#index_blogs_path' do
     it { expect(instance).to respond_to(:index_blogs_path).with(1).arguments }
 

@@ -1,8 +1,12 @@
 # lib/exporters/json_exporter.rb
 
 module JsonExporter
-  def self.export hsh
-    hsh.to_json
+  def self.export obj, pretty: false
+    if pretty && (obj.is_a?(Array) || obj.is_a?(Hash))
+      JSON.pretty_generate obj
+    else
+      obj.to_json
+    end # if-else
   end # class method export
 
   def self.import json

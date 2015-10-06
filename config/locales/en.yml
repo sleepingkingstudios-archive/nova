@@ -42,6 +42,7 @@ en:
     create:    'plus-circle'
     delete:    'trash'
     edit:      'edit'
+    export:    'level-down'
     index:     'cubes'
     publish:   'share'
     show:      'cube'
