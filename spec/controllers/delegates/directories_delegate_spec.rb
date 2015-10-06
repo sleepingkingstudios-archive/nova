@@ -5,8 +5,11 @@ require 'rails_helper'
 require 'delegates/directories_delegate'
 
 RSpec.describe DirectoriesDelegate, :type => :decorator do
+  include Spec::Contexts::SerializerContexts
   include Spec::Contexts::Controllers::ResourcesContexts
   include Spec::Contexts::Delegates::DelegateContexts
+
+  include Spec::Examples::SerializerExamples
 
   shared_context 'with request params' do
     let(:params) do
@@ -97,7 +100,9 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
 
   ### Actions ###
 
-  describe '#new', :controller => true do
+  describe '#new' do
+    include_context 'with a controller'
+
     let(:directories) { [] }
     let(:request)     { double('request', :params => ActionController::Parameters.new({})) }
 
@@ -112,7 +117,9 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#create', :controller => true do
+  describe '#create' do
+    include_context 'with a controller'
+
     let(:directories) { [] }
     let(:attributes)  { {} }
     let(:request)     { double('request', :params => ActionController::Parameters.new(:directory => attributes)) }
@@ -167,7 +174,9 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # describe
   end # describe
 
-  describe '#show', :controller => true do
+  describe '#show' do
+    include_context 'with a controller'
+
     let(:object)  { create(:directory) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
@@ -204,6 +213,96 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # describe
   end # describe
 
+  describe '#export' do
+    include_context 'with a controller'
+
+    let(:blacklisted_attributes) { %w(_id _type directories features directory_id parent_id) }
+
+    shared_examples 'should export the directory as JSON' do |proc|
+      it 'should export the directory as JSON' do
+        serialized = nil
+
+        expect(controller).to receive(:render) do |options|
+          expect(options).to have_key :json
+
+          serialized = JSON.parse options[:json]
+          expect(serialized).to be_a Hash
+        end # expect
+
+        perform_action
+
+        expect_to_serialize_attributes serialized, directory
+
+        SleepingKingStudios::Tools::ObjectTools.apply self, proc, serialized if proc.respond_to?(:call)
+      end # it
+    end # shared_examples
+
+    shared_examples 'should export the directory and all children and features' do
+      wrap_examples 'should export the directory as JSON', ->(serialized) {
+        expect(serialized['directories']).to be_blank
+
+        expect(serialized['features']).to be_blank
+      } # end examples
+
+      context 'with many features' do
+        let!(:pages) { Array.new(3) { create(:page, :content => build(:content), :directory => directory) } }
+
+        wrap_examples 'should export the directory as JSON', ->(serialized) {
+          expect(serialized['directories']).to be_blank
+
+          expect_to_serialize_directory_features serialized, directory
+        } # end examples
+      end # context
+
+      context 'with many child directories' do
+        let!(:children)      { Array.new(3) { create(:directory, :parent => (directory.is_a?(Directory) ? directory : nil)) } }
+        let!(:grandchildren) { Array.new(3) { create(:directory, :parent => children.first) } }
+
+        wrap_examples 'should export the directory as JSON', ->(serialized) {
+          expect_to_serialize_directory_children serialized, directory, :recursive => true, :relations => :all
+
+          expect(serialized['features']).to be_blank
+        } # end examples
+
+        context 'with many features' do
+          before(:each) do
+            [directory, *children, *grandchildren].each do |directory_or_descendant|
+              3.times { create(:page, :content => build(:content), :directory => (directory_or_descendant.is_a?(Directory) ? directory_or_descendant : nil)) }
+            end # each
+          end # before each
+
+          wrap_examples 'should export the directory as JSON', ->(serialized) {
+            expect_to_serialize_directory_children serialized, directory, :recursive => true, :relations => :all
+
+            expect_to_serialize_directory_features serialized, directory
+          } # end examples
+        end # context
+      end # context
+    end # shared_examples
+
+    let(:exporter) { Object.new.extend(ExportersHelper) }
+    let(:request)  { double('request', :params => ActionController::Parameters.new({})) }
+
+    def perform_action
+      instance.export request
+    end # method perform_action
+
+    it { expect(instance).to respond_to(:export).with(1).argument }
+
+    describe 'with the root directory' do
+      let(:directory) { RootDirectory.instance }
+
+      include_examples 'should export the directory and all children and features'
+    end # describe
+
+    describe 'with a directory' do
+      let(:directory) { create(:directory) }
+      let(:object)    { directory }
+
+      include_examples 'should export the directory and all children and features'
+    end # describe
+  end # describe
+
   ### Partial Methods ###
 
   describe '#page_template_path' do
@@ -221,7 +320,7 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
       before(:each) { allow(instance).to receive(:resource).and_return(directory) }
 
       it { expect(instance.send :_dashboard_resource_path).to be == "/#{directory.slug}/dashboard" }
-    end # pending
+    end # context
 
     context 'with many directories' do
       include_context 'with a valid path to a directory'

@@ -57,6 +57,9 @@ Rails.application.routes.draw do
     post 'directories',                 :to => 'directories#create'
     post '*directories/directories',    :to => 'directories#create'
 
+    get 'export',                       :to => 'resources#export'
+    get '*directories/export',          :to => 'resources#export'
+
     get '*directories/edit',            :to => 'resources#edit'
 
     put '*directories/publish',         :to => 'resources#publish'

@@ -65,6 +65,21 @@ RSpec.describe RootDirectory do
     end # context
   end # describe
 
+  describe '#pages' do
+    it { expect(instance).to have_reader(:pages).with_value(an_instance_of Mongoid::Criteria) }
+
+    it { expect(instance.pages).to be == [] }
+
+    context 'with many pages' do
+      let!(:root_pages)         { Array.new(3) { create(:page, :content => build(:content)) } }
+      let!(:root_features)      { Array.new(3) { create(:directory_feature) } }
+      let!(:directory)          { create(:directory) }
+      let!(:directory_pages)    { Array.new(3) { create(:page, :content => build(:content), :directory => directory) } }
+
+      it { expect(instance.pages).to contain_exactly(*root_pages) }
+    end # context
+  end # describe
+
   describe '#parent' do
     it { expect(instance).to have_reader(:parent).with_value(nil) }
   end # describe

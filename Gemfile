@@ -17,7 +17,7 @@ gem 'therubyracer', '~> 0.12.1'
 
 ### Assets ###
 gem 'haml-rails',           '~> 0.5.3'
-gem 'less-rails',           '~> 2.6.0'
+gem 'less-rails',           '~> 2.7.0'
 gem 'less-rails-bootstrap', '~> 3.3.1'
 gem 'coffee-rails',         '~> 4.1.0'
 gem 'jquery-rails',         '~> 3.1.2'

@@ -41,6 +41,12 @@ class DirectoriesDelegate < ResourcesDelegate
     end # if-else
   end # action show
 
+  def export request
+    @resource ||= RootDirectory.instance
+
+    super request, :recursive => true, :relations => :all
+  end # action request
+
   ### Partial Methods ###
 
   def page_template_path

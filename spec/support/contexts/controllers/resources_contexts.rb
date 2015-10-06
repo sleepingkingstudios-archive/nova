@@ -23,6 +23,11 @@ module Spec
           end # let!
         end # shared_context
 
+        shared_context 'with the root path' do
+          let(:path)     { '/' }
+          let(:resource) { RootDirectory.instance }
+        end # shared_context
+
         shared_context 'with a valid path to a directory' do
           let(:segments) { %w(weapons swords japanese) }
           let(:path)     { segments.join('/') }
@@ -39,6 +44,29 @@ module Spec
           include_context 'with a valid path to a directory'
 
           let(:path) { segments.push(resource.slug).join('/') }
+        end # shared_context
+
+        shared_context 'with a valid path to a blog' do
+          include_context 'with a valid path to a feature'
+
+          let(:resource_name) { :blog }
+          let!(:resource)     { create(:blog, :directory => directories.last) }
+        end # shared_context
+
+        shared_context 'with a valid path to a blog post' do
+          include_context 'with a valid path to a feature'
+
+          let(:resource_name) { :post }
+          let(:blog)          { create(:blog, :directory => directories.last) }
+          let!(:resource)     { create(:blog_post, :blog => blog, :content => build(:content)) }
+          let(:path)          { segments.push(blog.slug, resource.slug).join('/') }
+        end # shared_context
+
+        shared_context 'with a valid path to a page' do
+          include_context 'with a valid path to a feature'
+
+          let(:resource_name) { :page }
+          let!(:resource)     { create(:page, :directory => directories.last, :content => build(:content)) }
         end # shared_context
       end # module
     end # module

@@ -3,8 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Admin::ResourcesController, :type => :controller do
+  include Decorators::SerializersHelper
+
+  include Spec::Contexts::SerializerContexts
   include Spec::Contexts::Controllers::ResourcesContexts
 
+  include Spec::Examples::SerializerExamples
   include Spec::Examples::Controllers::ResourcesExamples
   include Spec::Examples::Controllers::RenderingExamples
 
@@ -23,11 +27,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog' do
-      include_context 'with a valid path to a feature'
-
-      let(:resource) { create(:blog, :directory => directories.last) }
-
+    wrap_context 'with a valid path to a blog' do
       expect_behavior 'renders template', :edit
 
       expect_behavior 'assigns directories'
@@ -35,13 +35,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
-    describe 'with a valid path to a blog post' do
-      include_context 'with a valid path to a feature'
-
-      let(:blog)     { create(:blog, :directory => directories.last) }
-      let(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
-      let(:path)     { segments.push(blog.slug, resource.slug).join('/') }
-
+    wrap_context 'with a valid path to a blog post' do
       expect_behavior 'renders template', :edit
 
       expect_behavior 'assigns directories'
@@ -59,11 +53,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'assigns the resource'
     end # describe
 
-    describe 'with a valid path to a page' do
-      include_context 'with a valid path to a feature'
-
-      let(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
-
+    wrap_context 'with a valid path to a page' do
       expect_behavior 'renders template', :edit
 
       expect_behavior 'assigns directories'
@@ -88,12 +78,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog' do
-      include_context 'with a valid path to a feature'
-
-      let(:resource_name) { :blog }
-      let(:resource)      { create(:blog, :directory => directories.last) }
-
+    wrap_context 'with a valid path to a blog' do
       describe 'with invalid params' do
         let(:attributes) { super().merge :title => nil }
 
@@ -126,7 +111,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # describe
     end # describe
 
-    describe 'with a valid path to a blog post' do
+    wrap_context 'with a valid path to a blog post' do
       include_context 'with a valid path to a feature'
 
       let(:resource_name) { :post }
@@ -202,12 +187,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # describe
     end # describe
 
-    describe 'with a valid path to a page' do
-      include_context 'with a valid path to a feature'
-
-      let(:resource_name) { :page }
-      let(:resource)      { create(:page, :directory => directories.last, :content => build(:content)) }
-
+    wrap_context 'with a valid path to a page' do
       describe 'with invalid params' do
         let(:attributes) { super().merge :title => nil }
 
@@ -254,11 +234,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog' do
-      include_context 'with a valid path to a feature'
-
-      let!(:resource) { create(:blog, :directory => directories.last) }
-
+    wrap_context 'with a valid path to a blog' do
       it 'redirects to the parent directory' do
         parent_directory = directories.last
 
@@ -275,13 +251,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a blog post' do
-      include_context 'with a valid path to a feature'
-
-      let(:blog)      { create(:blog, :directory => directories.last) }
-      let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
-      let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
-
+    wrap_context 'with a valid path to a blog post' do
       it 'redirects to the blog' do
         perform_action
 
@@ -313,11 +283,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a page' do
-      include_context 'with a valid path to a feature'
-
-      let!(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
-
+    wrap_context 'with a valid path to a page' do
       it 'redirects to the parent directory' do
         parent_directory = directories.last
 
@@ -348,11 +314,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog' do
-      include_context 'with a valid path to a feature'
-
-      let!(:resource) { create(:blog, :directory => directories.last) }
-
+    wrap_context 'with a valid path to a blog' do
       it 'redirects to the resource' do
         perform_action
 
@@ -363,13 +325,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a blog post' do
-      include_context 'with a valid path to a feature'
-
-      let(:blog)      { create(:blog, :directory => directories.last) }
-      let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content)) }
-      let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
-
+    wrap_context 'with a valid path to a blog post' do
       it 'redirects to the post' do
         perform_action
 
@@ -395,11 +351,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a page' do
-      include_context 'with a valid path to a feature'
-
-      let!(:resource) { create(:page, :directory => directories.last, :content => build(:content)) }
-
+    wrap_context 'with a valid path to a page' do
       it 'redirects to the page' do
         perform_action
 
@@ -428,11 +380,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       expect_behavior 'redirects to the last found directory dashboard'
     end # describe
 
-    describe 'with a valid path to a blog' do
-      include_context 'with a valid path to a feature'
-
-      let!(:resource) { create(:blog, :directory => directories.last) }
-
+    wrap_context 'with a valid path to a blog' do
       it 'redirects to the resource' do
         perform_action
 
@@ -443,12 +391,8 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a blog post' do
-      include_context 'with a valid path to a feature'
-
-      let(:blog)      { create(:blog, :directory => directories.last) }
+    wrap_context 'with a valid path to a blog post' do
       let!(:resource) { create(:blog_post, :blog => blog, :content => build(:content), :published_at => 1.day.ago) }
-      let(:path)      { segments.push(blog.slug, resource.slug).join('/') }
 
       it 'redirects to the post' do
         perform_action
@@ -479,9 +423,7 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
       end # it
     end # describe
 
-    describe 'with a valid path to a page' do
-      include_context 'with a valid path to a feature'
-
+    wrap_context 'with a valid path to a page' do
       let!(:resource) { create(:page, :directory => directories.last, :content => build(:content), :published_at => 1.day.ago) }
 
       it 'redirects to the page' do
@@ -497,5 +439,175 @@ RSpec.describe Admin::ResourcesController, :type => :controller do
         expect { perform_action }.to change { resource.reload.published_at }.to nil
       end # it
     end # describe
+  end # describe
+
+  describe '#export' do
+    shared_examples 'should export the resource' do |proc|
+      let(:json) { JSON.parse response.body }
+
+      it 'should export the resource' do
+        perform_action
+
+        expect(response.status).to be == 200
+        expect(response.body).not_to be_blank
+
+        expect_to_serialize_attributes json, resource
+
+        SleepingKingStudios::Tools::ObjectTools.apply self, proc if proc.respond_to?(:call)
+      end # it
+    end # shared_examples
+
+    let(:blacklisted_attributes) { %w(_id _type directory_id) }
+
+    expect_behavior 'requires authentication'
+
+    def perform_action
+      get :export, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    wrap_context 'with an invalid path' do
+      expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    wrap_context 'with the root path' do
+      let(:blacklisted_attributes) { super() << 'directories' << 'features' << 'parent_id' }
+
+      include_examples 'should export the resource', ->() {
+        expect(json['directories']).to be_blank
+
+        expect(json['features']).to be_blank
+      } # end examples
+
+      context 'with many features' do
+        let(:pages) { Array.new(3) { create(:page, :content => build(:content), :directory => nil) } }
+
+        before(:each) { pages.each { |page| resource.features << page } }
+
+        include_examples 'should export the resource', ->() {
+          expect(json['directories']).to be_blank
+
+          expect_to_serialize_directory_features json, resource
+        } # end examples
+      end # context
+
+      context 'with many descendant directories' do
+        let(:children)      { Array.new(3) { create(:directory, :parent => nil) } }
+        let(:grandchildren) { Array.new(3) { create(:directory, :parent => children.first) } }
+
+        before(:each) do
+          grandchildren.each { |directory| children.first.children << directory }
+        end # before each
+
+        include_examples 'should export the resource', ->() {
+          expect_to_serialize_directory_children json, resource, :recursive => true, :relations => :all
+
+          expect(json['features']).to be_blank
+        } # end examples
+
+        context 'with many features' do
+          before(:each) do
+            [resource, *children, *grandchildren].each do |directory|
+              3.times { create(:page, :content => build(:content), :directory => directory) }
+            end # each
+          end # before each
+
+          include_examples 'should export the resource', ->() {
+            expect_to_serialize_directory_children json, resource, :recursive => true, :relations => :all
+
+            expect_to_serialize_directory_features json, resource
+          } # end examples
+        end # context
+      end # context
+    end # wrap_context
+
+    wrap_context 'with a valid path to a blog' do
+      let(:blacklisted_attributes) { super() << 'posts' << 'blog_id' }
+
+      include_examples 'should export the resource'
+
+      context 'with many posts' do
+        let(:posts) { Array.new(3) { create(:blog_post, :content => build(:content), :blog => resource) } }
+
+        include_examples 'should export the resource', ->() {
+          expect_to_serialize_blog_posts json, resource
+        } # end examples
+      end # context
+    end # wrap_context
+
+    wrap_context 'with a valid path to a blog post' do
+      let(:blacklisted_attributes) { super() << 'blog_id' }
+
+      include_examples 'should export the resource', ->() {
+        content = json.fetch('content')
+
+        expect(content).to be == serialize(resource.content)
+      } # end examples
+    end # wrap_context
+
+    wrap_context 'with a valid path to a directory' do
+      let(:blacklisted_attributes) { super() << 'directories' << 'features' << 'parent_id' }
+      let(:resource)               { directories.last }
+
+      include_examples 'should export the resource', ->() {
+        expect(json['directories']).to be_blank
+
+        expect(json['features']).to be_blank
+      } # end examples
+
+      context 'with many features' do
+        let(:pages) { Array.new(3) { create(:page, :content => build(:content), :directory => resource) } }
+
+        before(:each) { pages.each { |page| resource.features << page } }
+
+        include_examples 'should export the resource', ->() {
+          expect(json['directories']).to be_blank
+
+          expect_to_serialize_directory_features json, resource
+        } # end examples
+      end # context
+
+      context 'with many descendant directories' do
+        let(:children)      { Array.new(3) { create(:directory, :parent => resource) } }
+        let(:grandchildren) { Array.new(3) { create(:directory, :parent => children.first) } }
+
+        before(:each) do
+          resource.save!
+
+          children.each { |directory| resource.children << directory }
+
+          grandchildren.each { |directory| children.first.children << directory }
+        end # before each
+
+        include_examples 'should export the resource', ->() {
+          expect_to_serialize_directory_children json, resource, :recursive => true, :relations => :all
+
+          expect(json['features']).to be_blank
+        } # end examples
+
+        context 'with many features' do
+          before(:each) do
+            [resource, *children, *grandchildren].each do |directory|
+              3.times { create(:page, :content => build(:content), :directory => directory) }
+            end # each
+          end # before each
+
+          include_examples 'should export the resource', ->() {
+            expect_to_serialize_directory_children json, resource, :recursive => true, :relations => :all
+
+            expect_to_serialize_directory_features json, resource
+          } # end examples
+        end # context
+      end # context
+    end # wrap_context
+
+    wrap_context 'with a valid path to a page' do
+      include_examples 'should export the resource', ->() {
+        content = json.fetch('content')
+
+        expect(content).to be == serialize(resource.content)
+      } # end examples
+    end # wrap_context
   end # describe
 end # describe

@@ -1,6 +1,8 @@
 # app/controllers/delegates/resources_delegate.rb
 
 class ResourcesDelegate
+  include Decorators::SerializersHelper
+
   def initialize object
     case object
     when Class
@@ -171,6 +173,14 @@ class ResourcesDelegate
 
     controller.redirect_to redirect_path(:unpublish, :failure)
   end # action publish
+
+  def export request, **options
+    self.request = request
+
+    serialized = resources.blank? ? serialize(resource, **options) : resources.map { |resource| serialize(resource, **options) }
+
+    controller.render :json => JsonExporter.export(serialized)
+  end # action show
 
   ### Partial Methods ###
 

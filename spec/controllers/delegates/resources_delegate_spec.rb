@@ -8,7 +8,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
   include Spec::Contexts::Delegates::DelegateContexts
 
   shared_context 'with an array of objects' do
-    let(:object) { Array.new(3).map { Object.new } }
+    let(:object) { Array.new(3).map { build(:feature) } }
   end # shared_context
 
   shared_context 'with a class object' do
@@ -23,7 +23,7 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # it
   end # shared_examples
 
-  let(:object)   { Feature.new }
+  let(:object)   { build(:feature) }
   let(:instance) { described_class.new object }
 
   ### Class Methods ###
@@ -34,7 +34,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
   ### Instance Methods ###
 
-  describe '#assign', :controller => true do
+  describe '#assign' do
+    include_context 'with a controller'
+
     it { expect(instance).to respond_to(:assign).with(2).arguments }
 
     it 'changes the assigned variables in the controller' do
@@ -184,7 +186,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     it { expect(instance.resource_params params).to be == {} }
   end # describe
 
-  describe '#set_flash_message', :controller => true do
+  describe '#set_flash_message' do
+    include_context 'with a controller'
+
     let(:key) { :warning }
     let(:message) do
       'Unable to log you out because you are not logged in. Please log in so you can log out.'
@@ -259,7 +263,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
 
   ### Actions ###
 
-  describe '#index', :controller => true do
+  describe '#index' do
+    include_context 'with a controller'
+
     let(:documents)  { Array.new(3).map { double('document') } }
     let(:object)     { Feature }
     let(:request)    { double('request') }
@@ -289,7 +295,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     expect_behavior 'sets the request'
   end # describe
 
-  describe '#new', :controller => true do
+  describe '#new' do
+    include_context 'with a controller'
+
     let(:object)     { Feature }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
@@ -325,7 +333,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     expect_behavior 'sets the request'
   end # describe
 
-  describe '#preview', :controller => true do
+  describe '#preview' do
+    include_context 'with a controller'
+
     let(:object)     { Feature }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
@@ -361,7 +371,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     expect_behavior 'sets the request'
   end # describe
 
-  describe '#create', :controller => true do
+  describe '#create' do
+    include_context 'with a controller'
+
     let(:object)     { Feature }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
@@ -423,7 +435,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # describe
   end # describe
 
-  describe '#show', :controller => true do
+  describe '#show' do
+    include_context 'with a controller'
+
     let(:object)  { build(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
@@ -444,7 +458,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     expect_behavior 'sets the request'
   end # describe
 
-  describe '#publish', :controller => true do
+  describe '#publish' do
+    include_context 'with a controller'
+
     let(:object)  { create(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new) }
 
@@ -465,7 +481,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#unpublish', :controller => true do
+  describe '#unpublish' do
+    include_context 'with a controller'
+
     let(:object)  { create(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new) }
 
@@ -486,7 +504,45 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#edit', :controller => true do
+  describe '#export' do
+    include_context 'with a controller'
+
+    let(:exporter) { Object.new.extend(ExportersHelper) }
+    let(:request)  { double('request', :params => ActionController::Parameters.new({})) }
+    let(:json)     { exporter.export(object, :format => :json) }
+
+    def perform_action
+      instance.export request
+    end # method perform_action
+
+    it { expect(instance).to respond_to(:export).with(1).argument }
+
+    it 'exports the object as JSON' do
+      expect(controller).to receive(:render) do |options|
+        expect(options).to have_key :json
+        expect(options[:json]).to be == json
+      end # expect
+
+      perform_action
+    end # it
+
+    expect_behavior 'sets the request'
+
+    wrap_context 'with an array of objects' do
+      it 'exports the objects as JSON' do
+        expect(controller).to receive(:render) do |options|
+          expect(options).to have_key :json
+          expect(options[:json]).to be == json
+        end # expect
+
+        perform_action
+      end # it
+    end # describe
+  end # describe
+
+  describe '#edit' do
+    include_context 'with a controller'
+
     let(:object)  { build(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
@@ -507,7 +563,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     expect_behavior 'sets the request'
   end # describe
 
-  describe '#update', :controller => true do
+  describe '#update' do
+    include_context 'with a controller'
+
     let(:object)     { create(:feature) }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:feature => attributes)) }
@@ -569,7 +627,9 @@ RSpec.describe ResourcesDelegate, :type => :decorator do
     end # describe
   end # describe
 
-  describe '#destroy', :controller => true do
+  describe '#destroy' do
+    include_context 'with a controller'
+
     let(:object)  { create(:feature) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 

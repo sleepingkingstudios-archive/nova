@@ -38,6 +38,10 @@ class RootDirectory
     DirectoryFeature.roots
   end # method features
 
+  def pages
+    Page.roots
+  end # method pages
+
   def parent
     nil
   end # method parent

@@ -137,7 +137,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
 
   ### Actions ###
 
-  describe '#new', :controller => true do
+  describe '#new' do
+    include_context 'with a controller'
+
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
     it 'assigns @resource' do
@@ -148,7 +150,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#preview', :controller => true do
+  describe '#preview' do
+    include_context 'with a controller'
+
     let(:object)     { Page }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
@@ -166,7 +170,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#create', :controller => true do
+  describe '#create' do
+    include_context 'with a controller'
+
     let(:object)     { Page }
     let(:attributes) { { :title => 'Feature Title', :slug => 'feature-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }
@@ -236,7 +242,9 @@ RSpec.describe PagesDelegate, :type => :decorator do
     end # describe
   end # describe
 
-  describe '#update', :controller => true do
+  describe '#update' do
+    include_context 'with a controller'
+
     let(:object)     { create(:page, :content => build(:text_content)) }
     let(:attributes) { { :title => 'Page Title', :slug => 'page-slug', :evil => 'malicious' } }
     let(:request)    { double('request', :params => ActionController::Parameters.new(:page => attributes)) }

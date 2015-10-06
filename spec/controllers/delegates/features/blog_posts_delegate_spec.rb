@@ -150,7 +150,9 @@ RSpec.describe BlogPostsDelegate, :type => :decorator do
 
   ### Actions ###
 
-  describe '#new', :controller => true do
+  describe '#new' do
+    include_context 'with a controller'
+
     let(:blog)    { create(:blog) }
     let(:request) { double('request', :params => ActionController::Parameters.new({})) }
 
@@ -165,7 +167,9 @@ RSpec.describe BlogPostsDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#preview', :controller => true do
+  describe '#preview' do
+    include_context 'with a controller'
+
     let(:blog)       { create(:blog) }
     let(:object)     { BlogPost }
     let(:attributes) { { :title => 'Blog Post Title', :slug => 'blog-post-slug', :evil => 'malicious' } }
@@ -188,7 +192,9 @@ RSpec.describe BlogPostsDelegate, :type => :decorator do
     end # it
   end # describe
 
-  describe '#create', :controller => true do
+  describe '#create' do
+    include_context 'with a controller'
+
     let(:blog)       { create(:blog) }
     let(:object)     { BlogPost }
     let(:attributes) { { :title => 'Blog Post Title', :slug => 'blog-post-slug', :evil => 'malicious' } }
@@ -243,7 +249,9 @@ RSpec.describe BlogPostsDelegate, :type => :decorator do
     end # describe
   end # describe
 
-  describe '#update', :controller => true do
+  describe '#update' do
+    include_context 'with a controller'
+
     let(:blog)       { create(:blog) }
     let(:object)     { create(:blog_post, :blog => blog, :content => build(:text_content)) }
     let(:attributes) { { :title => 'Blog Post Title', :slug => 'blog-post-slug', :evil => 'malicious' } }

@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'admin routing for resources', :type => :routing do
   let(:resources_controller) { 'admin/resources' }
 
-  describe 'GET /path/to/directory/edit' do
+  describe 'GET /path/to/resource/edit' do
     let(:path) { 'weapons/bows/arbalests/edit' }
 
     it 'routes to Admin::ResourcesController#edit' do
@@ -17,7 +17,20 @@ RSpec.describe 'admin routing for resources', :type => :routing do
     end # it
   end # describe
 
-  describe 'PUT /path/to/directory/publish' do
+  describe 'GET /path/to/resource/export.json' do
+    let(:path) { 'weapons/bows/arbalests/export.json' }
+
+    it 'routes to Admin::ResourcesController#export' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => resources_controller,
+        :action      => 'export',
+        :directories => 'weapons/bows/arbalests',
+        :format      => 'json'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'PUT /path/to/resource/publish' do
     let(:path) { 'weapons/bows/arbalests/publish' }
 
     it 'routes to Admin::ResourcesController#update' do
@@ -29,7 +42,7 @@ RSpec.describe 'admin routing for resources', :type => :routing do
     end # it
   end # describe
 
-  describe 'PUT /path/to/directory/unpublish' do
+  describe 'PUT /path/to/resource/unpublish' do
     let(:path) { 'weapons/bows/arbalests/unpublish' }
 
     it 'routes to Admin::ResourcesController#update' do
@@ -41,7 +54,7 @@ RSpec.describe 'admin routing for resources', :type => :routing do
     end # it
   end # describe
 
-  describe 'PATCH /path/to/directory' do
+  describe 'PATCH /path/to/resource' do
     let(:path) { 'weapons/bows/arbalests' }
 
     it 'routes to Admin::ResourcesController#update' do
@@ -53,7 +66,7 @@ RSpec.describe 'admin routing for resources', :type => :routing do
     end # it
   end # describe
 
-  describe 'PUT /path/to/directory' do
+  describe 'PUT /path/to/resource' do
     let(:path) { 'weapons/bows/arbalests' }
 
     it 'routes to Admin::ResourcesController#update' do
@@ -65,7 +78,7 @@ RSpec.describe 'admin routing for resources', :type => :routing do
     end # it
   end # describe
 
-  describe 'DELETE /path/to/directory' do
+  describe 'DELETE /path/to/resource' do
     let(:path) { 'weapons/bows/arbalests' }
 
     it 'routes to Admin::ResourcesController#destroy' do

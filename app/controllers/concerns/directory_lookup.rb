@@ -33,7 +33,7 @@ module DirectoryLookup
     # the last directory found will be our resource.
     lookup_directories
 
-    @resource = @directories.last
+    @resource = @directories.last || RootDirectory.instance
   rescue Directory::NotFoundError => exception
     @directories = exception.found
 
