@@ -10,6 +10,8 @@ RSpec.describe FeatureSerializer do
 
   include_context 'with a serializer for', Feature
 
+  include_examples 'should behave like a serializer'
+
   describe '#deserialize' do
     before(:each) { expected.merge! 'slug' => attributes[:title].parameterize, 'slug_lock' => false }
 

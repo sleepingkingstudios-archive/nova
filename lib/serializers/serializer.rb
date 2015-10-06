@@ -73,13 +73,20 @@ class Serializer
   end # method deserialize_attributes
 
   def serialize_attribute resource, attribute_name
-    if self.respond_to?(attribute_name)
+    value = if self.respond_to?(attribute_name)
       self.send(attribute_name)
     elsif resource.respond_to?(attribute_name)
       resource.send(attribute_name)
     else
       resource[attribute_name]
     end # if-elsif-else
+
+    case value
+    when Time, DateTime, ActiveSupport::TimeWithZone
+      value.to_i
+    else
+      value
+    end # case
   end # method serialize_attribute
 
   def serialize_attributes resource, **options

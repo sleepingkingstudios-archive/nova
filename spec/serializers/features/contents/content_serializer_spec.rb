@@ -10,6 +10,8 @@ RSpec.describe ContentSerializer do
 
   include_context 'with a serializer for', Content
 
+  include_examples 'should behave like a serializer'
+
   describe '#deserialize' do
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
 

@@ -10,7 +10,9 @@ RSpec.describe BlogSerializer do
 
   include_context 'with a serializer for', Blog
 
-  before(:each) { blacklisted_attributes << 'directory' << 'directory_id' << 'posts' }
+  include_examples 'should behave like a serializer'
+
+  before(:each) { blacklisted_attributes << 'directory' << 'directory_id' << 'posts' << 'blog_id' }
 
   describe '#deserialize' do
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
@@ -120,15 +122,7 @@ RSpec.describe BlogSerializer do
         before(:each) { options[:relations] = :all }
 
         include_examples 'should return the resource attributes', ->() {
-          expect(serialized).to have_key 'posts'
-
-          posts = serialized.fetch('posts')
-          expect(posts).to be_a Array
-          expect(posts.count).to be == blog_posts.count
-
-          blog_posts.each do |post|
-            expect(posts).to include BlogPostSerializer.serialize(post)
-          end # each
+          expect_to_serialize_blog_posts serialized, resource
         } # end examples
       end # describe
     end # context

@@ -28,12 +28,13 @@ RSpec.describe Serializer do
   shared_context 'with a resource class' do
     let(:resource_class) do
       Class.new do
-        def initialize width = nil, height = nil, refresh = nil, interlaced = nil
+        def initialize width = nil, height = nil, refresh = nil, interlaced = nil, purchased_at = nil
           @data = {
-            :width      => width,
-            :height     => height,
-            :refresh    => refresh,
-            :interlaced => interlaced
+            :width        => width,
+            :height       => height,
+            :refresh      => refresh,
+            :interlaced   => interlaced,
+            :purchased_at => purchased_at
           }.with_indifferent_access # end hash
         end # constructor
 
@@ -45,7 +46,7 @@ RSpec.describe Serializer do
           @data[key] = value
         end # method []=
 
-        %w(width height refresh interlaced).each do |attribute_name|
+        %w(width height refresh interlaced purchased_at).each do |attribute_name|
           define_method(attribute_name) { @data[attribute_name] }
 
           define_method(:"#{attribute_name}=") { |value| @data[attribute_name] = value }
@@ -201,6 +202,7 @@ RSpec.describe Serializer do
     let(:resource)   { resource_class.new(*attributes.values) }
     let(:options)    { {} }
     let(:serialized) { instance.serialize resource, **options }
+    let(:expected)   { permitted_attributes.each.with_object({}) { |key, hsh| hsh[key] = resource.send key } }
 
     it { expect(instance).to respond_to(:serialize).with(1, :arbitrary, :keywords) }
 
@@ -215,7 +217,7 @@ RSpec.describe Serializer do
         expect(serialized.keys).to contain_exactly *permitted_attributes
 
         permitted_attributes.each do |attribute_name|
-          expect(resource.send attribute_name).to be == serialized[attribute_name]
+          expect(serialized[attribute_name]).to be == expected[attribute_name]
         end # each
       end # it
 
@@ -230,13 +232,14 @@ RSpec.describe Serializer do
           expect(serialized.keys).to contain_exactly *permitted_attributes
 
           permitted_attributes.each do |attribute_name|
-            expect(resource.send attribute_name).to be == serialized[attribute_name]
+            expect(serialized[attribute_name]).to be == expected[attribute_name]
           end # each
         end # it
       end # describe
 
       describe 'with a method on the serializer' do
         let(:custom_refresh) { '120Hz' }
+        let(:expected)       { super().merge 'refresh' => custom_refresh }
 
         before(:each) do
           instance.define_singleton_method :refresh do
@@ -249,11 +252,26 @@ RSpec.describe Serializer do
         it 'should return the resource attributes' do
           expect(serialized).to be_a Hash
 
-          expect(serialized['refresh']).to be == custom_refresh
+          expect(serialized.keys).to contain_exactly *permitted_attributes
 
-          permitted_attributes.delete('refresh')
           permitted_attributes.each do |attribute_name|
-            expect(resource.send attribute_name).to be == serialized[attribute_name]
+            expect(serialized[attribute_name]).to be == expected[attribute_name]
+          end # each
+        end # it
+      end # describe
+
+      describe 'with a timestamp value' do
+        let(:permitted_attributes) { super() << 'purchased_at' }
+        let(:attributes)           { super().merge :purchased_at => 1.month.ago }
+        let(:expected)             { super().merge 'purchased_at' => attributes[:purchased_at].to_i }
+
+        it 'should return the resource attributes' do
+          expect(serialized).to be_a Hash
+
+          expect(serialized.keys).to contain_exactly *permitted_attributes
+
+          permitted_attributes.each do |attribute_name|
+            expect(serialized[attribute_name]).to be == expected[attribute_name]
           end # each
         end # it
       end # describe

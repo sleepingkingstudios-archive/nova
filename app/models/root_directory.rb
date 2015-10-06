@@ -25,6 +25,10 @@ class RootDirectory
     {}
   end # method attributes
 
+  def bson_type
+    nil.bson_type
+  end # bson_type
+
   def children
     Directory.roots
   end # method children
@@ -37,4 +41,8 @@ class RootDirectory
   def parent
     nil
   end # method parent
+
+  def to_bson *args
+    nil.to_bson(*args)
+  end # method to_bson
 end # class

@@ -10,6 +10,8 @@ RSpec.describe SettingSerializer do
 
   include_context 'with a serializer for', Setting
 
+  include_examples 'should behave like a serializer'
+
   describe '#deserialize' do
     let(:attributes) { { 'key' => 'to.the.city' } }
 

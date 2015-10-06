@@ -10,7 +10,9 @@ RSpec.describe DirectorySerializer do
 
   include_context 'with a serializer for', Directory
 
-  before(:each) { blacklisted_attributes << 'directories' << 'features' }
+  include_examples 'should behave like a serializer'
+
+  before(:each) { blacklisted_attributes << 'directories' << 'features' << 'directory_id' << 'parent_id' }
 
   describe '#deserialize' do
     it { expect(instance).to respond_to(:deserialize).with(1, :arbitrary, :keywords) }
@@ -166,11 +168,13 @@ RSpec.describe DirectorySerializer do
     } # end examples
 
     context 'with many features' do
-      let(:pages) { Array.new(3) { create(:page, :content => build(:content), :directory => resource ) } }
+      let(:pages) { Array.new(3) { create(:page, :content => build(:content), :directory => resource) } }
 
       before(:each) { pages.each { |page| resource.features << page } }
 
       include_examples 'should return the resource attributes', ->() {
+        expect(serialized['directories']).to be_blank
+
         expect(serialized['features']).to be_blank
       } # end examples
 
@@ -178,15 +182,9 @@ RSpec.describe DirectorySerializer do
         before(:each) { options[:relations] = :all }
 
         include_examples 'should return the resource attributes', ->() {
-          expect(serialized).to have_key 'features'
+          expect(serialized['directories']).to be_blank
 
-          features = serialized.fetch('features')
-          expect(features).to be_a Array
-          expect(features.count).to be == resource.features.count
-
-          resource.features.each do |page|
-            expect(features).to include PageSerializer.serialize(page)
-          end # each
+          expect_to_serialize_directory_features(serialized, resource)
         } # end examples
       end # describe
     end # context
@@ -205,20 +203,17 @@ RSpec.describe DirectorySerializer do
 
       include_examples 'should return the resource attributes', ->() {
         expect(serialized['directories']).to be_blank
+
+        expect(serialized['features']).to be_blank
       } # end examples
 
       describe 'with :recursive => true' do
         before(:each) { options[:recursive] = true }
 
         include_examples 'should return the resource attributes', ->() {
-          expect(serialized).to have_key 'directories'
+          expect_to_serialize_directory_children(serialized, resource, **options)
 
-          directories = serialized.fetch('directories')
-          expect(directories).to be_a Array
-          expect(directories.count).to be == children.count
-
-          ary = children.map { |directory| DirectorySerializer.serialize(directory, **options) }
-          expect(compare_serialized(directories, ary)).to be true
+          expect(serialized['features']).to be_blank
         } # end examples
       end # describe
 
@@ -239,14 +234,9 @@ RSpec.describe DirectorySerializer do
           before(:each) { options[:recursive] = true }
 
           include_examples 'should return the resource attributes', ->() {
-            expect(serialized).to have_key 'directories'
+            expect_to_serialize_directory_children(serialized, resource, **options)
 
-            directories = serialized.fetch('directories')
-            expect(directories).to be_a Array
-            expect(directories.count).to be == children.count
-
-            ary = children.map { |directory| DirectorySerializer.serialize(directory, **options) }
-            expect(compare_serialized(directories, ary)).to be true
+            expect(serialized['features']).to be_blank
           } # end examples
         end # describe
 
@@ -254,15 +244,9 @@ RSpec.describe DirectorySerializer do
           before(:each) { options[:relations] = :all }
 
           include_examples 'should return the resource attributes', ->() {
-            expect(serialized).to have_key 'features'
+            expect(serialized['directories']).to be_blank
 
-            features = serialized.fetch('features')
-            expect(features).to be_a Array
-            expect(features.count).to be == resource.features.count
-
-            resource.features.each do |page|
-              expect(features).to include PageSerializer.serialize(page)
-            end # each
+            expect_to_serialize_directory_features(serialized, resource)
           } # end examples
         end # describe
 
@@ -270,45 +254,9 @@ RSpec.describe DirectorySerializer do
           before(:each) { options.merge! :relations => :all, :recursive => true }
 
           include_examples 'should return the resource attributes', ->() {
-            expect(serialized).to have_key 'features'
+            expect_to_serialize_directory_children(serialized, resource, **options)
 
-            features = serialized.fetch('features')
-            expect(features).to be_a Array
-            expect(features.count).to be == resource.features.count
-
-            resource.features.each do |page|
-              expect(features).to include PageSerializer.serialize(page)
-            end # each
-
-            expect(serialized).to have_key 'directories'
-
-            directories = serialized.fetch('directories')
-            expect(directories).to be_a Array
-            expect(directories.count).to be == children.count
-
-            ary = children.map { |directory| DirectorySerializer.serialize(directory, **options) }
-            expect(compare_serialized(directories, ary)).to be true
-
-            directories.each do |serialized_directory|
-              features = serialized_directory.fetch('features')
-              expect(features).to be_a Array
-              expect(features.count).to be == resource.features.count
-            end # each
-
-            expect(directories.first).to have_key 'directories'
-
-            directories = directories.first.fetch('directories')
-            expect(directories).to be_a Array
-            expect(directories.count).to be == grandchildren.count
-
-            ary = grandchildren.map { |directory| DirectorySerializer.serialize(directory, **options) }
-            expect(compare_serialized(directories, ary)).to be true
-
-            directories.each do |serialized_directory|
-              features = serialized_directory.fetch('features')
-              expect(features).to be_a Array
-              expect(features.count).to be == resource.features.count
-            end # each
+            expect_to_serialize_directory_features(serialized, resource)
           } # end examples
         end # describe
       end # context
@@ -327,6 +275,8 @@ RSpec.describe DirectorySerializer do
         let(:pages) { Array.new(3) { create(:page, :content => build(:content)) } }
 
         include_examples 'should return the resource attributes', ->() {
+          expect(serialized['directories']).to be_blank
+
           expect(serialized['features']).to be_blank
         } # end examples
 
@@ -334,15 +284,9 @@ RSpec.describe DirectorySerializer do
           before(:each) { options[:relations] = :all }
 
           include_examples 'should return the resource attributes', ->() {
-            expect(serialized).to have_key 'features'
+            expect(serialized['directories']).to be_blank
 
-            features = serialized.fetch('features')
-            expect(features).to be_a Array
-            expect(features.count).to be == resource.features.count
-
-            resource.features.each do |page|
-              expect(features).to include PageSerializer.serialize(page)
-            end # each
+            expect_to_serialize_directory_features(serialized, resource)
           } # end examples
         end # describe
       end # context
@@ -359,20 +303,17 @@ RSpec.describe DirectorySerializer do
 
         include_examples 'should return the resource attributes', ->() {
           expect(serialized['directories']).to be_blank
+
+          expect(serialized['features']).to be_blank
         } # end examples
 
         describe 'with :recursive => true' do
           before(:each) { options[:recursive] = true }
 
           include_examples 'should return the resource attributes', ->() {
-            expect(serialized).to have_key 'directories'
+            expect_to_serialize_directory_children(serialized, resource, **options)
 
-            directories = serialized.fetch('directories')
-            expect(directories).to be_a Array
-            expect(directories.count).to be == children.count
-
-            ary = children.map { |directory| DirectorySerializer.serialize(directory, **options) }
-            expect(compare_serialized(directories, ary)).to be true
+            expect(serialized['features']).to be_blank
           } # end examples
         end # describe
 
@@ -395,14 +336,9 @@ RSpec.describe DirectorySerializer do
             before(:each) { options[:recursive] = true }
 
             include_examples 'should return the resource attributes', ->() {
-              expect(serialized).to have_key 'directories'
+              expect_to_serialize_directory_children(serialized, resource, **options)
 
-              directories = serialized.fetch('directories')
-              expect(directories).to be_a Array
-              expect(directories.count).to be == children.count
-
-              ary = children.map { |directory| DirectorySerializer.serialize(directory, **options) }
-              expect(compare_serialized(directories, ary)).to be true
+              expect(serialized['features']).to be_blank
             } # end examples
           end # describe
 
@@ -410,15 +346,9 @@ RSpec.describe DirectorySerializer do
             before(:each) { options[:relations] = :all }
 
             include_examples 'should return the resource attributes', ->() {
-              expect(serialized).to have_key 'features'
+              expect(serialized['directories']).to be_blank
 
-              features = serialized.fetch('features')
-              expect(features).to be_a Array
-              expect(features.count).to be == resource.features.count
-
-              resource.features.each do |page|
-                expect(features).to include PageSerializer.serialize(page)
-              end # each
+              expect_to_serialize_directory_features(serialized, resource)
             } # end examples
           end # describe
 
@@ -426,45 +356,9 @@ RSpec.describe DirectorySerializer do
             before(:each) { options.merge! :relations => :all, :recursive => true }
 
             include_examples 'should return the resource attributes', ->() {
-              expect(serialized).to have_key 'features'
+              expect_to_serialize_directory_children(serialized, resource, **options)
 
-              features = serialized.fetch('features')
-              expect(features).to be_a Array
-              expect(features.count).to be == resource.features.count
-
-              resource.features.each do |page|
-                expect(features).to include PageSerializer.serialize(page)
-              end # each
-
-              expect(serialized).to have_key 'directories'
-
-              directories = serialized.fetch('directories')
-              expect(directories).to be_a Array
-              expect(directories.count).to be == children.count
-
-              ary = children.map { |directory| DirectorySerializer.serialize(directory, **options) }
-              expect(compare_serialized(directories, ary)).to be true
-
-              directories.each do |serialized_directory|
-                features = serialized_directory.fetch('features')
-                expect(features).to be_a Array
-                expect(features.count).to be == resource.features.count
-              end # each
-
-              expect(directories.first).to have_key 'directories'
-
-              directories = directories.first.fetch('directories')
-              expect(directories).to be_a Array
-              expect(directories.count).to be == grandchildren.count
-
-              ary = grandchildren.map { |directory| DirectorySerializer.serialize(directory, **options) }
-              expect(compare_serialized(directories, ary)).to be true
-
-              directories.each do |serialized_directory|
-                features = serialized_directory.fetch('features')
-                expect(features).to be_a Array
-                expect(features.count).to be == resource.features.count
-              end # each
+              expect_to_serialize_directory_features(serialized, resource)
             } # end examples
           end # describe
         end # context

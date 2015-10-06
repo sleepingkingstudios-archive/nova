@@ -356,6 +356,19 @@ RSpec.describe Directory, :type => :model do
         expect { instance.destroy }.to change(Directory, :count).by(-(1 + children.count))
       end # it
     end # context
+
+    describe 'with many named child directories' do
+      let(:titles)   { %w(Ballista Cataphract Archer Equus Dromon) }
+      let(:children) { titles.map { |title| instance.children.create attributes_for(:directory, :title => title) } }
+
+      before(:each) { instance.save! }
+
+      it 'should return the children in ascending alphabetical order' do
+        expect(instance.children).to contain_exactly *children
+
+        expect(instance.children.map(&:title)).to be == titles.sort
+      end # it
+    end # describe
   end # describe
 
   describe '#directories' do
@@ -379,6 +392,19 @@ RSpec.describe Directory, :type => :model do
         expect { instance.destroy }.to change(Feature, :count).by(-features.count)
       end # it
     end # context
+
+    describe 'with many named features' do
+      let(:titles)   { %w(Ballista Cataphract Archer Equus Dromon) }
+      let(:features) { titles.map { |title| instance.features.create attributes_for(:feature, :title => title) } }
+
+      before(:each) { instance.save! }
+
+      it 'should return the features in ascending alphabetical order' do
+        expect(instance.features).to contain_exactly *features
+
+        expect(instance.features.map(&:title)).to be == titles.sort
+      end # it
+    end # describe
   end # describe
 
   ### Validation ###

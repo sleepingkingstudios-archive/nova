@@ -19,14 +19,6 @@ GIT
       tzinfo (>= 0.3.37)
 
 GIT
-  remote: https://github.com/sleepingkingstudios/rspec-sleeping_king_studios
-  revision: 4ddffb32cb14c0f1b34bd90fe4bb02a657d64ecd
-  specs:
-    rspec-sleeping_king_studios (2.0.3)
-      rspec (~> 3.0)
-      sleeping_king_studios-tools (~> 0.1, >= 0.1.2)
-
-GIT
   remote: https://github.com/sleepingkingstudios/sprig
   revision: cdfd692c2f48705dc698d543ed54766c009c129b
   branch: sprig-specify-model-class
@@ -214,6 +206,9 @@ GEM
       rspec-expectations (~> 3.3.0)
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
+    rspec-sleeping_king_studios (2.1.0)
+      rspec (~> 3.0)
+      sleeping_king_studios-tools (~> 0.1, >= 0.1.2)
     rspec-support (3.3.0)
     sleeping_king_studios-tools (0.1.2)
     slop (3.6.0)
@@ -270,7 +265,7 @@ DEPENDENCIES
   rspec (~> 3.3)
   rspec-collection_matchers (~> 1.1.2)
   rspec-rails (~> 3.3)
-  rspec-sleeping_king_studios!
+  rspec-sleeping_king_studios (>= 2.1.0)
   sleeping_king_studios-tools (~> 0.1.2)
   sprig (~> 0.1.7)!
   therubyracer (~> 0.12.1)

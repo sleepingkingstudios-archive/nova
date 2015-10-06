@@ -10,6 +10,8 @@ RSpec.describe PageSerializer do
 
   include_context 'with a serializer for', Page
 
+  include_examples 'should behave like a serializer'
+
   before(:each) { blacklisted_attributes << 'content' << 'directory' << 'directory_id' }
 
   describe '#deserialize' do
@@ -120,7 +122,7 @@ RSpec.describe PageSerializer do
 
       include_examples 'should return the resource attributes', ->() {
         expect(serialized).to have_key 'published_at'
-        expect(serialized.fetch('published_at')).to be == resource.published_at
+        expect(serialized.fetch('published_at')).to be == resource.published_at.to_i
       } # end examples
     end # context
 

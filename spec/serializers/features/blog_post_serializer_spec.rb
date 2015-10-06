@@ -10,6 +10,8 @@ RSpec.describe BlogPostSerializer do
 
   include_context 'with a serializer for', BlogPost
 
+  include_examples 'should behave like a serializer'
+
   before(:each) { blacklisted_attributes << 'blog_id' << 'content' }
 
   describe '#deserialize' do
@@ -68,10 +70,7 @@ RSpec.describe BlogPostSerializer do
   describe '#serialize' do
     it { expect(instance).to respond_to(:serialize).with(1, :arbitrary, :keywords) }
 
-    include_examples 'should return the resource attributes', ->() {
-      expect(serialized).to have_key 'published_at'
-      expect(serialized.fetch('published_order')).to be == resource.published_at
-    } # end examples
+    include_examples 'should return the resource attributes'
 
     context 'with a content' do
       before(:each) { resource.content = build(:text_content) }
@@ -94,7 +93,7 @@ RSpec.describe BlogPostSerializer do
 
       include_examples 'should return the resource attributes', ->() {
         expect(serialized).to have_key 'published_at'
-        expect(serialized.fetch('published_at')).to be == resource.published_at
+        expect(serialized.fetch('published_at')).to be == resource.published_at.to_i
 
         expect(serialized).to have_key 'published_order'
         expect(serialized.fetch('published_order')).to be == resource.published_order

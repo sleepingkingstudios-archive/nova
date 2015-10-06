@@ -79,20 +79,24 @@ class Directory
   end # class << self
 
   ### Attributes ###
+
   field :title, :type => String, :default => ''
 
   ### Concerns ###
-  has_tree :children => { :dependent => :destroy }
+
+  has_tree :children => { :dependent => :destroy, :order => :title.asc }
   slugify :title, :lockable => true
 
   ### Relations ###
-  has_many :features, :class_name => "DirectoryFeature", :dependent => :destroy
+
+  has_many :features, :class_name => "DirectoryFeature", :dependent => :destroy, :order => :title.asc
 
   def directories
     children
   end # method directories
 
   ### Validations ###
+
   validates :title, :presence => true
   validates :slug,  :exclusion => { :in => reserved_slugs }, :unique_within_siblings => true
 

@@ -10,6 +10,8 @@ RSpec.describe DirectoryFeatureSerializer do
 
   include_context 'with a serializer for', DirectoryFeature
 
+  include_examples 'should behave like a serializer'
+
   before(:each) { blacklisted_attributes << 'directory' << 'directory_id' }
 
   describe '#deserialize' do
