@@ -65,6 +65,10 @@
 
 # Refactoring
 
+- Refactor Directory#parent to #parent_directory
+- Refactor Directory#children to #child_directories
+- Refactor DirectoryFeature#directory to #parent_directory
+
 ## Controller Strategies
 
 - General rename of "Delegate" to ActionController::Strategy subclass.
