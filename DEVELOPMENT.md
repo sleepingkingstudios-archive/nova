@@ -53,15 +53,17 @@
 
 - Implement I18n for display strings.
 
-## User Authorization
-
-- Using Pundit? # https://github.com/elabs/pundit
-
 ## Custom Collections
 
 ## Heritable Settings
 
 ## Cached Settings
+
+## Multitenancy
+
+## User Authorization
+
+- Using Pundit? # https://github.com/elabs/pundit
 
 # Refactoring
 

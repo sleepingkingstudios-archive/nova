@@ -213,6 +213,19 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # describe
   end # describe
 
+  describe '#dashboard' do
+    include_context 'with a controller'
+
+    let(:object)  { create(:directory) }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    it 'renders the dashboard template' do
+      expect(controller).to receive(:render).with(instance.dashboard_template_path)
+
+      instance.dashboard request
+    end # it
+  end # describe
+
   describe '#export' do
     include_context 'with a controller'
 
@@ -303,7 +316,57 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # describe
   end # describe
 
+  describe '#import_directory' do
+    include_context 'with a controller'
+
+    let(:object)  { create(:directory) }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    def perform_action
+      instance.import_directory request
+    end # method perform_action
+
+    it { expect(instance).to respond_to(:import_directory).with(1).argument }
+
+    it 'renders the import template' do
+      expect(controller).to receive(:render).with(instance.import_directory_template_path)
+
+      perform_action
+    end # it
+  end # describe
+
+  describe '#import_feature' do
+    include_context 'with a controller'
+
+    let(:object)  { create(:directory) }
+    let(:request) { double('request', :params => ActionController::Parameters.new({})) }
+
+    def perform_action
+      instance.import_feature request
+    end # method perform_action
+
+    it { expect(instance).to respond_to(:import_feature).with(1).argument }
+
+    it 'renders the import template' do
+      expect(controller).to receive(:render).with(instance.import_feature_template_path)
+
+      perform_action
+    end # it
+  end # describe
+
   ### Partial Methods ###
+
+  describe '#dashboard_template_path' do
+    it { expect(instance).to have_reader(:dashboard_template_path).with('admin/directories/dashboard') }
+  end # describe
+
+  describe '#import_directory_template_path' do
+    it { expect(instance).to have_reader(:import_directory_template_path).with('admin/directories/import') }
+  end # describe
+
+  describe '#import_feature_template_path' do
+    it { expect(instance).to have_reader(:import_feature_template_path).with('admin/features/import') }
+  end # describe
 
   describe '#page_template_path' do
     it { expect(instance).to have_reader(:page_template_path).with('features/pages/show') }

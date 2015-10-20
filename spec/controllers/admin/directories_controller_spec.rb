@@ -183,4 +183,60 @@ RSpec.describe Admin::DirectoriesController do
       end # describe
     end # describe
   end # describe
+
+  describe '#import_directory' do
+    expect_behavior 'requires authentication'
+
+    expect_behavior 'requires authentication for root directory'
+
+    def perform_action
+      get :import_directory, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    wrap_context 'with an empty path' do
+      expect_behavior 'renders template', :"directories/import"
+
+      expect_behavior 'assigns directories'
+    end # describe
+
+    wrap_context 'with an invalid path' do
+      expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    wrap_context 'with a valid path to a directory' do
+      expect_behavior 'renders template', :"directories/import"
+
+      expect_behavior 'assigns directories'
+    end # describe
+  end # describe
+
+  describe '#import_feature' do
+    expect_behavior 'requires authentication'
+
+    expect_behavior 'requires authentication for root directory'
+
+    def perform_action
+      get :import_feature, :directories => path
+    end # method perform_action
+
+    before(:each) { sign_in :user, user }
+
+    wrap_context 'with an empty path' do
+      expect_behavior 'renders template', :"features/import"
+
+      expect_behavior 'assigns directories'
+    end # describe
+
+    wrap_context 'with an invalid path' do
+      expect_behavior 'redirects to the last found directory dashboard'
+    end # describe
+
+    wrap_context 'with a valid path to a directory' do
+      expect_behavior 'renders template', :"features/import"
+
+      expect_behavior 'assigns directories'
+    end # describe
+  end # describe
 end # describe

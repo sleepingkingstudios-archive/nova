@@ -24,7 +24,7 @@ en:
     blogs:
       icons:
         create: 'newspaper-o'
-        show: 'newspaper-o'
+        show:   'newspaper-o'
     blog_posts:
       icons:
         create: 'file-o'
@@ -33,16 +33,18 @@ en:
     directories:
       icons:
         dashboard: 'cubes'
+        create:    'folder-o'
         show:      'folder-o'
     pages:
       icons:
         create: 'file-o'
-        show: 'file-o'
+        show:   'file-o'
   icons:
     create:    'plus-circle'
     delete:    'trash'
     edit:      'edit'
     export:    'level-down'
+    import:    'level-up'
     index:     'cubes'
     publish:   'share'
     show:      'cube'

@@ -17,6 +17,18 @@ RSpec.describe 'admin routing for resources', :type => :routing do
     end # it
   end # describe
 
+  describe 'GET /export.json' do
+    let(:path) { 'export.json' }
+
+    it 'routes to Admin::ResourcesController#export' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => resources_controller,
+        :action      => 'export',
+        :format      => 'json'
+      }) # end hash
+    end # it
+  end # describe
+
   describe 'GET /path/to/resource/export.json' do
     let(:path) { 'weapons/bows/arbalests/export.json' }
 

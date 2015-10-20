@@ -41,13 +41,37 @@ class DirectoriesDelegate < ResourcesDelegate
     end # if-else
   end # action show
 
+  def dashboard request
+    controller.render dashboard_template_path
+  end # action show
+
   def export request
     @resource ||= RootDirectory.instance
 
     super request, :recursive => true, :relations => :all
-  end # action request
+  end # action export
+
+  def import_directory request
+    controller.render import_directory_template_path
+  end # action import_directory
+
+  def import_feature request
+    controller.render import_feature_template_path
+  end # action import_directory
 
   ### Partial Methods ###
+
+  def dashboard_template_path
+    "admin/directories/dashboard"
+  end # method edit_template_path
+
+  def import_directory_template_path
+    "admin/directories/import"
+  end # method edit_template_path
+
+  def import_feature_template_path
+    "admin/features/import"
+  end # method edit_template_path
 
   def page_template_path
     "features/pages/show"

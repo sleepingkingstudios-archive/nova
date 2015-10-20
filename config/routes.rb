@@ -45,6 +45,24 @@ Rails.application.routes.draw do
   end # namespace
 
   scope :module => :admin do
+    # Import/Export Routes
+
+    get 'directories/import',              :to => 'directories#import_directory'
+    get '*directories/directories/import', :to => 'directories#import_directory'
+
+    get 'features/import',                 :to => 'directories#import_feature'
+    get '*directories/features/import',    :to => 'directories#import_feature'
+
+    get 'export',                          :to => 'resources#export'
+    get '*directories/export',             :to => 'resources#export'
+
+    # Publishing Routes
+
+    put '*directories/publish',   :to => 'resources#publish'
+    put '*directories/unpublish', :to => 'resources#unpublish'
+
+    # RESTful Routes
+
     get 'dashboard',                    :to => 'directories#dashboard'
     get '*directories/dashboard',       :to => 'directories#dashboard'
 
@@ -57,13 +75,7 @@ Rails.application.routes.draw do
     post 'directories',                 :to => 'directories#create'
     post '*directories/directories',    :to => 'directories#create'
 
-    get 'export',                       :to => 'resources#export'
-    get '*directories/export',          :to => 'resources#export'
-
     get '*directories/edit',            :to => 'resources#edit'
-
-    put '*directories/publish',         :to => 'resources#publish'
-    put '*directories/unpublish',       :to => 'resources#unpublish'
 
     patch '*directories',               :to => 'resources#update'
     put '*directories',                 :to => 'resources#update'

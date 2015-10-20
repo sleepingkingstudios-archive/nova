@@ -61,6 +61,8 @@ RSpec.describe Directory, :type => :model do
         dashboard
         publish
         unpublish
+        export
+        import
       ) # end array
     end # it
   end # describe

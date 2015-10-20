@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe 'admin routing for directories', :type => :routing do
   let(:directories_controller) { 'admin/directories' }
-  let(:resources_controller)   { 'admin/resources' }
 
   describe 'GET /dashboard' do
     let(:path) { '/dashboard' }
@@ -93,6 +92,52 @@ RSpec.describe 'admin routing for directories', :type => :routing do
       expect(:post => "/#{path}").to route_to({
         :controller  => directories_controller,
         :action      => 'create',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'GET /directories/import' do
+    let(:path) { 'directories/import' }
+
+    it 'routes to Admin::ResourcesController#import_directory' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => directories_controller,
+        :action      => 'import_directory'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'GET /path/to/resource/directories/import' do
+    let(:path) { 'weapons/bows/arbalests/directories/import' }
+
+    it 'routes to Admin::ResourcesController#import_directory' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => directories_controller,
+        :action      => 'import_directory',
+        :directories => 'weapons/bows/arbalests'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'GET /features/import' do
+    let(:path) { 'features/import' }
+
+    it 'routes to Admin::ResourcesController#import_feature' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => directories_controller,
+        :action      => 'import_feature'
+      }) # end hash
+    end # it
+  end # describe
+
+  describe 'GET /path/to/resource/features/import' do
+    let(:path) { 'weapons/bows/arbalests/features/import' }
+
+    it 'routes to Admin::ResourcesController#import_feature' do
+      expect(:get => "/#{path}").to route_to({
+        :controller  => directories_controller,
+        :action      => 'import_feature',
         :directories => 'weapons/bows/arbalests'
       }) # end hash
     end # it

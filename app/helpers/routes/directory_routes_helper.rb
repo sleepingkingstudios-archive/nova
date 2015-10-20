@@ -26,6 +26,14 @@ module Routes
       "#{directory.blank? ? '/export' : Directory.join(directory_path(directory), 'export')}#{pretty ? '?pretty=true' : ''}"
     end # method export_directory_path
 
+    def import_directory_path directory, pretty: false
+      "#{directory.blank? ? '/directories/import' : Directory.join(directory_path(directory), 'directories', 'import')}"
+    end # method export_directory_path
+
+    def import_feature_path directory, pretty: false
+      "#{directory.blank? ? '/features/import' : Directory.join(directory_path(directory), 'features', 'import')}"
+    end # method export_directory_path
+
     def index_directories_path directory
       return '/directories' if directory.blank?
 

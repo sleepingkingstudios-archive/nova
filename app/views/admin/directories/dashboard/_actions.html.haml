@@ -5,5 +5,6 @@
   - unless directory
     = render_component 'admin/common/components/button', :text => 'Export Site', :url => export_directory_path(directory, :pretty => true), :options => { :icon => :globe, :text_color => :info, :target => '_blank' }
   - if directory
+    = render_component 'admin/common/components/button', :text => 'Export Directory', :url => export_directory_path(directory, :pretty => true), :options => { :icon => icon_name(:export, :directory), :text_color => :info, :target => '_blank' }
     = render_component 'admin/common/components/button', :text => 'Edit Directory', :url => edit_directory_path(directory), :options => { :icon => icon_name(:edit, :directory), :text_color => :warning }
     = render_component 'admin/common/components/button', :text => 'Delete Directory', :url => directory_path(directory), :options => { :icon => icon_name(:delete, :directory), :text_color => :danger, :method => 'delete', :class => 'delete-link' }

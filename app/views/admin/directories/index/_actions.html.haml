@@ -1,4 +1,5 @@
 - # app/views/admin/directories/_actions.html.haml
 
-= render :layout => 'admin/common/components/button_bar' do
-  = render :partial => 'admin/common/components/button', :locals => { :text => 'Create Directory', :url => new_directory_path(directory), :options => { :icon => :folder_o, :text_color => :primary } }
+= render_component 'admin/common/components/button_bar' do
+  = render_component 'admin/common/components/button', :text => 'Create Directory', :url => new_directory_path(directory), :options => { :icon => icon_name(:create, :directory), :text_color => :primary }
+  = render_component 'admin/common/components/button', :text => 'Import Directory', :url => import_directory_path(directory), :options => { :icon => icon_name(:import, :directory), :text_color => :primary }

@@ -107,6 +107,38 @@ RSpec.describe Routes::DirectoryRoutesHelper, :type => :helper do
     end # describe
   end # describe
 
+  describe '#import_directory_path' do
+    it { expect(instance).to respond_to(:import_directory_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.import_directory_path nil).to be == '/directories/import' }
+    end # describe
+
+    wrap_context 'with a root directory' do
+      it { expect(instance.import_directory_path directory).to be == "/#{slug}/directories/import" }
+    end # describe
+
+    wrap_context 'with a non-root directory' do
+      it { expect(instance.import_directory_path directories.last).to be == "/#{slugs.join '/'}/directories/import" }
+    end # describe
+  end # describe
+
+  describe '#import_feature_path' do
+    it { expect(instance).to respond_to(:import_feature_path).with(1).arguments }
+
+    describe 'with nil' do
+      it { expect(instance.import_feature_path nil).to be == '/features/import' }
+    end # describe
+
+    wrap_context 'with a root directory' do
+      it { expect(instance.import_feature_path directory).to be == "/#{slug}/features/import" }
+    end # describe
+
+    wrap_context 'with a non-root directory' do
+      it { expect(instance.import_feature_path directories.last).to be == "/#{slugs.join '/'}/features/import" }
+    end # describe
+  end # describe
+
   describe '#index_directories_path' do
     it { expect(instance).to respond_to(:index_directories_path).with(1).arguments }
 

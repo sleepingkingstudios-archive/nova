@@ -36,5 +36,6 @@
     - FeaturesEnumerator.directory_features.each do |name, options|
       - feature_presenter = present(options[:class])
       = render_component 'admin/common/components/button', :text => "Create #{feature_presenter.type}", :url => new_resource_path(@directories.last, name), :options => { :icon => feature_presenter.send(:icon_name), :text_color => :primary }
+    = render_component 'admin/common/components/button', :text => 'Import Feature', :url => import_feature_path(@current_directory), :options => { :icon => icon_name(:import, :feature), :text_color => :primary }
 
 = render :partial => 'admin/features/table', :locals => { :features => presenter.features }
