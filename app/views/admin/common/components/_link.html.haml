@@ -1,0 +1,11 @@
+- # app/views/common/components/_link.html.haml
+
+- url     ||= '#'
+- text    ||= url
+- options ||= {}
+- options.reverse_merge!({ :method => :get, :text_color => :info })
+
+= link_to url, :class => options[:class], :method => options[:method], :target => options[:target] do
+  %span{ :class => "text-#{options[:text_color]}" }
+    = icon options[:icon], :scale => :large, :width => :fixed if options.key?(:icon)
+    = text

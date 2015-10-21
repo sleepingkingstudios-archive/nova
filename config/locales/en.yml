@@ -40,6 +40,7 @@ en:
         create: 'file-o'
         show:   'file-o'
   icons:
+    advanced:  'gear'
     create:    'plus-circle'
     delete:    'trash'
     edit:      'edit'

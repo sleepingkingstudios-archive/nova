@@ -1,10 +1,11 @@
 - # app/views/admin/features/blog_posts/show/_actions.html.haml
 
 = render_component 'admin/common/components/button_bar', :options => { :data => { :'backbone-layout' => 'Common.Actions', :'confirm-delete-body' => 'Are you sure you want to delete this post?' } } do
-  = render_component 'admin/common/components/button', :text => 'Export Post', :url => export_resource_path(post, :pretty => true), :options => { :icon => icon_name(:export, :post), :text_color => :info, :target => '_blank' }
   - if presenter.published?
     = render_component 'admin/common/components/button', :text => 'Unpublish Post', :url => unpublish_resource_path(post), :options => { :icon => :reply, :text_color => :warning, :method => :put }
   - else
     = render_component 'admin/common/components/button', :text => 'Publish Post', :url => publish_resource_path(post), :options => { :icon => :share, :text_color => :success, :method => :put }
   = render_component 'admin/common/components/button', :text => 'Edit Post', :url => edit_resource_path(post), :options => { :icon => :edit, :text_color => :warning }
-  = render_component 'admin/common/components/button', :text => 'Delete Post', :url => resource_path(post), :options => { :icon => :trash, :text_color => :danger, :method => :delete, :class => 'delete-link' }
+  = render_component 'admin/common/components/dropdown_menu', :text => 'Advanced' do
+    %li= render_component 'admin/common/components/link', :text => 'Export Post', :url => export_resource_path(post, :pretty => true), :options => { :icon => icon_name(:export, :post), :text_color => :info, :target => '_blank' }
+    %li= render_component 'admin/common/components/link', :text => 'Delete Post', :url => resource_path(post), :options => { :icon => :trash, :text_color => :danger, :method => :delete, :class => 'delete-link' }

@@ -1,0 +1,12 @@
+- # app/views/admin/common/components/_dropdown_menu.html.haml
+
+- text    ||= 'More Options'
+- options ||= {}
+- options.reverse_merge!({ :icon => icon_name(:advanced), :text_color => :info })
+
+.btn-group
+  = content_tag :button, :type => 'button', :class => 'btn btn-default btn-sm dropdown-toggle', :data => { :toggle => 'dropdown' } do
+    = icon(options[:icon], :scale => :large, :fixed => true)
+    = text
+  %ul.dropdown-menu.dropdown-sm
+    = yield

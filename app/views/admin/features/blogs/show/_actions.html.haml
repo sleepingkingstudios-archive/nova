@@ -4,4 +4,5 @@
   = render_component 'admin/common/components/button', :text => 'Create Post', :url => new_blog_post_path(blog), :options => { :icon => icon_name(:create, :blog_post), :text_color => :primary }
   = render_component 'admin/common/components/button', :text => 'View Posts', :url => index_blog_posts_path(blog), :options => { :icon => icon_name(:index, :blog_posts), :text_color => :info }
   = render_component 'admin/common/components/button', :text => 'Edit Blog', :url => edit_resource_path(blog), :options => { :icon => icon_name(:edit, :blog_post), :text_color => :warning }
-  = render_component 'admin/common/components/button', :text => 'Delete Blog', :url => resource_path(blog), :options => { :icon => icon_name(:delete, :blog_post), :text_color => :danger, :method => :delete, :class => 'delete-link' }
+  = render_component 'admin/common/components/dropdown_menu', :text => 'Advanced' do
+    = render_component 'admin/common/components/link', :text => 'Delete Blog', :url => resource_path(blog), :options => { :icon => icon_name(:delete, :blog_post), :text_color => :danger, :method => :delete, :class => 'delete-link' }
