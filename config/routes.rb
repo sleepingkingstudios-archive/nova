@@ -47,11 +47,11 @@ Rails.application.routes.draw do
   scope :module => :admin do
     # Import/Export Routes
 
-    get 'directories/import',              :to => 'directories#import_directory'
-    get '*directories/directories/import', :to => 'directories#import_directory'
+    get 'directories/import/new',              :to => 'directories/imports#new'
+    get '*directories/directories/import/new', :to => 'directories/imports#new'
 
-    get 'features/import',                 :to => 'directories#import_feature'
-    get '*directories/features/import',    :to => 'directories#import_feature'
+    get 'features/import/new',                 :to => 'features/imports#new'
+    get '*directories/features/import/new',    :to => 'features/imports#new'
 
     get 'export',                          :to => 'resources#export'
     get '*directories/export',             :to => 'resources#export'

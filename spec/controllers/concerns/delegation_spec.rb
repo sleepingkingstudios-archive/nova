@@ -53,6 +53,69 @@ RSpec.describe Delegation, :type => :controller_concern do
 
   before(:each) { allow(instance).to receive(:params).and_return(params) }
 
+  describe '#build_delegate' do
+    before(:each) do
+      metaclass(instance).send :public, :build_delegate
+    end # before each
+
+    it { expect(instance).to respond_to(:build_delegate).with(0).arguments }
+
+    context 'without a resource' do
+      it 'creates a ResourcesDelegate' do
+        delegate = instance.build_delegate
+
+        expect(delegate).to be_a ResourcesDelegate
+      end # it
+    end # context
+
+    context 'with a resource' do
+      let(:resource) { { :slug => 'katana' } }
+
+      before(:each) do
+        instance.resource = resource
+      end # before each
+
+      it 'creates a ResourcesDelegate' do
+        delegate = instance.build_delegate
+
+        expect(delegate).to be_a ResourcesDelegate
+        expect(delegate.resource_class).to be == Hash
+        expect(delegate.resource).to be == resource
+      end # it
+    end # context
+
+    context 'with an array of resources' do
+      let(:resources) { %w(katana wakizashi tachi).map { |slug| { :slug => slug } } }
+
+      before(:each) do
+        instance.resources = resources
+      end # before each
+
+      it 'creates a ResourcesDelegate' do
+        delegate = instance.build_delegate
+
+        expect(delegate).to be_a ResourcesDelegate
+        expect(delegate.resource_class).to be == Hash
+        expect(delegate.resources).to be == resources
+      end # it
+    end # context
+
+    context 'with a resource class' do
+      let(:resource_class) { Hash }
+
+      before(:each) do
+        allow(instance).to receive(:resource_class).and_return(resource_class)
+      end # before each
+
+      it 'creates a ResourcesDelegate' do
+        delegate = instance.build_delegate
+
+        expect(delegate).to be_a ResourcesDelegate
+        expect(delegate.resource_class).to be == resource_class
+      end # it
+    end # context
+  end # describe
+
   describe '#initialize_delegate' do
     let(:directories) { [] }
 
@@ -126,6 +189,22 @@ RSpec.describe Delegation, :type => :controller_concern do
 
         expect(assigns.fetch :delegate).to be_a ResourcesDelegate
         expect(assigns.fetch(:delegate).resource_class).to be == resource_class
+      end # it
+
+      expect_behavior 'assigns @controller'
+
+      expect_behavior 'assigns @directories'
+    end # context
+
+    context 'with a custom delegate builder' do
+      let(:delegate) { Struct.new(:controller, :current_user, :directories).new }
+
+      before(:each) { allow(instance).to receive(:build_delegate).and_return(delegate) }
+
+      it 'assigns @delegate' do
+        instance.initialize_delegate
+
+        expect(assigns.fetch :delegate).to be delegate
       end # it
 
       expect_behavior 'assigns @controller'

@@ -9,8 +9,12 @@ module Delegation
 
   private
 
+  def build_delegate
+    decorate(@resources || @resource || resource_class, :Delegate, :default => :ResourcesDelegate, :plural => true)
+  end # method build_delegate
+
   def initialize_delegate
-    @delegate = decorate(@resources || @resource || resource_class, :Delegate, :default => :ResourcesDelegate, :plural => true)
+    @delegate = build_delegate
     @delegate.controller   = self
     @delegate.current_user = current_user
     @delegate.directories  = @directories || []

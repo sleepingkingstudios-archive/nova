@@ -51,26 +51,10 @@ class DirectoriesDelegate < ResourcesDelegate
     super request, :recursive => true, :relations => :all
   end # action export
 
-  def import_directory request
-    controller.render import_directory_template_path
-  end # action import_directory
-
-  def import_feature request
-    controller.render import_feature_template_path
-  end # action import_directory
-
   ### Partial Methods ###
 
   def dashboard_template_path
     "admin/directories/dashboard"
-  end # method edit_template_path
-
-  def import_directory_template_path
-    "admin/directories/import"
-  end # method edit_template_path
-
-  def import_feature_template_path
-    "admin/features/import"
   end # method edit_template_path
 
   def page_template_path
