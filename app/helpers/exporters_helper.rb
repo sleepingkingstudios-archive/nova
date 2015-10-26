@@ -1,5 +1,7 @@
 # app/helpers/exporters_helper.rb
 
+require 'errors/import_error'
+
 Dir[Rails.root.join 'lib', 'exporters', '*exporter.rb'].each do |file|
   require file
 end # each
@@ -22,6 +24,8 @@ module ExportersHelper
 
   def import str, format:, type: nil, **options
     obj = exporter(format).import(str)
+
+    raise Appleseed::ImportError.new str, format if obj.nil?
 
     case obj
     when Array

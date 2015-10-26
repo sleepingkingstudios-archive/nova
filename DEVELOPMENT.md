@@ -67,9 +67,13 @@
 
 # Refactoring
 
+- Refactor super-RESTful actions (publish, export) to nested "resources".
+
 - Refactor Directory#parent to #parent_directory
 - Refactor Directory#children to #child_directories
 - Refactor DirectoryFeature#directory to #parent_directory
+
+- Refactor errors to Appleseed::Errors::* and inherit from Appleseed::Errors::BaseError
 
 ## Controller Strategies
 

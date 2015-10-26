@@ -76,6 +76,22 @@ RSpec.describe ExportersHelper, :type => :helper do
   describe '#import' do
     it { expect(instance).to respond_to(:export).with(1).argument.and_keywords(:format, :type).and_arbitrary_keywords }
 
+    describe 'with an invalid JSON string' do
+      let(:str) { "\0\0" }
+
+      it 'should raise an error' do
+        expect { instance.import str, :format => :json }.to raise_error(Appleseed::ImportError)
+      end # it
+    end # describe
+
+    describe 'with an invalid YAML string' do
+      let(:str) { "\0\0" }
+
+      it 'should raise an error' do
+        expect { instance.import str, :format => :yaml }.to raise_error(Appleseed::ImportError)
+      end # it
+    end # describe
+
     describe 'with an object serialized as JSON' do
       let(:hsh) { serialize(build(:feature)) }
       let(:str) { hsh.to_json }

@@ -7,4 +7,5 @@ module ApplicationHelper
   include ExportersHelper
   include IconsHelper
   include RenderingHelper
+  include TextHelper
 end # module
