@@ -316,6 +316,130 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
     end # describe
   end # describe
 
+  describe '#import' do
+    shared_examples 'renders the import template' do
+      let(:template_path) do
+        if feature_type == 'directory'
+          instance.import_directory_template_path
+        else
+          instance.import_feature_template_path
+        end # if-else
+      end # let
+
+      it 'renders the import template' do
+        expect(controller).to receive(:render).with(template_path)
+
+        perform_action
+
+        expect(flash_messages.now[:error]).to be == "Unable to import #{feature_type}."
+      end # it
+    end # shared_examples
+
+    shared_examples 'assigns a resource with error message' do |*messages|
+      it 'assigns a resource with error message' do
+        perform_action
+
+        expect(assigns[:resource]).to be_a(feature_type == 'directory' ? Directory : Feature)
+        expect(assigns[:resource].errors.full_messages).to include *messages
+      end # it
+    end # shared_examples
+
+    include_context 'with a controller'
+
+    let(:object)       { create(:directory) }
+    let(:serialized)   { '{}' }
+    let(:feature_type) { params[:feature_type] || 'feature' }
+    let(:params) do
+      { :feature      => serialized,
+        :feature_type => 'feature',
+        :format       => 'json'
+      } # end hsh
+    end # let
+    let(:request)      { double('request', :params => ActionController::Parameters.new(params)) }
+
+    def perform_action
+      instance.import request
+    end # method perform_action
+
+    it { expect(instance).to respond_to(:import).with(1).argument }
+
+    describe 'with a missing feature param' do
+      let(:params) { super().tap { |hsh| hsh.delete :feature } }
+
+      describe 'with a missing feature_type param' do
+        let(:params) { super().tap { |hsh| hsh.delete :feature_type } }
+
+        include_examples 'renders the import template'
+
+        include_examples 'assigns a resource with error message', "Feature can't be blank"
+      end # describe
+
+      describe 'with a feature_type => "directory"' do
+        let(:params) { super().merge :feature_type => 'directory' }
+
+        include_examples 'renders the import template'
+
+        include_examples 'assigns a resource with error message', "Directory can't be blank"
+      end # describe
+
+      describe 'with a feature_type => "feature"' do
+        let(:params) { super().merge :feature_type => 'feature' }
+
+        include_examples 'renders the import template'
+
+        include_examples 'assigns a resource with error message', "Feature can't be blank"
+      end # describe
+    end # describe
+
+    describe 'with a missing format param' do
+      let(:params) { super().tap { |hsh| hsh.delete :format } }
+
+      include_examples 'renders the import template'
+
+      include_examples 'assigns a resource with error message', "Format can't be blank"
+    end # describe
+
+    describe 'with an unrecognized format param' do
+      let(:params) { super().merge :format => 'docx' }
+
+      include_examples 'renders the import template'
+
+      include_examples 'assigns a resource with error message', "Format must be json or yaml, but was docx"
+    end # describe
+
+    %w(json yaml).each do |format|
+      describe "with a serialized #{format} feature" do
+        let(:params) { super().merge :format => format }
+
+        describe 'with a malformed feature' do
+          let(:serialized) { "\0\0" }
+
+          include_examples 'renders the import template'
+
+          include_examples 'assigns a resource with error message', "#{format.upcase} is malformed"
+        end # describe
+
+        describe 'with a hashed feature' do
+          let(:feature_params) { { :title => 'Feature -1' } }
+          let(:exporter)       { "#{format.to_s.camelize}Exporter".constantize }
+          let(:serialized)     { exporter.export feature_params }
+
+          describe 'with a missing _type parameter' do
+            let(:feature_params) { super().tap { |hsh| hsh.delete :_type } }
+
+            include_examples 'renders the import template'
+
+            include_examples 'assigns a resource with error message', "Type can't be blank"
+          end # describe
+
+          describe 'with invalid attributes for a page' do
+            pending
+          end # describe
+        end # describe
+      end # describe
+    end # each
+  end # describe
+
   describe '#import_directory' do
     include_context 'with a controller'
 
@@ -328,7 +452,7 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
 
     it { expect(instance).to respond_to(:import_directory).with(1).argument }
 
-    it 'renders the import template' do
+    it 'renders the import directory template' do
       expect(controller).to receive(:render).with(instance.import_directory_template_path)
 
       perform_action
@@ -347,7 +471,7 @@ RSpec.describe DirectoriesDelegate, :type => :decorator do
 
     it { expect(instance).to respond_to(:import_feature).with(1).argument }
 
-    it 'renders the import template' do
+    it 'renders the import feature template' do
       expect(controller).to receive(:render).with(instance.import_feature_template_path)
 
       perform_action

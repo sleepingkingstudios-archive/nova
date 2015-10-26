@@ -4,6 +4,7 @@ require 'delegates/resources_delegate'
 
 class DirectoriesDelegate < ResourcesDelegate
   include RoutesHelper
+  include TextHelper
 
   def initialize object = nil
     super object || Directory
@@ -51,6 +52,112 @@ class DirectoriesDelegate < ResourcesDelegate
     super request, :recursive => true, :relations => :all
   end # action export
 
+  def import request
+    @resource ||= RootDirectory.instance
+
+    feature_type = case request.params[:feature_type]
+    when 'feature', 'directory'
+      request.params[:feature_type]
+    else
+      'feature'
+    end # case
+
+    if request.params[:feature].blank?
+      set_flash_message :error, flash_message(:import, :failure, feature_type)
+
+      if feature_type == 'directory'
+        template_path = import_directory_template_path
+        resource      = Directory.new
+        resource.errors[:base] << "Directory can't be blank"
+      else
+        template_path = import_feature_template_path
+        resource      = Feature.new
+        resource.errors[:base] << "Feature can't be blank"
+      end
+
+      assign :resource, resource
+
+      controller.render template_path
+
+      return
+    end # if
+
+    allowed_formats = %w(json yaml)
+    case (format = request.params[:format])
+    when *allowed_formats
+      exporter = Object.new.extend ExportersHelper
+
+      begin
+        exporter.import request.params[:feature], :format => format
+      rescue ArgumentError => exception
+        set_flash_message :error, flash_message(:import, :failure, feature_type)
+
+        if feature_type == 'directory'
+          template_path = import_directory_template_path
+          resource      = Directory.new
+        else
+          template_path = import_feature_template_path
+          resource      = Feature.new
+        end # if-else
+
+        if exception.message == 'must specify a type'
+          resource.errors[:type] << "can't be blank"
+        else
+          resource.errors[:base] << "#{feature_type.capitalize} is invalid"
+        end # if-else
+
+        assign :resource, resource
+
+        controller.render template_path
+
+        return
+      rescue Appleseed::ImportError => exception
+        set_flash_message :error, flash_message(:import, :failure, feature_type)
+
+        if feature_type == 'directory'
+          template_path = import_directory_template_path
+          resource      = Directory.new
+        else
+          template_path = import_feature_template_path
+          resource      = Feature.new
+        end # if-else
+
+        resource.errors[:base] << "#{format.upcase} is malformed"
+
+        assign :resource, resource
+
+        controller.render template_path
+
+        return
+      end # rescue
+    else
+      set_flash_message :error, flash_message(:import, :failure, feature_type)
+
+      format_message = if format.blank?
+        "Format can't be blank"
+      else
+        format_string = "#{humanize_list allowed_formats, :last_separator => ' or '}"
+        "Format must be #{format_string}, but was #{format.blank? ? 'blank' : format}"
+      end
+
+      if feature_type == 'directory'
+        template_path = import_directory_template_path
+        resource      = Directory.new
+      else
+        template_path = import_feature_template_path
+        resource      = Feature.new
+      end
+
+      resource.errors[:base] << format_message
+
+      assign :resource, resource
+
+      controller.render template_path
+
+      return
+    end # case
+  end # action import
+
   def import_directory request
     controller.render import_directory_template_path
   end # action import_directory
@@ -97,6 +204,19 @@ class DirectoriesDelegate < ResourcesDelegate
   end # method redirect_path
 
   ### Routing Methods ###
+
+  def flash_message action, status = nil, resource_type = 'feature'
+    name = resource_class.name.split('::').last
+
+    case "#{action}#{status ? "_#{status}" : ''}"
+    when 'import_success'
+      "#{resource_type.capitalize} successfully created."
+    when 'import_failure'
+      "Unable to import #{resource_type}."
+    else
+      super action, status
+    end # case
+  end # method flash_message
 
   def _dashboard_resource_path
     Directory.join directory_path(resource), 'dashboard'
